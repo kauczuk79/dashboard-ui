@@ -1,17 +1,5 @@
 (function () {
     'use strict';
-    /*global angular*/
-
-    angular.module('dashboard-ui', ['ngRoute', 'dashboard-ui.directives']);
-}());
-(function () {
-    'use strict';
-    /*global angular*/
-
-    angular.module('dashboard-ui.directives', []);
-}());
-(function () {
-    'use strict';
     /*global angular, console*/
 
     function SegmentDisplayDirective() {

@@ -1,0 +1,15 @@
+@import 'mixins';
+/* DSEG14 Classic font */
+@include font-face(DSEG14, '../assets/fonts/DSEG14/Classic/DSEG14Classic-Regular', normal, normal, woff ttf);
+@include font-face(DSEG14, '../assets/fonts/DSEG14/Classic/DSEG14Classic-LightItalic', lighter, italic, woff ttf);
+@include font-face(DSEG14, '../assets/fonts/DSEG14/Classic/DSEG14Classic-Light', normal, lighter, woff ttf);
+@include font-face(DSEG14, '../assets/fonts/DSEG14/Classic/DSEG14Classic-Italic', normal, italic, woff ttf);
+@include font-face(DSEG14, '../assets/fonts/DSEG14/Classic/DSEG14Classic-BoldItalic', bold, italic, woff ttf);
+@include font-face(DSEG14, '../assets/fonts/DSEG14/Classic/DSEG14Classic-Bold', bold, normal, woff ttf);
+    
+@include font-face(DSEG7, '../assets/fonts/DSEG7/Classic/DSEG7Classic-Regular', normal, normal, woff ttf);
+@include font-face(DSEG7, '../assets/fonts/DSEG7/Classic/DSEG7Classic-LightItalic', lighter, italic, woff ttf);
+@include font-face(DSEG7, '../assets/fonts/DSEG7/Classic/DSEG7Classic-Light', normal, lighter, woff ttf);
+@include font-face(DSEG7, '../assets/fonts/DSEG7/Classic/DSEG7Classic-Italic', normal, italic, woff ttf);
+@include font-face(DSEG7, '../assets/fonts/DSEG7/Classic/DSEG7Classic-BoldItalic', bold, italic, woff ttf);
+@include font-face(DSEG7, '../assets/fonts/DSEG7/Classic/DSEG7Classic-Bold', bold, normal, woff ttf);

@@ -14,11 +14,11 @@
         runSequence = require('run-sequence');
 
     gulp.task('clean', function () {
-        return gulp.src('dist/*')
+        return gulp.src(['./dist/*', '!./dist/assets'])
             .pipe(rimraf());
     });
 
-    gulp.task('js:concat', function () {
+    gulp.task('js:concat', function (callback) {
         return gulp.src('src/**/*.js')
             .pipe(concat('dasboard-ui.js', {
                 newLine: '\n'
@@ -28,15 +28,20 @@
 
     gulp.task('sass:compile', function () {
         return gulp.src('src/**/*.scss')
-            .pipe(sass())
+            .pipe(sass({
+                outputStyle: 'expanded'
+            }))
             .pipe(gulp.dest('./dist/'));
     });
 
-    gulp.task('style:concat', ['sass:compile'], function () {
-        gulp.src('./dist/**/*.css')
+    gulp.task('style:concat', function () {
+        return gulp.src('./dist/**/*.css')
             .pipe(concatCss('dashboard-ui.css'))
             .pipe(gulp.dest('./dist/'));
-        return gulp.src('./dist/directives')
+    });
+
+    gulp.task('clean:temp', function () {
+        return gulp.src(['./dist/directives', './dist/styles'])
             .pipe(rimraf());
     });
 
@@ -49,8 +54,8 @@
             .pipe(gulp.dest('./dist/'));
     });
 
-    gulp.task('build', function () {
-        runSequence('clean', 'js:concat', 'js:minify', 'style:concat');
+    gulp.task('build', function (callback) {
+        runSequence('clean', 'sass:compile', 'style:concat', 'js:concat', 'js:minify', 'clean:temp', callback);
     });
 
     gulp.task('watch', function () {

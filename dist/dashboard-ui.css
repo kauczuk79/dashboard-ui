@@ -1,3 +1,107 @@
-body div {
+/* DSEG14 Classic font */
+
+@font-face {
+  font-family: "DSEG14";
+  font-style: normal;
+  font-weight: normal;
+  src: url("assets/fonts/DSEG14/Classic/DSEG14Classic-Regular.woff") format("woff"), url("assets/fonts/DSEG14/Classic/DSEG14Classic-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG14";
+  font-style: italic;
+  font-weight: lighter;
+  src: url("assets/fonts/DSEG14/Classic/DSEG14Classic-LightItalic.woff") format("woff"), url("assets/fonts/DSEG14/Classic/DSEG14Classic-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG14";
+  font-style: lighter;
+  font-weight: normal;
+  src: url("assets/fonts/DSEG14/Classic/DSEG14Classic-Light.woff") format("woff"), url("assets/fonts/DSEG14/Classic/DSEG14Classic-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG14";
+  font-style: italic;
+  font-weight: normal;
+  src: url("assets/fonts/DSEG14/Classic/DSEG14Classic-Italic.woff") format("woff"), url("assets/fonts/DSEG14/Classic/DSEG14Classic-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG14";
+  font-style: italic;
+  font-weight: bold;
+  src: url("assets/fonts/DSEG14/Classic/DSEG14Classic-BoldItalic.woff") format("woff"), url("assets/fonts/DSEG14/Classic/DSEG14Classic-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG14";
+  font-style: normal;
+  font-weight: bold;
+  src: url("assets/fonts/DSEG14/Classic/DSEG14Classic-Bold.woff") format("woff"), url("assets/fonts/DSEG14/Classic/DSEG14Classic-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG7";
+  font-style: normal;
+  font-weight: normal;
+  src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Regular.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG7";
+  font-style: italic;
+  font-weight: lighter;
+  src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-LightItalic.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG7";
+  font-style: lighter;
+  font-weight: normal;
+  src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Light.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG7";
+  font-style: italic;
+  font-weight: normal;
+  src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Italic.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG7";
+  font-style: italic;
+  font-weight: bold;
+  src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-BoldItalic.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DSEG7";
+  font-style: normal;
+  font-weight: bold;
+  src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.ttf") format("truetype");
+}
+seven-segment-display {
   position: relative;
+}
+
+seven-segment-display .digits,
+seven-segment-display .background,
+seven-segment-display .foreground {
+  font-family: 'DSEG7';
+  font-style: italic;
+  font-weight: bold;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+seven-segment-display .background {
+  color: rgba(0, 0, 0, 0.1);
+}
+
+seven-segment-display .foreground {
+  color: black;
 }
