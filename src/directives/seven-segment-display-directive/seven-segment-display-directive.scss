@@ -1,13 +1,11 @@
 seven-segment-display {
-    position: relative;
-    
+    display: block;
+    direction: rtl;
     .digits {
         font-family: 'DSEG7';
         font-style: italic;
         font-weight: bold;
         position: absolute;
-        top: 0px;
-        left: 0px;
     }
     
     .background {

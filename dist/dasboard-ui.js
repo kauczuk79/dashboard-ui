@@ -31,6 +31,7 @@
 
         return {
             link: link,
+            restrict: 'E',
             template: '<span class="background">{{background}}</span><span class="foreground">{{value}}</span>',
             scope: {
                 digits: '@',

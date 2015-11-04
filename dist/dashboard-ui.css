@@ -84,7 +84,8 @@
   src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.ttf") format("truetype");
 }
 seven-segment-display {
-  position: relative;
+  display: block;
+  direction: rtl;
 }
 
 seven-segment-display .digits,
@@ -94,8 +95,6 @@ seven-segment-display .foreground {
   font-style: italic;
   font-weight: bold;
   position: absolute;
-  top: 0px;
-  left: 0px;
 }
 
 seven-segment-display .background {

@@ -60,7 +60,12 @@
 
     gulp.task('watch', function () {
         gutil.log('Gulp is running!');
-        gulp.watch('src/**/*.js', ['js:concat', 'js:minify']);
+        gulp.watch('src/**/*.js', function () {
+            runSequence('js:concat', 'js:minify');
+        });
+        gulp.watch('src/**/*.scss', function () {
+            runSequence('sass:compile', 'style:concat', 'clean:temp');
+        });
     });
 
 }());
