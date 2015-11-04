@@ -83,6 +83,27 @@
   font-weight: bold;
   src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.ttf") format("truetype");
 }
+fourteen-segment-display {
+  display: block;
+  direction: rtl;
+}
+
+fourteen-segment-display .digits,
+fourteen-segment-display .background,
+fourteen-segment-display .foreground {
+  font-family: 'DSEG14';
+  font-style: italic;
+  font-weight: bold;
+  position: absolute;
+}
+
+fourteen-segment-display .background {
+  color: rgba(0, 0, 0, 0.1);
+}
+
+fourteen-segment-display .foreground {
+  color: black;
+}
 seven-segment-display {
   display: block;
   direction: rtl;

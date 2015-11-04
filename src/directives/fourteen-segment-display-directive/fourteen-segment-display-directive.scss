@@ -1,0 +1,20 @@
+fourteen-segment-display {
+    display: block;
+    direction: rtl;
+    .digits {
+        font-family: 'DSEG14';
+        font-style: italic;
+        font-weight: bold;
+        position: absolute;
+    }
+    
+    .background {
+        @extend .digits;
+        color: rgba(0,0,0,0.1);
+    }
+    
+    .foreground {
+        @extend .digits;
+        color: rgba(0,0,0,1.0);
+    }
+}

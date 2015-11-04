@@ -2,7 +2,7 @@
     'use strict';
     /*global angular, console*/
 
-    function SevenSegmentDisplayDirective() {
+    function FourteenSegmentDisplayDirective() {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 value = scope.value,
@@ -10,9 +10,9 @@
                 iterator;
             scope.background = '';
             if (background) {
-                scope.background = '8';
+                scope.background = '~';
                 for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                    scope.background += '.8';
+                    scope.background += '.~';
                 }
             }
         }
@@ -30,5 +30,5 @@
 
     angular
         .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 }());

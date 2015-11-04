@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../dist/dashboard-ui.css">
+    <style>
+        .display {
+            font-size: 48px;
+        }
+        
+        .displayPlaceholder {
+            width: 120px;
+            height: 50px;
+            background-color: yellowgreen;
+            border-radius: 10px;
+            margin: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body ng-app="dashboard-ui">
+    <p>
+        Value:
+        <input type="text" ng-model="value">
+    </p>
+    <p>7-segment with background</p>
+    <div class="displayPlaceholder">
+        <seven-segment-display class="display" digits="3" value="{{value}}" show-background="true"></seven-segment-display>
+    </div>
+    <p>14-segment with background</p>
+    <div class="displayPlaceholder">
+        <fourteen-segment-display class="display" digits="3" value="{{value}}" show-background="true"></fourteen-segment-display>
+    </div>
+    <p>7-segment without background</p>
+    <div class="displayPlaceholder">
+        <seven-segment-display class="display" digits="4" value="{{value}}" show-background="false"></seven-segment-display>
+    </div>
+    <p>14-segment without background</p>
+    <div class="displayPlaceholder">
+        <fourteen-segment-display class="display" digits="4" value="{{value}}"></fourteen-segment-display>
+    </div>
+    <script src="../node_modules/angular/angular.js"></script>
+    <script src="../node_modules/angular-route/angular-route.js"></script>
+    <script src="../dist/dasboard-ui.js"></script>
+</body>
+
+</html>
