@@ -1,4 +1,6 @@
 (function () {
     'use strict';
-    angular.module('dasboard-ui', []);
+    /*global angular*/
+
+    angular.module('dashboard-ui', ['ngRoute', 'dashboard-ui.directives']);
 }());

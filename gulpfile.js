@@ -1,35 +1,48 @@
-/*global require, rm*/
 (function () {
     'use strict';
+    /*global require, rm*/
 
     var gulp = require('gulp'),
         gutil = require('gutil'),
-        gulpConcat = require('gulp-concat'),
+        concat = require('gulp-concat'),
         rimraf = require('gulp-rimraf'),
         uglify = require('gulp-uglify'),
         rename = require('gulp-rename'),
-        sourcemaps = require('gulp-sourcemaps');
-
-    gulp.task('default', function () {
-        return gutil.log('Gulp is running!');
-    });
+        sourcemaps = require('gulp-sourcemaps'),
+        sass = require('gulp-sass'),
+        concatCss = require('gulp-concat-css'),
+        runSequence = require('run-sequence');
 
     gulp.task('clean', function () {
-        gutil.log('===== Clean =====');
-        return gulp.src('dist/*').pipe(rimraf());
+        return gulp.src('dist/*')
+            .pipe(rimraf());
     });
 
-    gulp.task('concat', ['clean'], function () {
-        gutil.log('===== Concat =====');
+    gulp.task('js:concat', function () {
         return gulp.src('src/**/*.js')
-            .pipe(gulpConcat('dasboard-ui.js'))
+            .pipe(concat('dasboard-ui.js', {
+                newLine: '\n'
+            }))
             .pipe(gulp.dest('./dist/'));
     });
 
-    gulp.task('minify', ['clean', 'concat'], function () {
-        gutil.log('===== Minify =====');
+    gulp.task('sass:compile', function () {
+        return gulp.src('src/**/*.scss')
+            .pipe(sass())
+            .pipe(gulp.dest('./dist/'));
+    });
+
+    gulp.task('style:concat', ['sass:compile'], function () {
+        gulp.src('./dist/**/*.css')
+            .pipe(concatCss('dashboard-ui.css'))
+            .pipe(gulp.dest('./dist/'));
+        return gulp.src('./dist/directives')
+            .pipe(rimraf());
+    });
+
+    gulp.task('js:minify', function () {
         return gulp.src('src/**/*.js')
-            .pipe(gulpConcat('dasboard-ui.min.js'))
+            .pipe(concat('dasboard-ui.min.js'))
             .pipe(sourcemaps.init())
             .pipe(uglify())
             .pipe(sourcemaps.write('./'))
@@ -37,14 +50,12 @@
     });
 
     gulp.task('build', function () {
-        gutil.log('===== BUILD =====');
-        return gulp.start('clean')
-            .start('concat')
-            .start('minify');
+        runSequence('clean', 'js:concat', 'js:minify', 'style:concat');
     });
 
     gulp.task('watch', function () {
-        gulp.watch('src/**/*.js', ['concat', 'minify']);
+        gutil.log('Gulp is running!');
+        gulp.watch('src/**/*.js', ['js:concat', 'js:minify']);
     });
 
 }());
