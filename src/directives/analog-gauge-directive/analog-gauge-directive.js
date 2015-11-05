@@ -1,39 +1,37 @@
-(function () {
+(function (d3) {
     'use strict';
     /*global angular, console*/
 
     function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
+            var startAngle = parseInt(scope.startAngle, 10),
+                maxValue = parseInt(scope.maxValue, 10),
+                endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
+                minValue = parseInt(scope.minValue, 10) || 0,
+                valueStep = parseInt(scope.valueStep, 10) || 20,
+                angle,
+                indicator = d3.selectAll('analog-gauge').select('#indicator'),
+                deltaAngle = 0,
+                deltaValue = maxValue - minValue;
+
             function updateGaugeAngle() {
-                if (scope.value <= scope.minValue) {
-                    scope.angle = scope.startAngle;
-                } else if (scope.value >= scope.maxValue) {
-                    scope.angle = scope.endAngle;
+                var value = parseInt(scope.value, 10);
+                if (value < minValue) {
+                    angle = startAngle;
+                } else if (value > maxValue) {
+                    angle = endAngle;
                 } else {
-                    //                    if (scope.startAngle < scope.endAngle) {
-                    //                        //clockwise
-                    //                         
-                    //                    } else if (scope.startAngle > scope.endAngle) {
-                    //                        //counter clockwise
-                    //
-                    //                    } else {
-                    //                        //start angle and end angle are equal
-                    //                        scope.angle = scope.startAngle;
-                    //                    }
-                    scope.angle = scope.startAngle + (((scope.endAngle - scope.startAngle) / (scope.maxValue - scope.minValue)) * scope.value);
+                    if (startAngle < endAngle) {
+                        //clockwise
+                        deltaAngle = (endAngle - startAngle);
+                    } else if (startAngle > endAngle) {
+                        //counter clockwise
+                        deltaAngle = (startAngle - endAngle);
+                    }
+                    angle = startAngle + ((deltaAngle / deltaValue) * value);
+                    indicator.attr('transform', 'rotate(' + angle + ' 200 200)');
                 }
             }
-
-            if (scope.endAngle === undefined) {
-                scope.endAngle = scope.startAngle * -1;
-            }
-            if (scope.minValue === undefined) {
-                scope.minValue = 0;
-            }
-            if (scope.valueStep === undefined) {
-                scope.valueStep = 20;
-            }
-            updateGaugeAngle();
 
             scope.$watch('value', function () {
                 updateGaugeAngle();
@@ -43,14 +41,10 @@
         return {
             link: link,
             restrict: 'E',
-            template: 'startAngle: {{startAngle}}, endAngle: {{endAngle}}, minValue: {{minValue}}, maxValue: {{maxValue}}, valueStep: {{valueStep}}, value: {{value}}, angle: {{angle}}',
             scope: {
+                value: '@',
                 startAngle: '@',
-                endAngle: '@',
-                maxValue: '@',
-                minValue: '@',
-                valueStep: '@',
-                value: '@'
+                maxValue: '@'
             }
         };
     }
@@ -58,4 +52,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('analogGauge', AnalogGaugeDirective);
-}());
+}(window.d3));

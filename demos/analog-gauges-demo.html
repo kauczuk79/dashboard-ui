@@ -13,10 +13,22 @@
 
 <body ng-app="dashboard-ui">
     <div class="displayPlaceholder">
-        <analog-gauge start-angle="-120" max-value="220" value="10"></analog-gauge>
+        Value (0..220):
+        <input type="number" ng-model="value" />
+        <analog-gauge start-angle="-120" max-value="220" value="{{value || 0}}">
+            <svg width="400" height="400">
+                <g>
+                    <circle cx="200" cy="200" r="190" stroke="black" stroke-width="2px" fill="gray"></circle>
+                </g>
+                <g id="indicator">
+                    <rect y="30" x="195" width="10" height="170" fill="black"></rect>
+                </g>
+            </svg>
+        </analog-gauge>
     </div>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
+    <script src="../node_modules/d3/d3.js"></script>
     <script src="../dist/dasboard-ui.js"></script>
 </body>
 
