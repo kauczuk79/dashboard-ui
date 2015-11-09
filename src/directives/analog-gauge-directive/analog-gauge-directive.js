@@ -1,4 +1,4 @@
-(function(d3) {
+(function (d3) {
     'use strict';
     /*global angular, console*/
 
@@ -8,10 +8,10 @@
                 maxValue = parseInt(scope.maxValue, 10),
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
-                indicator = d3.selectAll('analog-gauge').select('#indicator'),
-                indicatorDimensions = indicator.node().getBBox(),
-                indicatorOriginX = scope.indicatorOriginX || (indicatorDimensions.x + (indicatorDimensions.width / 2)),
-                indicatorOriginY = scope.indicatorOriginY || (indicatorDimensions.y + (indicatorDimensions.height / 2)),
+                indicator = d3.select(element[0]).select('#indicator'),
+                indicatorBoundingBox = indicator.node().getBBox(),
+                indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
+                indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
                 angle,
                 deltaAngle = 0,
                 deltaValue = maxValue - minValue;
@@ -36,7 +36,7 @@
                 }
             }
 
-            scope.$watch('value', function() {
+            scope.$watch('value', function () {
                 updateGaugeAngle();
             }, true);
         }
