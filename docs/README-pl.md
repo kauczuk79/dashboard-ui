@@ -34,6 +34,11 @@ Znacznik ``<analog-gauge>`` posiada kilka parametrów, które są opisane w tabe
 | ***indicator-origin-x*** | Pozycja X środka obrotu wskazówki licznika. Wartością domyślną jest pozycja X środka prostokąta zawierającego wskazówkę. Parametr opcjonalny (zalecane jest jego podanie). |
 | ***indicator-origin-y*** | Pozycja Y środka obrotu wskazówki licznika. Wartością domyślną jest pozycja Y środka prostokąta zawierającego wskazówkę. Parametr opcjonalny (zalecane jest jego podanie). |
 
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 [//]: #
 [AngularJS]: <http://angularjs.org>
 [D3]: <http://d3js.org>
