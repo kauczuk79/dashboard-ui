@@ -83,6 +83,12 @@
   font-weight: bold;
   src: url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.woff") format("woff"), url("assets/fonts/DSEG7/Classic/DSEG7Classic-Bold.ttf") format("truetype");
 }
+#indicator {
+  -moz-transition: all 0.25s linear;
+  -webkit-transition: all 0.25s linear;
+  -o-transition: all 0.25s linear;
+  transition: all 0.25s linear;
+}
 fourteen-segment-display {
   display: block;
   direction: rtl;

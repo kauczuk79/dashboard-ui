@@ -10,7 +10,7 @@
 
     angular.module('dashboard-ui.directives', []);
 }());
-(function (d3) {
+(function(d3) {
     'use strict';
     /*global angular, console*/
 
@@ -21,8 +21,11 @@
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
                 valueStep = parseInt(scope.valueStep, 10) || 20,
-                angle,
                 indicator = d3.selectAll('analog-gauge').select('#indicator'),
+                indicatorDimensions = indicator.node().getBBox(),
+                indicatorOriginX = scope.indicatorOriginX || (indicatorDimensions.x + (indicatorDimensions.width / 2)),
+                indicatorOriginY = scope.indicatorOriginY || (indicatorDimensions.y + (indicatorDimensions.height / 2)),
+                angle,
                 deltaAngle = 0,
                 deltaValue = maxValue - minValue;
 
@@ -41,11 +44,12 @@
                         deltaAngle = (startAngle - endAngle);
                     }
                     angle = startAngle + ((deltaAngle / deltaValue) * value);
-                    indicator.attr('transform', 'rotate(' + angle + ' 200 200)');
+                    indicator.style('transform-origin', indicatorOriginX + 'px ' + indicatorOriginY + 'px');
+                    indicator.style('transform', 'rotate(' + angle + 'deg)');
                 }
             }
 
-            scope.$watch('value', function () {
+            scope.$watch('value', function() {
                 updateGaugeAngle();
             }, true);
         }
@@ -56,7 +60,9 @@
             scope: {
                 value: '@',
                 startAngle: '@',
-                maxValue: '@'
+                maxValue: '@',
+                indicatorOriginX: '@',
+                indicatorOriginY: '@'
             }
         };
     }
@@ -65,40 +71,6 @@
         .module('dashboard-ui.directives')
         .directive('analogGauge', AnalogGaugeDirective);
 }(window.d3));
-(function () {
-    'use strict';
-    /*global angular, console*/
-
-    function SevenSegmentDisplayDirective() {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                value = scope.value,
-                background = (attrs.showBackground === "true"),
-                iterator;
-            scope.background = '';
-            if (background) {
-                scope.background = '8';
-                for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                    scope.background += '.8';
-                }
-            }
-        }
-
-        return {
-            link: link,
-            restrict: 'E',
-            template: '<span class="background">{{background}}</span><span class="foreground">{{value}}</span>',
-            scope: {
-                digits: '@',
-                value: '@'
-            }
-        };
-    }
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-}());
 (function () {
     'use strict';
     /*global angular, console*/
@@ -132,4 +104,38 @@
     angular
         .module('dashboard-ui.directives')
         .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+}());
+(function () {
+    'use strict';
+    /*global angular, console*/
+
+    function SevenSegmentDisplayDirective() {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                value = scope.value,
+                background = (attrs.showBackground === "true"),
+                iterator;
+            scope.background = '';
+            if (background) {
+                scope.background = '8';
+                for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                    scope.background += '.8';
+                }
+            }
+        }
+
+        return {
+            link: link,
+            restrict: 'E',
+            template: '<span class="background">{{background}}</span><span class="foreground">{{value}}</span>',
+            scope: {
+                digits: '@',
+                value: '@'
+            }
+        };
+    }
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 }());

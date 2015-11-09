@@ -1,4 +1,4 @@
-(function (d3) {
+(function(d3) {
     'use strict';
     /*global angular, console*/
 
@@ -9,8 +9,11 @@
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
                 valueStep = parseInt(scope.valueStep, 10) || 20,
-                angle,
                 indicator = d3.selectAll('analog-gauge').select('#indicator'),
+                indicatorDimensions = indicator.node().getBBox(),
+                indicatorOriginX = scope.indicatorOriginX || (indicatorDimensions.x + (indicatorDimensions.width / 2)),
+                indicatorOriginY = scope.indicatorOriginY || (indicatorDimensions.y + (indicatorDimensions.height / 2)),
+                angle,
                 deltaAngle = 0,
                 deltaValue = maxValue - minValue;
 
@@ -29,11 +32,12 @@
                         deltaAngle = (startAngle - endAngle);
                     }
                     angle = startAngle + ((deltaAngle / deltaValue) * value);
-                    indicator.attr('transform', 'rotate(' + angle + ' 200 200)');
+                    indicator.style('transform-origin', indicatorOriginX + 'px ' + indicatorOriginY + 'px');
+                    indicator.style('transform', 'rotate(' + angle + 'deg)');
                 }
             }
 
-            scope.$watch('value', function () {
+            scope.$watch('value', function() {
                 updateGaugeAngle();
             }, true);
         }
@@ -44,7 +48,9 @@
             scope: {
                 value: '@',
                 startAngle: '@',
-                maxValue: '@'
+                maxValue: '@',
+                indicatorOriginX: '@',
+                indicatorOriginY: '@'
             }
         };
     }
