@@ -20,7 +20,6 @@
                 maxValue = parseInt(scope.maxValue, 10),
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
-                valueStep = parseInt(scope.valueStep, 10) || 20,
                 indicator = d3.selectAll('analog-gauge').select('#indicator'),
                 indicatorDimensions = indicator.node().getBBox(),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorDimensions.x + (indicatorDimensions.width / 2)),
