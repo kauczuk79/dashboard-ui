@@ -13,28 +13,59 @@
 
 <body ng-app="dashboard-ui">
     <div class="displayPlaceholder">
-        Value (0..220):
+        Value
         <input type="number" ng-model="value" />
         <br />
-        <analog-gauge start-angle="-120" max-value="220" value="{{value || 0}}" indicator-origin-x="200" indicator-origin-y="200">
-            <svg width="400" height="400">
+        <analog-gauge start-angle="-120" max-value="100" value="{{value || 0}}" indicator-origin-x="100" indicator-origin-y="100">
+            <svg width="200" height="200">
                 <g>
-                    <circle cx="200" cy="200" r="190" stroke="black" stroke-width="2px" fill="gray"></circle>
+                    <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
                 </g>
                 <g id="indicator">
-                    <rect y="30" x="195" width="10" height="170" fill="black"></rect>
+                    <rect y="15" x="97.5" width="5" height="85" fill="black"></rect>
                 </g>
+                <text text-anchor="start" y="150" x="18">0</text>
+                <text text-anchor="middle" x="100" y="20">50</text>
+                <text text-anchor="end" y="150" x="182">100</text>
             </svg>
         </analog-gauge>
-        <br />
-        <analog-gauge start-angle="-120" max-value="120" value="{{value || 0}}" indicator-origin-x="200" indicator-origin-y="200">
-            <svg width="400" height="400">
+        <analog-gauge start-angle="-120" min-value="-100" max-value="100" value="{{value || 0}}" indicator-origin-x="100" indicator-origin-y="100">
+            <svg width="200" height="200">
                 <g>
-                    <circle cx="200" cy="200" r="190" stroke="black" stroke-width="2px" fill="gray"></circle>
+                    <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
                 </g>
                 <g id="indicator">
-                    <rect y="30" x="195" width="10" height="170" fill="black"></rect>
+                    <rect y="15" x="97.5" width="5" height="85" fill="black"></rect>
                 </g>
+                <text text-anchor="start" y="150" x="18">-100</text>
+                <text text-anchor="middle" x="100" y="20">0</text>
+                <text text-anchor="end" y="150" x="182">100</text>
+            </svg>
+        </analog-gauge>
+        <analog-gauge start-angle="120" end-angle="-120" max-value="100" value="{{value || 0}}" indicator-origin-x="100" indicator-origin-y="100">
+            <svg width="200" height="200">
+                <g>
+                    <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
+                </g>
+                <g id="indicator">
+                    <rect y="15" x="97.5" width="5" height="85" fill="black"></rect>
+                </g>
+                <text text-anchor="start" y="150" x="18">100</text>
+                <text text-anchor="middle" x="100" y="20">50</text>
+                <text text-anchor="end" y="150" x="182">0</text>
+            </svg>
+        </analog-gauge>
+        <analog-gauge start-angle="120" end-angle="-120" min-value="-100" max-value="100" value="{{value || 0}}" indicator-origin-x="100" indicator-origin-y="100">
+            <svg width="200" height="200">
+                <g>
+                    <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
+                </g>
+                <g id="indicator">
+                    <rect y="15" x="97.5" width="5" height="85" fill="black"></rect>
+                </g>
+                <text text-anchor="start" y="150" x="18">100</text>
+                <text text-anchor="middle" x="100" y="20">0</text>
+                <text text-anchor="end" y="150" x="182">-100</text>
             </svg>
         </analog-gauge>
     </div>

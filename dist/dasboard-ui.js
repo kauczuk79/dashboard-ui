@@ -10,7 +10,7 @@
 
     angular.module('dashboard-ui.directives', []);
 }());
-(function (d3) {
+(function(d3) {
     'use strict';
     /*global angular, console*/
 
@@ -35,20 +35,20 @@
                 } else if (value > maxValue) {
                     angle = endAngle;
                 } else {
+                    deltaAngle = Math.abs(endAngle - startAngle);
                     if (startAngle < endAngle) {
                         //clockwise
-                        deltaAngle = (endAngle - startAngle);
-                    } else if (startAngle > endAngle) {
+                        angle = startAngle + Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                    } else {
                         //counter clockwise
-                        deltaAngle = (startAngle - endAngle);
+                        angle = startAngle - Math.abs((deltaAngle / deltaValue) * (minValue - value));
                     }
-                    angle = startAngle + ((deltaAngle / deltaValue) * value);
                     indicator.style('transform-origin', indicatorOriginX + 'px ' + indicatorOriginY + 'px');
                     indicator.style('transform', 'rotate(' + angle + 'deg)');
                 }
             }
 
-            scope.$watch('value', function () {
+            scope.$watch('value', function() {
                 updateGaugeAngle();
             }, true);
         }
@@ -59,7 +59,9 @@
             scope: {
                 value: '@',
                 startAngle: '@',
+                endAngle: '@',
                 maxValue: '@',
+                minValue: '@',
                 indicatorOriginX: '@',
                 indicatorOriginY: '@'
             }
