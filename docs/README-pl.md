@@ -25,7 +25,7 @@ Znacznik licznika analogowego ``<analog-gauge>`` powinien zawierać wewnątrz ob
 Znacznik ``<analog-gauge>`` posiada kilka parametrów, które są opisane w tabeli poniżej.
 
 | Parametr | Opis |
-| :- | :- |
+| -------- | ---- |
 | ***start-angle*** | Kąt położenia wskazówki w stopniach osiągany wtedy, gdy parametr ***value*** ma wartość minimalną równą ***min-value***. Parametr wymagany. |
 | ***end-angle*** | Kąt położenia wskazówki w stopniach osiągany wtedy, gdy parametr ***value*** ma wartość maksymalną równą ***max-value***. Wartość domyślna to kąt przeciwny do kąta ***start-angle***. Parametr opcjonalny |
 | ***max-value*** | Maksymalna wartość wskazywana przez licznik. Parametr wymagany. |
