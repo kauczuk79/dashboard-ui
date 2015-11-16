@@ -102,31 +102,8 @@
   opacity: 0.2;
 }
 #indicator {
-  -moz-transition: all 0.25s linear;
   -webkit-transition: all 0.25s linear;
-  -o-transition: all 0.25s linear;
   transition: all 0.25s linear;
-}
-fourteen-segment-display {
-  display: block;
-  direction: rtl;
-}
-
-fourteen-segment-display .digits,
-fourteen-segment-display .background,
-fourteen-segment-display .foreground {
-  font-family: 'DSEG14';
-  font-style: italic;
-  font-weight: bold;
-  position: absolute;
-}
-
-fourteen-segment-display .background {
-  color: rgba(0, 0, 0, 0.1);
-}
-
-fourteen-segment-display .foreground {
-  color: black;
 }
 seven-segment-display {
   display: block;
@@ -147,5 +124,26 @@ seven-segment-display .background {
 }
 
 seven-segment-display .foreground {
+  color: black;
+}
+fourteen-segment-display {
+  display: block;
+  direction: rtl;
+}
+
+fourteen-segment-display .digits,
+fourteen-segment-display .background,
+fourteen-segment-display .foreground {
+  font-family: 'DSEG14';
+  font-style: italic;
+  font-weight: bold;
+  position: absolute;
+}
+
+fourteen-segment-display .background {
+  color: rgba(0, 0, 0, 0.1);
+}
+
+fourteen-segment-display .foreground {
   color: black;
 }
