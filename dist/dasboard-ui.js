@@ -110,7 +110,7 @@
 
         return {
             link: link,
-            restrict: 'E',
+            restrict: 'EAC',
             scope: {
                 value: '@',
                 startAngle: '@',
