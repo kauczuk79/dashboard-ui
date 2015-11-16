@@ -5,21 +5,55 @@
     <link rel="stylesheet" href="../dist/dashboard-ui.css">
 </head>
 
-<body ng-app="dashboard-ui">
-
-    <alphanumeric-lcd rows="5" columns="16" lines="['abcdefghijklmnop', 'rstuvwxyz0123456','789/*-+,./;\'\\[]<','>?|{}!@#$%^&*()_','=']"></alphanumeric-lcd>
+<body ng-app="dashboard-ui" ng-controller="stringArrayController">
+    <h3>Characters</h3>
+    <alphanumeric-lcd rows="5" columns="16" lines="['abcdefghijklmnop', 'rstuvwxyz0123456','789/*-+,./;\'\\[]<','>?|{}!@#$%^&*()_','=:&quot;|~&#x0b8f;']"></alphanumeric-lcd>
+    <h3>Different scales</h3>
+    <alphanumeric-lcd rows="1" columns="16" lines="['Scale 1.0x']"></alphanumeric-lcd>
     <br/>
-    <alphanumeric-lcd rows="1" columns="16" lines="['Hello world!!!']"></alphanumeric-lcd>
+    <alphanumeric-lcd rows="1" columns="16" scale="1.5" lines="['Scale 1.5x']"></alphanumeric-lcd>
     <br/>
-    <alphanumeric-lcd rows="1" columns="16" scale="1.5" lines="['Hello world!!!']"></alphanumeric-lcd>
+    <alphanumeric-lcd rows="1" columns="16" scale="2" lines="['Scale 2.0x']"></alphanumeric-lcd>
     <br/>
-    <alphanumeric-lcd rows="1" columns="16" scale="2" lines="['Hello world!!!']"></alphanumeric-lcd>
+    <alphanumeric-lcd rows="1" columns="16" scale="3" lines="['Scale 3.0x']"></alphanumeric-lcd>
+    <h3>Custom text with background</h3>
+    <textarea ng-model="data" cols="24" cols="4" split-array></textarea>
     <br/>
-    <alphanumeric-lcd rows="1" columns="16" scale="3" lines="['Hello world!!!']"></alphanumeric-lcd>
+    <alphanumeric-lcd rows="4" columns="24" lines="data" show-background="true"></alphanumeric-lcd>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
     <script src="../node_modules/d3/d3.js"></script>
     <script src="../dist/dasboard-ui.js"></script>
+    <script>
+        (function() {
+            angular.module('dashboard-ui').controller('stringArrayController', ['$scope', function($scope) {
+                $scope.data = ['editable', 'with background'];
+            }]);
+            angular.module('dashboard-ui').directive('splitArray', function() {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function(scope, element, attr, ngModel) {
+
+                        function fromUser(text) {
+                            var result = text.split("\n");
+                            while(result.length < 4) {
+                                result.push('');
+                            }
+                            return result;
+                        }
+
+                        function toUser(array) {
+                            return array.join("\n");
+                        }
+
+                        ngModel.$parsers.push(fromUser);
+                        ngModel.$formatters.push(toUser);
+                    }
+                };
+            });
+        }());
+    </script>
 </body>
 
 </html>

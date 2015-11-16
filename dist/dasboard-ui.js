@@ -19,26 +19,32 @@
             var rows = parseInt(scope.rows, 10) || 2,
                 columns = parseInt(scope.columns, 10) || 16,
                 scale = parseFloat(scope.scale, 10) || 1.0,
-                lines = scope.lines || [],
                 lineIterator = 0,
                 fontWidth = 12,
                 fontHeight = 18,
                 width = columns * fontWidth * scale,
                 height = rows * fontHeight * scale,
-                svg = d3.select(element[0]).append('svg').attr('width', width).attr('height', height);
+                svg = d3.select(element[0]).append('svg').attr('width', width).attr('height', height),
+                rectChar = '\u0B8F';
 
             function updateLines() {
                 var lineNumber = 0;
                 for (; lineNumber < rows; lineNumber += 1) {
-                    if (lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('text').data(lines).text(function(d) {
+                    if (scope.lines[lineNumber] !== undefined) {
+                        d3.select(element[0]).selectAll('.foreground').data(scope.lines).text(function(d) {
                             return d.substring(0, columns);
                         });
                     }
                 }
             }
             for (; lineIterator < rows; lineIterator += 1) {
-                svg.append('text').attr("x", 0).attr("y", fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
+                svg.append('text').attr('class', 'foreground').attr("x", 0).attr("y", fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
+                if(attrs.showBackground === "true") {
+                    var background = svg.append('text').attr('class', 'background').attr("x", 0).attr("y", fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
+                    background.data(rectChar).text(function(d) {
+                        return new Array(columns + 1).join(d);
+                    });
+                }
             }
             updateLines();
             scope.$watch('lines', function() {

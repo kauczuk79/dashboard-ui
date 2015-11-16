@@ -1,5 +1,8 @@
 alphanumeric-lcd {
     text {
         font-family: 'HD44780';
-        }
     }
+    .background {
+        opacity: 0.2;
+    }
+}
