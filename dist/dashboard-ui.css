@@ -94,11 +94,11 @@
   font-weight: normal;
   src: url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.woff") format("woff"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.ttf") format("truetype"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.eot?") format("eot"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.svg#HD44780") format("svg"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.otf") format("opentype");
 }
-alphanumeric-lcd text {
+.alphanumeric-lcd text {
   font-family: 'HD44780';
 }
 
-alphanumeric-lcd .background {
+.alphanumeric-lcd .background {
   opacity: 0.2;
 }
 #indicator {

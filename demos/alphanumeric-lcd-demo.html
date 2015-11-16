@@ -6,20 +6,15 @@
 </head>
 
 <body ng-app="dashboard-ui" ng-controller="stringArrayController">
-    <h3>Characters</h3>
-    <alphanumeric-lcd rows="5" columns="16" lines="['abcdefghijklmnop', 'rstuvwxyz0123456','789/*-+,./;\'\\[]<','>?|{}!@#$%^&*()_','=:&quot;|~&#x0b8f;']"></alphanumeric-lcd>
-    <h3>Different scales</h3>
-    <alphanumeric-lcd rows="1" columns="16" lines="['Scale 1.0x']"></alphanumeric-lcd>
-    <br/>
-    <alphanumeric-lcd rows="1" columns="16" scale="1.5" lines="['Scale 1.5x']"></alphanumeric-lcd>
-    <br/>
-    <alphanumeric-lcd rows="1" columns="16" scale="2" lines="['Scale 2.0x']"></alphanumeric-lcd>
-    <br/>
-    <alphanumeric-lcd rows="1" columns="16" scale="3" lines="['Scale 3.0x']"></alphanumeric-lcd>
-    <h3>Custom text with background</h3>
+    <svg width="640" height="360" style="border: 1px solid black;">
+        <g class="alphanumeric-lcd" data-x="0" data-y="0" data-rows="5" data-columns="16" data-lines="['abcdefghijklmnop', 'rstuvwxyz0123456','789/*-+,./;\'\\[]<','>?|{}!@#$%^&*()_','=:&quot;|~&#x0b8f;']"></g>
+        <g class="alphanumeric-lcd" data-x="0" data-y="100" data-rows="1" data-columns="16" data-lines="['Scale 1.0x']"></g>
+        <g class="alphanumeric-lcd" data-x="0" data-y="115" data-rows="1" data-columns="16" data-scale="1.5" data-lines="['Scale 1.5x']"></g>
+        <g class="alphanumeric-lcd" data-x="0" data-y="140" data-rows="1" data-columns="16" data-scale="2" data-lines="['Scale 2.0x']"></g>
+        <g class="alphanumeric-lcd" data-x="0" data-y="170" data-rows="1" data-columns="16" data-scale="3" data-lines="['Scale 3.0x']"></g>
+        <g class="alphanumeric-lcd" data-x="0" data-y="225" data-rows="4" data-columns="24" data-lines="data" data-show-background="true"></g>
+    </svg>
     <textarea ng-model="data" cols="24" cols="4" split-array></textarea>
-    <br/>
-    <alphanumeric-lcd rows="4" columns="24" lines="data" show-background="true"></alphanumeric-lcd>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
     <script src="../node_modules/d3/d3.js"></script>
