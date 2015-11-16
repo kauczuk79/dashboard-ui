@@ -8,13 +8,9 @@
                 columns = parseInt(scope.columns, 10) || 16,
                 scale = parseFloat(scope.scale, 10) || 1.0,
                 lineIterator = 0,
-                fontWidth = 12,
                 fontHeight = 18,
-                width = columns * fontWidth * scale,
-                height = rows * fontHeight * scale,
-                svg = d3.select(element[0]).append('svg').attr('width', width).attr('height', height),
+                lcdGroup = d3.select(element[0]).attr('transform','translate('+attrs.x+', '+attrs.y+')'),
                 rectChar = '\u0B8F';
-
             function updateLines() {
                 var lineNumber = 0;
                 for (; lineNumber < rows; lineNumber += 1) {
@@ -26,9 +22,9 @@
                 }
             }
             for (; lineIterator < rows; lineIterator += 1) {
-                svg.append('text').attr('class', 'foreground').attr("x", 0).attr("y", fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
-                if(attrs.showBackground === "true") {
-                    var background = svg.append('text').attr('class', 'background').attr("x", 0).attr("y", fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
+                lcdGroup.append('text').attr('class', 'foreground').attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
+                if(scope.showBackground === 'true') {
+                    var background = lcdGroup.append('text').attr('class', 'background').attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
                     background.data(rectChar).text(function(d) {
                         return new Array(columns + 1).join(d);
                     });
@@ -42,12 +38,12 @@
 
         return {
             link: link,
-            restrict: 'AE',
+            restrict: 'C',
             scope: {
                 rows: '@',
                 columns: '@',
                 scale: '@',
-                background: '@',
+                showBackground: '@',
                 lines: '='
             }
         };
