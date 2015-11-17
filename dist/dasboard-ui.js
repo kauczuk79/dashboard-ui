@@ -65,7 +65,7 @@
         .module('dashboard-ui.directives')
         .directive('alphanumericLcd', AlphanumericLcdDirective);
 }(window.d3));
-(function(d3) {
+(function (d3) {
     'use strict';
     /*global angular, console*/
 
@@ -75,7 +75,8 @@
                 maxValue = parseInt(scope.maxValue, 10),
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
-                indicator = d3.select(element[0]).select('#indicator'),
+                gaugeGroup = d3.select(element[0]),
+                indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBBox(),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
@@ -102,15 +103,15 @@
                     indicator.style('transform', 'rotate(' + angle + 'deg)');
                 }
             }
-
-            scope.$watch('value', function() {
+            gaugeGroup.attr('transform', 'translate(' + attrs.x + ',' + attrs.y + ')');
+            scope.$watch('value', function () {
                 updateGaugeAngle();
             }, true);
         }
 
         return {
             link: link,
-            restrict: 'EAC',
+            restrict: 'C',
             scope: {
                 value: '@',
                 startAngle: '@',

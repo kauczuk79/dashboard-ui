@@ -16,8 +16,8 @@
         Value
         <input type="number" ng-model="value" />
         <br />
-        <svg width="200" height="200">
-            <g class="analog-gauge" data-start-angle="-120" data-max-value="100" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
+        <svg width="800" height="200">
+            <g class="analog-gauge" data-start-angle="-120" data-max-value="100" data-value="{{value || 0}}" data-x="0" data-y="0" data-indicator-origin-x="100" data-indicator-origin-y="100">
                 <g>
                     <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
                 </g>
@@ -28,9 +28,7 @@
                 <text text-anchor="middle" x="100" y="20">50</text>
                 <text text-anchor="end" y="150" x="182">100</text>
             </g>
-        </svg>
-        <svg width="200" height="200">
-            <g class="analog-gauge" data-start-angle="-120" data-min-value="-100" data-max-value="100" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
+            <g class="analog-gauge" data-start-angle="-120" data-min-value="-100" data-max-value="100" data-x="200" data-y="0" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
                 <g>
                     <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
                 </g>
@@ -41,9 +39,7 @@
                 <text text-anchor="middle" x="100" y="20">0</text>
                 <text text-anchor="end" y="150" x="182">100</text>
             </g>
-        </svg>
-        <svg width="200" height="200">
-            <g class="analog-gauge" data-start-angle="120" data-end-angle="-120" data-max-value="100" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
+            <g class="analog-gauge" data-start-angle="120" data-end-angle="-120" data-max-value="100" data-x="400" data-y="0" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
                 <g>
                     <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
                 </g>
@@ -54,9 +50,7 @@
                 <text text-anchor="middle" x="100" y="20">50</text>
                 <text text-anchor="end" y="150" x="182">0</text>
             </g>
-        </svg>
-        <svg width="200" height="200">
-            <g class="analog-gauge" data-start-angle="120" data-end-angle="-120" data-min-value="-100" data-max-value="100" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
+            <g class="analog-gauge" data-start-angle="120" data-end-angle="-120" data-min-value="-100" data-x="600" data-y="0" data-max-value="100" data-value="{{value || 0}}" data-indicator-origin-x="100" data-indicator-origin-y="100">
                 <g>
                     <circle cx="100" cy="100" r="95" stroke="black" stroke-width="1px" fill="gray"></circle>
                 </g>
