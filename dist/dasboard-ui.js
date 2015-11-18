@@ -149,8 +149,8 @@
 
         return {
             link: link,
-            restrict: 'E',
-            template: '<span class="background">{{background}}</span><span class="foreground">{{value}}</span>',
+            restrict: 'C',
+            template: '<text class="digits" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="0.1">{{background}}</text><text class="digits" text-anchor="end" dominant-baseline="text-before-edge" writing-mode="rl">{{value}}</text>',
             scope: {
                 digits: '@',
                 value: '@'
