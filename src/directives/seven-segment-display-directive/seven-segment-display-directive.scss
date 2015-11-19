@@ -1,20 +1,10 @@
-seven-segment-display {
+.seven-segment-display {
     display: block;
     direction: rtl;
-    .digits {
+    text {
         font-family: 'DSEG7';
         font-style: italic;
         font-weight: bold;
         position: absolute;
-    }
-    
-    .background {
-        @extend .digits;
-        color: rgba(0,0,0,0.1);
-    }
-    
-    .foreground {
-        @extend .digits;
-        color: rgba(0,0,0,1.0);
     }
 }

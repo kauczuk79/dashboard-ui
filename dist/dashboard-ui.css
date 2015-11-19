@@ -94,6 +94,13 @@
   font-weight: normal;
   src: url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.woff") format("woff"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.ttf") format("truetype"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.eot?") format("eot"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.svg#HD44780") format("svg"), url("assets/fonts/HD44780/5x8_lcd_hd44780u_a02.otf") format("opentype");
 }
+.alphanumeric-lcd text {
+  font-family: 'HD44780';
+}
+
+.alphanumeric-lcd .background {
+  opacity: 0.2;
+}
 #indicator {
   -webkit-transition: all 0.25s linear;
   transition: all 0.25s linear;
@@ -103,37 +110,20 @@
   direction: rtl;
 }
 
-.fourteen-segment-display .digits {
+.fourteen-segment-display text {
   font-family: 'DSEG14';
   font-style: italic;
   font-weight: bold;
   position: absolute;
 }
-.alphanumeric-lcd text {
-  font-family: 'HD44780';
-}
-
-.alphanumeric-lcd .background {
-  opacity: 0.2;
-}
-seven-segment-display {
+.seven-segment-display {
   display: block;
   direction: rtl;
 }
 
-seven-segment-display .digits,
-seven-segment-display .background,
-seven-segment-display .foreground {
+.seven-segment-display text {
   font-family: 'DSEG7';
   font-style: italic;
   font-weight: bold;
   position: absolute;
-}
-
-seven-segment-display .background {
-  color: rgba(0, 0, 0, 0.1);
-}
-
-seven-segment-display .foreground {
-  color: black;
 }

@@ -26,7 +26,9 @@
     </p>
     <p>7-segment with background</p>
     <div class="displayPlaceholder">
-        <seven-segment-display class="display" digits="3" value="{{value}}" show-background="true"></seven-segment-display>
+        <svg width="120" height="48">
+            <g class="seven-segment-display display" data-digits="3" data-value="{{value}}" data-show-background="true"></g>
+        </svg>
     </div>
     <p>14-segment with background</p>
     <div class="displayPlaceholder">
@@ -36,14 +38,19 @@
     </div>
     <p>7-segment without background</p>
     <div class="displayPlaceholder">
-        <seven-segment-display class="display" digits="4" value="{{value}}" show-background="false"></seven-segment-display>
+        <svg width="120" height="48">
+            <g class="seven-segment-display display" data-digits="3" data-value="{{value}}" data-show-background="false"></g>
+        </svg>
     </div>
     <p>14-segment without background</p>
     <div class="displayPlaceholder">
-        <fourteen-segment-display class="display" digits="4" value="{{value}}"></fourteen-segment-display>
+        <svg width="160" height="48">
+            <g class="fourteen-segment-display display" data-digits="3" data-value="{{value}}"></g>
+        </svg>
     </div>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
+    <script src="../node_modules/d3/d3.js"></script>
     <script src="../dist/dasboard-ui.js"></script>
 </body>
 
