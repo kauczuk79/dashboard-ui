@@ -5,19 +5,31 @@
 	function BarMeterDirective() {
 		function link(scope, element, attrs) {
 			var bar = d3.select(element[0]).select('#bar'),
-				bbox = bar.node().getBBox()
-			function calculatePercent(value) {
-				return (value / (scope.max - scope.min));
-			}
-			bar.style('transform-origin', bbox.x+'px '+bbox.y+'px');
+				vertical = (scope.vertical === 'true') || false,
+				originalX = parseInt(bar.attr('x')),
+				originalY = parseInt(bar.attr('y')),
+				maxPosition = parseInt(scope.maxPosition),
+				minPosition = parseInt(scope.minPosition),
+				minValue = parseInt(scope.minValue),
+				maxValue = parseInt(scope.maxValue);
 			scope.$watch('value', function () {
-				var widthScale = calculatePercent(scope.value);
-				if(parseInt(scope.value) < parseInt(scope.min)) {
-					widthScale = calculatePercent(scope.min);
-				} else if (parseInt(scope.value) > parseInt(scope.max)) {
-					widthScale = calculatePercent(scope.max);
+				var barLength = maxPosition - minPosition,
+					valueDelta = maxValue - minValue,
+					width = Math.abs((barLength / valueDelta) * parseInt(scope.value)),
+					value = parseInt(scope.value);
+				if(vertical) {
+					
+				} else {
+					if(value >= 0 && value <= maxValue) {
+						bar.transition().duration(250).ease('linear').attr('x', originalX).attr('width', width);
+					} else if (value < 0 && value >= minValue) {
+						bar.transition().duration(250).ease('linear').attr('width', width).attr('x', originalX - width)
+					} else if (value > maxValue) {
+						//bar.transition().duration(250).ease('linear').attr('width', maxPosition).attr('x', originalX);
+					} else if (value < minValue){
+						//bar.transition().duration(250).ease('linear').attr('x', minPosition).attr('width', originalX);
+					}
 				}
-				d3.select(element[0]).select('#bar').transition().duration(250).ease("linear").attr('transform', 'scale('+widthScale+',1)');
 			});
 		}
 		
@@ -25,9 +37,12 @@
 			link: link,
 			restrict: 'C',
 			scope: {
-				min: '@',
-				max: '@',
-				value: '@'
+				minValue: '@',
+				maxValue: '@',
+				minPosition: '@',
+				maxPosition: '@',
+				value: '@',
+				vertical: '@'
 			}
 		}
 	}
