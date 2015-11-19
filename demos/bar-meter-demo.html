@@ -27,6 +27,16 @@
             <rect id="bar" x="100" y="5" width="180" height="30"/>
         </g>
 	</svg>
+    <h2>Bar meter -25..75</h2>
+    <svg width="200" height="50">
+		<g class="bar-meter" data-min="-25" data-max="75" data-value="{{value || 0}}">
+            <rect x="0" y="0" width="200" height="50" fill="gray"/>
+            <text x="10" y="47" text-anchor="middle">-25</text>
+            <text x="55" y="47" text-anchor="middle">0</text>
+            <text x="190" y="47" text-anchor="middle">75</text>
+            <rect id="bar" x="55" y="5" width="180" height="30"/>
+        </g>
+	</svg>
 	<script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
     <script src="../node_modules/d3/d3.js"></script>
