@@ -6,6 +6,7 @@
 		return {
 			transformAttr: 'transform',
 			transformOriginAttr: 'transform-origin',
+			opacityStyle: 'opacity',
 			translateString: function (x, y) {
                 return 'translate(' + x + ', ' + y + ')';
             },

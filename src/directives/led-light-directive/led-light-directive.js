@@ -5,37 +5,52 @@
     function LedLightDirective($interval, svgUtils) {
         function link(scope, element, attrs) {
             var icon = d3.select(element[0]),
+                blinkingTime = parseInt(scope.blinkingTime) || 25,
+                turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
+                turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
-            function toggleTurnOn() {
-                var targetOpacity = 1.0;
-                if(parseFloat(icon.style('opacity')) != 0.0) {
-                    targetOpacity = 0.0;
-                }
-				icon.transition().duration(25).style('opacity', targetOpacity);
-			}
-			function toggleBlinking() {
-				if(attrs.blinking === "true" && attrs.on === "true") {
-                    blinkingTimer = $interval(toggleTurnOn, 500);
+            function setOpacity(opacity) {
+                icon.transition().duration(blinkingTime).style(svgUtils.opacityStyle, opacity);
+            }
+            function isVisible() {
+                return parseFloat(icon.style(svgUtils.opacityStyle)) === turnOnLevel;
+            }
+            function turnOn() {
+                $interval.cancel(blinkingTimer);
+                setOpacity(turnOnLevel);
+            }
+            function turnOff() {
+                $interval.cancel(blinkingTimer);
+                setOpacity(turnOffLevel);
+            }
+            function blinkingMode() {
+                blinkingTimer = $interval(function () {
+                    if (isVisible()) {
+                        setOpacity(turnOffLevel);
+                    } else {
+                        setOpacity(turnOnLevel);
+                    }
+                }, 500);
+            }
+            scope.$watch('mode', function () {
+                if (scope.mode.toLowerCase() === 'on') {
+                    turnOn();
+                } else if (scope.mode.toLowerCase() === 'blinking') {
+                    blinkingMode();
                 } else {
-                    $interval.cancel(blinkingTimer);
+                    turnOff();
                 }
-			}
-			
-			
-			scope.$watch('on', function() {
-				toggleTurnOn();
-			});
-			scope.$watch('blinking', function() {
-				toggleBlinking();
-			});
+            });
         }
 
         return {
             link: link,
             restrict: 'C',
             scope: {
-				on: '@',
-                blinking: '@'
+                mode: '@',
+                turnOffLevel: '@',
+                turnOnLevel: '@',
+                blinkingTime: '@'
             }
         };
     }
