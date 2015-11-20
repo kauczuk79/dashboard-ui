@@ -3,18 +3,111 @@
     /*global angular*/
 
     angular.module('dashboard-ui', ['ngRoute', 'dashboard-ui.directives']);
-}());
+} ());
+(function () {
+	'use strict';
+	/*global angular*/
+
+	angular
+		.module('dashboard-ui.commons', []);
+} ());
+(function () {
+	'use strict';
+	/*global angular*/
+
+	function SvgUtilsFactory() {
+		return {
+			transformAttr: 'transform',
+			transformOriginAttr: 'transform-origin',
+			translateString: function (x, y) {
+                return 'translate(' + x + ', ' + y + ')';
+            },
+            scaleString: function (scale) {
+                return 'scale(' + scale + ')';
+            },
+			rotateString: function (angle) {
+				return 'rotate(' + angle + 'deg)';
+			},
+			transformOriginString: function (indicatorOriginX, indicatorOriginY) {
+				return indicatorOriginX + 'px ' + indicatorOriginY + 'px';
+			}
+		}
+	}
+
+	angular
+		.module('dashboard-ui.commons')
+		.factory('svgUtils', SvgUtilsFactory);
+} ());
 (function () {
     'use strict';
     /*global angular*/
 
-    angular.module('dashboard-ui.directives', []);
-}());
+    angular.module('dashboard-ui.directives', ['dashboard-ui.commons']);
+} ());
 (function (d3) {
     'use strict';
     /*global angular, console*/
 
-    function AnalogGaugeDirective() {
+    function AlphanumericLcdDirective(svgUtils) {
+        function link(scope, element, attrs) {
+            var RECTANGLE_CHAR = '\u0B8F',
+                FOREGROUND_CLASS = 'foreground',
+                BACKGROUND_CLASS = 'background',
+                rows = parseInt(scope.rows, 10) || 2,
+                columns = parseInt(scope.columns, 10) || 16,
+                scale = parseFloat(scope.scale, 10) || 1.0,
+                lineIterator = 0,
+                fontHeight = 18,
+                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(attrs.x, attrs.y));
+            function updateLines() {
+                var lineNumber = 0;
+                for (; lineNumber < rows; lineNumber += 1) {
+                    if (scope.lines[lineNumber] !== undefined) {
+                        d3.select(element[0]).selectAll('.' + FOREGROUND_CLASS).data(scope.lines).text(function (d) {
+                            return d.substring(0, columns);
+                        });
+                    }
+                }
+            }
+            for (; lineIterator < rows; lineIterator += 1) {
+                lcdGroup.append('text').attr('class', FOREGROUND_CLASS).attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
+                if (scope.showBackground === 'true') {
+                    var background = lcdGroup.append('text').attr('class', BACKGROUND_CLASS).attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
+                    background.data(RECTANGLE_CHAR).text(function (d) {
+                        return new Array(columns + 1).join(d);
+                    });
+                }
+            }
+            updateLines();
+            scope.$watch('lines', function () {
+                updateLines();
+            }, true);
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            scope: {
+                rows: '@',
+                columns: '@',
+                scale: '@',
+                showBackground: '@',
+                lines: '='
+            }
+        };
+    }
+
+    AlphanumericLcdDirective.$inject = ['svgUtils'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('alphanumericLcd', AlphanumericLcdDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function AnalogGaugeDirective(svgUtils) {
         function link(scope, element, attrs) {
             var startAngle = parseInt(scope.startAngle, 10),
                 maxValue = parseInt(scope.maxValue, 10),
@@ -44,11 +137,11 @@
                         //counter clockwise
                         angle = startAngle - Math.abs((deltaAngle / deltaValue) * (minValue - value));
                     }
-                    indicator.style('transform-origin', indicatorOriginX + 'px ' + indicatorOriginY + 'px');
-                    indicator.style('transform', 'rotate(' + angle + 'deg)');
+                    indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
+                    indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
                 }
             }
-            gaugeGroup.attr('transform', 'translate(' + attrs.x + ',' + attrs.y + ')');
+            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(attrs.x, attrs.y));
             scope.$watch('value', function () {
                 updateGaugeAngle();
             }, true);
@@ -69,82 +162,31 @@
         };
     }
 
+    AnalogGaugeDirective.$inject = ['svgUtils'];
+
     angular
         .module('dashboard-ui.directives')
         .directive('analogGauge', AnalogGaugeDirective);
-}(window.d3));
-(function(d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function AlphanumericLcdDirective() {
-        function link(scope, element, attrs) {
-            var rows = parseInt(scope.rows, 10) || 2,
-                columns = parseInt(scope.columns, 10) || 16,
-                scale = parseFloat(scope.scale, 10) || 1.0,
-                lineIterator = 0,
-                fontHeight = 18,
-                lcdGroup = d3.select(element[0]).attr('transform','translate('+attrs.x+', '+attrs.y+')'),
-                rectChar = '\u0B8F';
-            function updateLines() {
-                var lineNumber = 0;
-                for (; lineNumber < rows; lineNumber += 1) {
-                    if (scope.lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('.foreground').data(scope.lines).text(function(d) {
-                            return d.substring(0, columns);
-                        });
-                    }
-                }
-            }
-            for (; lineIterator < rows; lineIterator += 1) {
-                lcdGroup.append('text').attr('class', 'foreground').attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
-                if(scope.showBackground === 'true') {
-                    var background = lcdGroup.append('text').attr('class', 'background').attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr('transform', 'scale(' + scale + ')');
-                    background.data(rectChar).text(function(d) {
-                        return new Array(columns + 1).join(d);
-                    });
-                }
-            }
-            updateLines();
-            scope.$watch('lines', function() {
-                updateLines();
-            }, true);
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            scope: {
-                rows: '@',
-                columns: '@',
-                scale: '@',
-                showBackground: '@',
-                lines: '='
-            }
-        };
-    }
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('alphanumericLcd', AlphanumericLcdDirective);
-}(window.d3));
+} (window.d3));
 (function (d3) {
 	'use strict';
 	/*global angular, console*/
 
 	function BarMeterDirective() {
 		function link(scope, element, attrs) {
-			var bar = d3.select(element[0]).select('#bar'),
+			var EASING_DURATION = 250,
+				EASING = 'linear',
+				bar = d3.select(element[0]).select('#bar'),
 				vertical = (scope.vertical === 'true') || false,
-				originalX = parseInt(bar.attr('x')),
-				originalY = parseInt(bar.attr('y')),
-				maxPosition = parseInt(scope.maxPosition),
-				minPosition = parseInt(scope.minPosition),
-				minValue = parseInt(scope.minValue),
-				maxValue = parseInt(scope.maxValue),
+				originalX = parseInt(bar.attr('x'), 10),
+				originalY = parseInt(bar.attr('y'), 10),
+				maxPosition = parseInt(scope.maxPosition, 10),
+				minPosition = parseInt(scope.minPosition, 10),
+				minValue = parseInt(scope.minValue, 10),
+				maxValue = parseInt(scope.maxValue, 10),
 				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
 			scope.$watch('value', function () {
-				var value = parseInt(scope.value),
+				var value = parseInt(scope.value, 10),
 					barLength = Math.abs(stepWidth * value),
 					x, y, height, width;
 				if (vertical) {
@@ -156,12 +198,12 @@
 						height = barLength;
 					} else if (value > maxValue) {
 						y = maxPosition;
-						height = Math.abs(stepWidth * maxValue);
+						height = stepWidth * maxValue;
 					} else if (value < minValue) {
 						y = originalY;
 						height = stepWidth * minValue;
 					}
-					bar.transition().duration(250).ease('linear').attr('y', y).attr('height', height);
+					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', y).attr('height', Math.abs(height));
 				} else {
 					if (value >= 0 && value <= maxValue) {
 						x = originalX;
@@ -174,9 +216,9 @@
 						width = stepWidth * maxValue;
 					} else if (value < minValue) {
 						x = minPosition;
-						width = Math.abs(stepWidth * minValue);
+						width = stepWidth * minValue;
 					}
-					bar.transition().duration(250).ease('linear').attr('x', x).attr('width', width);
+					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', x).attr('width', Math.abs(width));
 				}
 			});
 		}
@@ -199,11 +241,11 @@
 		.module('dashboard-ui.directives')
 		.directive('barMeter', BarMeterDirective);
 } (window.d3));
-(function(d3) {
+(function (d3) {
     'use strict';
     /*global angular, console*/
 
-    function FourteenSegmentDisplayDirective() {
+    function FourteenSegmentDisplayDirective(svgUtils) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (attrs.showBackground === "true"),
@@ -216,9 +258,9 @@
             if (background) {
                 scope.opacity = 0.1;
             }
-            scope.$watch('value', function() {
+            scope.$watch('value', function () {
                 var width = d3.select(element[0]).select('text#background').node().getBBox().width;
-                d3.select(element[0]).select('text#value').attr('transform','translate('+width+',0)');
+                d3.select(element[0]).select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
             }, true);
         }
 
@@ -233,15 +275,17 @@
         };
     }
 
+    FourteenSegmentDisplayDirective.$inject = ['svgUtils']
+
     angular
         .module('dashboard-ui.directives')
         .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
-}(window.d3));
+} (window.d3));
 (function (d3) {
     'use strict';
     /*global angular, console*/
 
-    function SevenSegmentDisplayDirective() {
+    function SevenSegmentDisplayDirective(svgUtils) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (attrs.showBackground === "true"),
@@ -254,9 +298,9 @@
             if (background) {
                 scope.opacity = 0.1;
             }
-            scope.$watch('value', function() {
+            scope.$watch('value', function () {
                 var width = d3.select(element[0]).select('text#background').node().getBBox().width;
-                d3.select(element[0]).select('text#value').attr('transform','translate('+width+',0)');
+                d3.select(element[0]).select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
             }, true);
         }
 
@@ -271,7 +315,9 @@
         };
     }
 
+    SevenSegmentDisplayDirective.$inject = ['svgUtils'];
+
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-}(window.d3));
+} (window.d3));

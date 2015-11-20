@@ -1,8 +1,8 @@
-(function(d3) {
+(function (d3) {
     'use strict';
     /*global angular, console*/
 
-    function FourteenSegmentDisplayDirective() {
+    function FourteenSegmentDisplayDirective(svgUtils) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (attrs.showBackground === "true"),
@@ -15,9 +15,9 @@
             if (background) {
                 scope.opacity = 0.1;
             }
-            scope.$watch('value', function() {
+            scope.$watch('value', function () {
                 var width = d3.select(element[0]).select('text#background').node().getBBox().width;
-                d3.select(element[0]).select('text#value').attr('transform','translate('+width+',0)');
+                d3.select(element[0]).select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
             }, true);
         }
 
@@ -32,7 +32,9 @@
         };
     }
 
+    FourteenSegmentDisplayDirective.$inject = ['svgUtils']
+
     angular
         .module('dashboard-ui.directives')
         .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
-}(window.d3));
+} (window.d3));

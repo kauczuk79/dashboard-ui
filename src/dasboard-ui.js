@@ -3,4 +3,4 @@
     /*global angular*/
 
     angular.module('dashboard-ui', ['ngRoute', 'dashboard-ui.directives']);
-}());
+} ());
