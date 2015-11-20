@@ -7,27 +7,26 @@
 			var bar = d3.select(element[0]).select('#bar'),
 				vertical = (scope.vertical === 'true') || false,
 				originalX = parseInt(bar.attr('x')),
-				originalY = parseInt(bar.attr('y')),
+				//originalY = parseInt(bar.attr('y')),
 				maxPosition = parseInt(scope.maxPosition),
 				minPosition = parseInt(scope.minPosition),
 				minValue = parseInt(scope.minValue),
-				maxValue = parseInt(scope.maxValue);
+				maxValue = parseInt(scope.maxValue),
+				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
 			scope.$watch('value', function () {
-				var barLength = maxPosition - minPosition,
-					valueDelta = maxValue - minValue,
-					width = Math.abs((barLength / valueDelta) * parseInt(scope.value)),
-					value = parseInt(scope.value);
+				var value = parseInt(scope.value),
+					width = Math.abs(stepWidth * value);
 				if(vertical) {
 					
 				} else {
 					if(value >= 0 && value <= maxValue) {
-						bar.transition().duration(250).ease('linear').attr('x', originalX).attr('width', width);
+						bar.transition().duration(250).ease('linear').attr('x', originalX).attr('width', stepWidth * value);
 					} else if (value < 0 && value >= minValue) {
-						bar.transition().duration(250).ease('linear').attr('width', width).attr('x', originalX - width)
+						bar.transition().duration(250).ease('linear').attr('x', originalX - width).attr('width', width);
 					} else if (value > maxValue) {
-						//bar.transition().duration(250).ease('linear').attr('width', maxPosition).attr('x', originalX);
+						bar.transition().duration(250).ease('linear').attr('x', originalX).attr('width', stepWidth * maxValue);
 					} else if (value < minValue){
-						//bar.transition().duration(250).ease('linear').attr('x', minPosition).attr('width', originalX);
+						bar.transition().duration(250).ease('linear').attr('x', minPosition).attr('width', Math.abs(stepWidth * minValue));
 					}
 				}
 			});
