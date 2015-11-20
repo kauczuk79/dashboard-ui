@@ -32,7 +32,7 @@
         };
     }
 
-    FourteenSegmentDisplayDirective.$inject = ['svgUtils']
+    FourteenSegmentDisplayDirective.$inject = ['svgUtils'];
 
     angular
         .module('dashboard-ui.directives')

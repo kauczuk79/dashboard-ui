@@ -18,7 +18,7 @@
 			transformOriginString: function (indicatorOriginX, indicatorOriginY) {
 				return indicatorOriginX + 'px ' + indicatorOriginY + 'px';
 			}
-		}
+		};
 	}
 
 	angular

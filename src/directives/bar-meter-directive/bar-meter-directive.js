@@ -18,7 +18,10 @@
 			scope.$watch('value', function () {
 				var value = parseInt(scope.value, 10),
 					barLength = Math.abs(stepWidth * value),
-					x, y, height, width;
+					x,
+                    y,
+                    height,
+                    width;
 				if (vertical) {
 					if (value >= 0 && value <= maxValue) {
 						y = originalY - barLength;
@@ -64,7 +67,7 @@
 				value: '@',
 				vertical: '@'
 			}
-		}
+		};
 	}
 
 	angular
