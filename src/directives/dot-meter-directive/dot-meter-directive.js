@@ -2,7 +2,7 @@
 	'use strict';
 	/*global angular*/
 
-	function DotBarMeterDirective() {
+	function DotMeterDirective(svgUtils) {
 		function link(scope, element, attrs) {
 			var minValue = parseInt(scope.minValue, 10) || 0,
 				maxValue = parseInt(scope.maxValue, 10),
@@ -20,7 +20,7 @@
 					if(parseInt(domElement.attributes['data-value'].value, 10) > value) {
 						opacity = 0.0
 					}
-					d3.select(domElement).style('opacity', opacity);
+					d3.select(domElement).style(svgUtils.opacityStyle, opacity);
 				});
 				
 			}
@@ -39,8 +39,10 @@
 			}
 		}
 	}
+	
+	DotMeterDirective.$inject = ['svgUtils'];
 
 	angular
 		.module('dashboard-ui.directives')
-		.directive('dotBarMeter', DotBarMeterDirective);
+		.directive('dotMeter', DotMeterDirective);
 } (window.d3));
