@@ -5,12 +5,12 @@
     function LedLightDirective($interval, svgUtils) {
         function link(scope, element, attrs) {
             var icon = d3.select(element[0]),
-                blinkingTime = parseInt(scope.blinkingTime) || 25,
+                blinkingInterval = parseInt(scope.blinkingInterval) || 25,
                 turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
             function setOpacity(opacity) {
-                icon.transition().duration(blinkingTime).style(svgUtils.opacityStyle, opacity);
+                icon.transition().duration(blinkingInterval).style(svgUtils.opacityStyle, opacity);
             }
             function isVisible() {
                 return parseFloat(icon.style(svgUtils.opacityStyle)) === turnOnLevel;
@@ -50,7 +50,7 @@
                 mode: '@',
                 turnOffLevel: '@',
                 turnOnLevel: '@',
-                blinkingTime: '@'
+                blinkingInterval: '@'
             }
         };
     }

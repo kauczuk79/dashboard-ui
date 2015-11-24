@@ -59,7 +59,7 @@ Posiada on następujące parametry:
 | -------- | ---- |:--------:|
 | ***data-digits*** | Ilość znaków wyświetlanych na wyświetlaczu. Podanie większej ilości znaków w parametrze ***data-value*** spowoduje wyświetlenie ostatnich *n* liczb, gdzie *n* to wartość parametru ***data-digits***. | Tak |
 | ***data-value*** | Dane do wyświetlenia na wyświetlaczu. Każda zmiana wartości spowoduje zmianę informacji na wyświetlaczu. | Tak |
-| ***data-show-background*** | Wartość `true` spowoduje wyświetlanie półprzeźroczystego tła pod literami. Domyślnie `false`. | Nie |
+| ***data-show-background*** | Wartość `true` spowoduje wyświetlanie półprzeźroczystego tła pod znakami. Domyślnie `false`. | Nie |
 
 Czcionka użyta w wyświetlaczu to [DSEG]. Na stronie twórcy znajduje się lista znaków, które mogą zostać użyte na wyświetlaczu.
 
@@ -68,6 +68,46 @@ Czcionka użyta w wyświetlaczu to [DSEG]. Na stronie twórcy znajduje się list
 Zasada działania jest identyczna jak opisanego wyżej wyświetlacza 7-mio segmentowego. Wersja 14-to segmentowa jest w stanie wyświetlić większą ilość znaków. Klasa odpowiedzialna za wyświetlacz 14-to segmentowy to `fourteen-segment-display`.
 
 Czcionka użyta w wyświetlaczu to [DSEG]. Na stronie twórcy znajduje się lista znaków, które mogą zostać użyte na wyświetlaczu.
+
+### Wyświetlacz alfanumeryczny
+
+| Parametr | Opis | Wymagany |
+| -------- | ---- |:--------:|
+| ***data-rows*** | Liczba linii tekstu widocznych na wyświetlaczu. Domyślna wartość to 2. | Nie |
+| ***data-columns*** | Liczba znaków w linii widocznych na wyświetlaczu. Domyślna wartość to 16.| Nie |
+| ***data-lines*** | Dane do wyświetlenia na wyświetlaczu w postaci tablicy łańcuchów znaków | Tak |
+| ***data-scale*** | Skalowanie wyświetlacza. Domyślna wartość to 1.0. | Nie |
+| ***data-x*** | Pozycja wyświetlacza na osi X. Domyślnie X=0.| Nie |
+| ***data-y*** | Pozycja wyświetlacza na osi Y. Domyślnie Y=0.| Nie |
+| ***data-show-background*** | Wartość `true` spowoduje wyświetlanie półprzeźroczystego tła pod znakami. Domyślnie `false`. | Nie |
+
+### Dioda led
+
+| Parametr | Opis | Wymagany |
+| -------- | ---- |:--------:|
+| ***data-mode*** | Stan diody, może przyjąć następujące wartości: <ul><li>`off` - dioda wyłączona</li><li>`on` - dioda włączona</li><li>`blinking` - dioda migająca</li></ul>| Tak |
+| ***data-turn-off-level*** | Poziom maksymalnego wygaszenia diody. Standardowa wartość to 0.0. Większa wartość spowoduje, że dioda w trybie `off` oraz `blinking` będzie bardziej widoczna. | Nie |
+| ***data-turn-on-level*** | Poziom maksymalnego zapalenia diody. Standardowa wartość to 1.0. Mniejsza wartość spowoduje, że dioda w trybie `on` oraz `blinking` będzie mniej widoczna. | Nie |
+| ***data-blinking-interval*** | Szybkość zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 25. | Nie |
+
+### Wskaźnik typu "progress bar"
+
+| Parametr | Opis | Wymagany |
+| -------- | ---- |:--------:|
+| ***data-min-value*** | Minimalna wartość wskaźnika. Domyślna wartość to 0. | Nie |
+| ***data-max-value*** | Maksymalna wartość wskaźnika. | Tak |
+| ***data-min-position*** | Pozycja wskaźnika przy minimalnej wartości. Domyślnie równa wartości ***data-min-value***. | Nie |
+| ***data-max-position*** | Pozycja wskaźnika przy maksymalnej wartości. Domyślnie równa wartości ***data-max-value***. | Nie |
+| ***data-value*** | Aktualna wartość wskaźnika. Każda zmiana wartości spowoduje ponowne przeliczenie pozycji wskaźnika. W przykładach zostało użyte wiązanie danych za pomoca biblioteki [AngularJS]. | Tak |
+| ***data-vertical*** | Wartość `true` powoduje, że wskaźnik pokazuje zmiany wartości w orientacji pionowej. Domyślna wartość to `false`. | Nie |
+
+### Wskaźnik diodowy
+
+| Parametr | Opis | Wymagany |
+| -------- | ---- |:--------:|
+| ***data-min-value*** | Minimalna wartość wskaźnika. Domyślna wartość to 0. | Nie |
+| ***data-max-value*** | Maksymalna wartość wskaźnika.| Tak |
+| ***data-value*** | Aktualna wartość wskaźnika. Każda zmiana wartości spowoduje ponowne przeliczenie pozycji wskaźnika. W przykładach zostało użyte wiązanie danych za pomoca biblioteki [AngularJS]. | Tak |
 
 [//]: #
 [AngularJS]: <http://angularjs.org>
