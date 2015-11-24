@@ -96,8 +96,8 @@ Czcionka użyta w wyświetlaczu to [DSEG]. Na stronie twórcy znajduje się list
 | -------- | ---- |:--------:|
 | ***data-min-value*** | Minimalna wartość wskaźnika. Domyślna wartość to 0. | Nie |
 | ***data-max-value*** | Maksymalna wartość wskaźnika. | Tak |
-| ***data-min-position*** | Pozycja wskaźnika przy minimalnej wartości. Domyślnie równa wartości ***data-min-value***. | Nie |
-| ***data-max-position*** | Pozycja wskaźnika przy maksymalnej wartości. Domyślnie równa wartości ***data-max-value***. | Nie |
+| ***data-min-position*** | Pozycja wskaźnika przy minimalnej wartości. Domyślna wartość to 0. | Nie |
+| ***data-max-position*** | Pozycja wskaźnika przy maksymalnej wartości. Domyślnie równa wartości długości elementu o identyfikatorze `bar` znajdującego się wewnątrz grupy o klasie `bar-meter`. | Nie |
 | ***data-value*** | Aktualna wartość wskaźnika. Każda zmiana wartości spowoduje ponowne przeliczenie pozycji wskaźnika. W przykładach zostało użyte wiązanie danych za pomoca biblioteki [AngularJS]. | Tak |
 | ***data-vertical*** | Wartość `true` powoduje, że wskaźnik pokazuje zmiany wartości w orientacji pionowej. Domyślna wartość to `false`. | Nie |
 

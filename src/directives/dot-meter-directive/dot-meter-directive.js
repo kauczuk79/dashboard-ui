@@ -8,25 +8,23 @@
 				maxValue = parseInt(scope.maxValue, 10),
 				dotsCollection = d3.select(element[0]);
 			function changeValue() {
-				var value = parseInt(scope.value, 10);
+				var value = parseInt(scope.value, 10) || 0;
 				if (value > maxValue) {
 					value = maxValue;
-				}
-				if (value < minValue) {
+				} else if (value < minValue) {
 					value = minValue;
 				}
 				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
-					var opacity = 1.0;
-					if(parseInt(domElement.attributes['data-value'].value, 10) > value) {
-						opacity = 0.0
+					var opacity = 1.0,
+						selection = d3.select(domElement);
+					if(parseInt(selection.attr('data-value'), 10) > value) {
+						opacity = 0.0;
 					}
-					d3.select(domElement).style(svgUtils.opacityStyle, opacity);
+					selection.style(svgUtils.opacityStyle, opacity);
 				});
 				
 			}
-			scope.$watch('value', function () {
-				changeValue();
-			}, true);
+			scope.$watch('value', changeValue);
 		}
 
 		return {

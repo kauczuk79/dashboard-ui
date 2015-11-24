@@ -8,13 +8,15 @@
                 maxValue = parseInt(scope.maxValue, 10),
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
+                x = parseFloat(scope.x) || 0.0,
+                y = parseFloat(scope.y) || 0.0,
                 gaugeGroup = d3.select(element[0]),
                 indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBBox(),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
                 angle,
-                deltaAngle = 0,
+                deltaAngle = endAngle - startAngle,
                 deltaValue = maxValue - minValue;
 
             function updateGaugeAngle() {
@@ -24,22 +26,19 @@
                 } else if (value > maxValue) {
                     angle = endAngle;
                 } else {
-                    deltaAngle = Math.abs(endAngle - startAngle);
-                    if (startAngle < endAngle) {
-                        //clockwise
-                        angle = startAngle + Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value)),
+                        clockwise = startAngle < endAngle;
+                    if (clockwise) {
+                        angle = startAngle + angleDifference;
                     } else {
-                        //counter clockwise
-                        angle = startAngle - Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                        angle = startAngle - angleDifference;
                     }
-                    indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
-                    indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
                 }
+                indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
             }
-            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(attrs.x, attrs.y));
-            scope.$watch('value', function () {
-                updateGaugeAngle();
-            }, true);
+            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
+            scope.$watch('value', updateGaugeAngle);
         }
 
         return {
@@ -52,7 +51,9 @@
                 maxValue: '@',
                 minValue: '@',
                 indicatorOriginX: '@',
-                indicatorOriginY: '@'
+                indicatorOriginY: '@',
+                x: '@',
+                y: '@'
             }
         };
     }

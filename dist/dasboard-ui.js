@@ -57,33 +57,35 @@
                 rows = parseInt(scope.rows, 10) || 2,
                 columns = parseInt(scope.columns, 10) || 16,
                 scale = parseFloat(scope.scale, 10) || 1.0,
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                showBackground = (scope.showBackground === 'true'),
+                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
                 lineIterator,
                 fontHeight = 18,
-                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(attrs.x, attrs.y));
+                yPosition;
             function updateLines() {
                 var lineNumber;
                 for (lineNumber = 0; lineNumber < rows; lineNumber += 1) {
                     if (scope.lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('.' + FOREGROUND_CLASS).data(scope.lines).text(function (d) {
-                            return d.substring(0, columns);
+                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(scope.lines).text(function (data) {
+                            return data.substring(0, columns);
                         });
                     }
                 }
             }
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
-                lcdGroup.append('text').attr('class', FOREGROUND_CLASS).attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
-                if (scope.showBackground === 'true') {
-                    lcdGroup.append('text').attr('class', BACKGROUND_CLASS).attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr(svgUtils.transformAttr, svgUtils.scaleString(scale)).data(RECTANGLE_CHAR).text(function (d) {
+                yPosition = fontHeight * (lineIterator + 1);
+                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
+                if (showBackground) {
+                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale)).data(RECTANGLE_CHAR).text(function (data) {
                         var arr = [];
                         arr.length = columns + 1;
-                        return arr.join(d);
+                        return arr.join(data);
                     });
                 }
             }
-            updateLines();
-            scope.$watch('lines', function () {
-                updateLines();
-            }, true);
+            scope.$watch('lines', updateLines);
         }
 
         return {
@@ -94,7 +96,9 @@
                 columns: '@',
                 scale: '@',
                 showBackground: '@',
-                lines: '='
+                lines: '=',
+                x: '@',
+                y: '@'
             }
         };
     }
@@ -115,13 +119,15 @@
                 maxValue = parseInt(scope.maxValue, 10),
                 endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
                 minValue = parseInt(scope.minValue, 10) || 0,
+                x = parseFloat(scope.x) || 0.0,
+                y = parseFloat(scope.y) || 0.0,
                 gaugeGroup = d3.select(element[0]),
                 indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBBox(),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
                 angle,
-                deltaAngle = 0,
+                deltaAngle = endAngle - startAngle,
                 deltaValue = maxValue - minValue;
 
             function updateGaugeAngle() {
@@ -131,22 +137,19 @@
                 } else if (value > maxValue) {
                     angle = endAngle;
                 } else {
-                    deltaAngle = Math.abs(endAngle - startAngle);
-                    if (startAngle < endAngle) {
-                        //clockwise
-                        angle = startAngle + Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value)),
+                        clockwise = startAngle < endAngle;
+                    if (clockwise) {
+                        angle = startAngle + angleDifference;
                     } else {
-                        //counter clockwise
-                        angle = startAngle - Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                        angle = startAngle - angleDifference;
                     }
-                    indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
-                    indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
                 }
+                indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
             }
-            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(attrs.x, attrs.y));
-            scope.$watch('value', function () {
-                updateGaugeAngle();
-            }, true);
+            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
+            scope.$watch('value', updateGaugeAngle);
         }
 
         return {
@@ -159,7 +162,9 @@
                 maxValue: '@',
                 minValue: '@',
                 indicatorOriginX: '@',
-                indicatorOriginY: '@'
+                indicatorOriginY: '@',
+                x: '@',
+                y: '@'
             }
         };
     }
@@ -179,53 +184,50 @@
 			var EASING_DURATION = 250,
 				EASING = 'linear',
 				bar = d3.select(element[0]).select('#bar'),
-				vertical = (scope.vertical === 'true') || false,
-				originalX = parseInt(bar.attr('x'), 10),
-				originalY = parseInt(bar.attr('y'), 10),
-				maxPosition = parseInt(scope.maxPosition, 10),
-				minPosition = parseInt(scope.minPosition, 10),
-				minValue = parseInt(scope.minValue, 10),
+				barWidth = parseInt(bar.attr('width')) || 0,
 				maxValue = parseInt(scope.maxValue, 10),
+				minValue = parseInt(scope.minValue, 10) || 0,
+				minPosition = parseInt(scope.minPosition, 10) || 0,
+				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
+				vertical = (scope.vertical === 'true'),
+				originalX = parseInt(bar.attr('x'), 10) || 0,
+				originalY = parseInt(bar.attr('y'), 10) || 0,
 				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
-			scope.$watch('value', function () {
-				var value = parseInt(scope.value, 10),
+			function updateValue() {
+				var value = parseInt(scope.value, 10) || 0,
 					barLength = Math.abs(stepWidth * value),
 					x,
                     y,
                     height,
                     width;
+				if (value >= 0 && value <= maxValue) {
+					y = originalY - barLength;
+					height = barLength;
+					x = originalX;
+					width = barLength;
+				} else if (value < 0 && value >= minValue) {
+					y = originalY;
+					height = barLength;
+					x = originalX - barLength;
+					width = barLength;
+				} else if (value > maxValue) {
+					y = maxPosition;
+					height = stepWidth * maxValue;
+					x = originalX;
+					width = stepWidth * maxValue;
+				} else if (value < minValue) {
+					y = originalY;
+					height = stepWidth * minValue;
+					x = minPosition;
+					width = stepWidth * minValue;
+				}
 				if (vertical) {
-					if (value >= 0 && value <= maxValue) {
-						y = originalY - barLength;
-						height = barLength;
-					} else if (value < 0 && value >= minValue) {
-						y = originalY;
-						height = barLength;
-					} else if (value > maxValue) {
-						y = maxPosition;
-						height = stepWidth * maxValue;
-					} else if (value < minValue) {
-						y = originalY;
-						height = stepWidth * minValue;
-					}
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', y).attr('height', Math.abs(height));
 				} else {
-					if (value >= 0 && value <= maxValue) {
-						x = originalX;
-						width = barLength;
-					} else if (value < 0 && value >= minValue) {
-						x = originalX - barLength;
-						width = barLength;
-					} else if (value > maxValue) {
-						x = originalX;
-						width = stepWidth * maxValue;
-					} else if (value < minValue) {
-						x = minPosition;
-						width = stepWidth * minValue;
-					}
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', x).attr('width', Math.abs(width));
 				}
-			});
+			}
+			scope.$watch('value', updateValue);
 		}
 
 		return {
@@ -256,25 +258,23 @@
 				maxValue = parseInt(scope.maxValue, 10),
 				dotsCollection = d3.select(element[0]);
 			function changeValue() {
-				var value = parseInt(scope.value, 10);
+				var value = parseInt(scope.value, 10) || 0;
 				if (value > maxValue) {
 					value = maxValue;
-				}
-				if (value < minValue) {
+				} else if (value < minValue) {
 					value = minValue;
 				}
 				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
-					var opacity = 1.0;
-					if(parseInt(domElement.attributes['data-value'].value, 10) > value) {
-						opacity = 0.0
+					var opacity = 1.0,
+						selection = d3.select(domElement);
+					if(parseInt(selection.attr('data-value'), 10) > value) {
+						opacity = 0.0;
 					}
-					d3.select(domElement).style(svgUtils.opacityStyle, opacity);
+					selection.style(svgUtils.opacityStyle, opacity);
 				});
 				
 			}
-			scope.$watch('value', function () {
-				changeValue();
-			}, true);
+			scope.$watch('value', changeValue);
 		}
 
 		return {
@@ -301,7 +301,7 @@
     function FourteenSegmentDisplayDirective(svgUtils) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
-                background = (attrs.showBackground === "true"),
+                background = (scope.showBackground === "true"),
                 iterator;
             scope.background = '~';
             scope.opacity = 0.0;
@@ -311,10 +311,11 @@
             if (background) {
                 scope.opacity = 0.1;
             }
-            scope.$watch('value', function () {
-                var width = d3.select(element[0]).select('text#background').node().getBBox().width;
-                d3.select(element[0]).select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
-            }, true);
+            element.ready(function() {
+                var d3element = d3.select(element[0]),
+                    width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+            });
         }
 
         return {
@@ -323,7 +324,8 @@
             template: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>',
             scope: {
                 digits: '@',
-                value: '@'
+                value: '@',
+                showBackground: '@'
             }
         };
     }
@@ -341,12 +343,12 @@
     function LedLightDirective($interval, svgUtils) {
         function link(scope, element, attrs) {
             var icon = d3.select(element[0]),
-                blinkingTime = parseInt(scope.blinkingTime) || 25,
+                blinkingInterval = parseInt(scope.blinkingInterval) || 25,
                 turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
             function setOpacity(opacity) {
-                icon.transition().duration(blinkingTime).style(svgUtils.opacityStyle, opacity);
+                icon.transition().duration(blinkingInterval).style(svgUtils.opacityStyle, opacity);
             }
             function isVisible() {
                 return parseFloat(icon.style(svgUtils.opacityStyle)) === turnOnLevel;
@@ -386,7 +388,7 @@
                 mode: '@',
                 turnOffLevel: '@',
                 turnOnLevel: '@',
-                blinkingTime: '@'
+                blinkingInterval: '@'
             }
         };
     }
@@ -404,7 +406,7 @@
     function SevenSegmentDisplayDirective(svgUtils) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
-                background = (attrs.showBackground === "true"),
+                background = (scope.showBackground === "true"),
                 iterator;
             scope.background = '8';
             scope.opacity = 0.0;
@@ -414,10 +416,11 @@
             if (background) {
                 scope.opacity = 0.1;
             }
-            scope.$watch('value', function () {
-                var width = d3.select(element[0]).select('text#background').node().getBBox().width;
-                d3.select(element[0]).select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
-            }, true);
+            element.ready(function() {
+                var d3element = d3.select(element[0]),
+                    width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+            });
         }
 
         return {
@@ -426,7 +429,8 @@
             template: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>',
             scope: {
                 digits: '@',
-                value: '@'
+                value: '@',
+                showBackground: '@'
             }
         };
     }

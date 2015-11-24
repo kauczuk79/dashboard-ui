@@ -10,33 +10,35 @@
                 rows = parseInt(scope.rows, 10) || 2,
                 columns = parseInt(scope.columns, 10) || 16,
                 scale = parseFloat(scope.scale, 10) || 1.0,
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                showBackground = (scope.showBackground === 'true'),
+                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
                 lineIterator,
                 fontHeight = 18,
-                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(attrs.x, attrs.y));
+                yPosition;
             function updateLines() {
                 var lineNumber;
                 for (lineNumber = 0; lineNumber < rows; lineNumber += 1) {
                     if (scope.lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('.' + FOREGROUND_CLASS).data(scope.lines).text(function (d) {
-                            return d.substring(0, columns);
+                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(scope.lines).text(function (data) {
+                            return data.substring(0, columns);
                         });
                     }
                 }
             }
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
-                lcdGroup.append('text').attr('class', FOREGROUND_CLASS).attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
-                if (scope.showBackground === 'true') {
-                    lcdGroup.append('text').attr('class', BACKGROUND_CLASS).attr('x', 0).attr('y', fontHeight * (lineIterator + 1)).attr(svgUtils.transformAttr, svgUtils.scaleString(scale)).data(RECTANGLE_CHAR).text(function (d) {
+                yPosition = fontHeight * (lineIterator + 1);
+                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
+                if (showBackground) {
+                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale)).data(RECTANGLE_CHAR).text(function (data) {
                         var arr = [];
                         arr.length = columns + 1;
-                        return arr.join(d);
+                        return arr.join(data);
                     });
                 }
             }
-            updateLines();
-            scope.$watch('lines', function () {
-                updateLines();
-            }, true);
+            scope.$watch('lines', updateLines);
         }
 
         return {
@@ -47,7 +49,9 @@
                 columns: '@',
                 scale: '@',
                 showBackground: '@',
-                lines: '='
+                lines: '=',
+                x: '@',
+                y: '@'
             }
         };
     }
