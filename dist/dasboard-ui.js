@@ -40,6 +40,20 @@
 		.factory('svgUtils', SvgUtilsFactory);
 } ());
 (function () {
+	'use strict';
+	/*global angular*/
+
+	function TemplatesFactory() {
+		return {
+			segmentDisplayTemplate: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>'
+		};
+	}
+
+	angular
+		.module('dashboard-ui.commons')
+		.factory('templates', TemplatesFactory);
+} ());
+(function () {
     'use strict';
     /*global angular*/
 
@@ -108,72 +122,6 @@
     angular
         .module('dashboard-ui.directives')
         .directive('alphanumericLcd', AlphanumericLcdDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function AnalogGaugeDirective(svgUtils) {
-        function link(scope, element, attrs) {
-            var startAngle = parseInt(scope.startAngle, 10),
-                maxValue = parseInt(scope.maxValue, 10),
-                endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
-                minValue = parseInt(scope.minValue, 10) || 0,
-                x = parseFloat(scope.x) || 0.0,
-                y = parseFloat(scope.y) || 0.0,
-                gaugeGroup = d3.select(element[0]),
-                indicator = gaugeGroup.select('#indicator'),
-                indicatorBoundingBox = indicator.node().getBBox(),
-                indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
-                indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
-                angle,
-                deltaAngle = endAngle - startAngle,
-                deltaValue = maxValue - minValue;
-
-            function updateGaugeAngle() {
-                var value = parseInt(scope.value, 10);
-                if (value < minValue) {
-                    angle = startAngle;
-                } else if (value > maxValue) {
-                    angle = endAngle;
-                } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value)),
-                        clockwise = startAngle < endAngle;
-                    if (clockwise) {
-                        angle = startAngle + angleDifference;
-                    } else {
-                        angle = startAngle - angleDifference;
-                    }
-                }
-                indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
-            }
-            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(x, y));
-            indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
-            scope.$watch('value', updateGaugeAngle);
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            scope: {
-                value: '@',
-                startAngle: '@',
-                endAngle: '@',
-                maxValue: '@',
-                minValue: '@',
-                indicatorOriginX: '@',
-                indicatorOriginY: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    AnalogGaugeDirective.$inject = ['svgUtils'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('analogGauge', AnalogGaugeDirective);
 } (window.d3));
 (function (d3) {
 	'use strict';
@@ -249,6 +197,72 @@
 		.directive('barMeter', BarMeterDirective);
 } (window.d3));
 (function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function AnalogGaugeDirective(svgUtils) {
+        function link(scope, element, attrs) {
+            var startAngle = parseInt(scope.startAngle, 10),
+                maxValue = parseInt(scope.maxValue, 10),
+                endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
+                minValue = parseInt(scope.minValue, 10) || 0,
+                x = parseFloat(scope.x) || 0.0,
+                y = parseFloat(scope.y) || 0.0,
+                gaugeGroup = d3.select(element[0]),
+                indicator = gaugeGroup.select('#indicator'),
+                indicatorBoundingBox = indicator.node().getBBox(),
+                indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
+                indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
+                angle,
+                deltaAngle = endAngle - startAngle,
+                deltaValue = maxValue - minValue;
+
+            function updateGaugeAngle() {
+                var value = parseInt(scope.value, 10);
+                if (value < minValue) {
+                    angle = startAngle;
+                } else if (value > maxValue) {
+                    angle = endAngle;
+                } else {
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value)),
+                        clockwise = startAngle < endAngle;
+                    if (clockwise) {
+                        angle = startAngle + angleDifference;
+                    } else {
+                        angle = startAngle - angleDifference;
+                    }
+                }
+                indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
+            }
+            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
+            scope.$watch('value', updateGaugeAngle);
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            scope: {
+                value: '@',
+                startAngle: '@',
+                endAngle: '@',
+                maxValue: '@',
+                minValue: '@',
+                indicatorOriginX: '@',
+                indicatorOriginY: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    AnalogGaugeDirective.$inject = ['svgUtils'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('analogGauge', AnalogGaugeDirective);
+} (window.d3));
+(function (d3) {
 	'use strict';
 	/*global angular*/
 
@@ -298,7 +312,7 @@
     'use strict';
     /*global angular, console*/
 
-    function FourteenSegmentDisplayDirective(svgUtils) {
+    function FourteenSegmentDisplayDirective(svgUtils, templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
@@ -321,7 +335,7 @@
         return {
             link: link,
             restrict: 'C',
-            template: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>',
+            template: templates.segmentDisplayTemplate,
             scope: {
                 digits: '@',
                 value: '@',
@@ -330,11 +344,53 @@
         };
     }
 
-    FourteenSegmentDisplayDirective.$inject = ['svgUtils'];
+    FourteenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
 
     angular
         .module('dashboard-ui.directives')
         .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function SevenSegmentDisplayDirective(svgUtils, templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                iterator;
+            scope.background = '8';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.8';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var d3element = d3.select(element[0]),
+                    width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@'
+            }
+        };
+    }
+
+    SevenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
     'use strict';
@@ -398,46 +454,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('ledLight', LedLightDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function SevenSegmentDisplayDirective(svgUtils) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                iterator;
-            scope.background = '8';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.8';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var d3element = d3.select(element[0]),
-                    width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>',
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@'
-            }
-        };
-    }
-
-    SevenSegmentDisplayDirective.$inject = ['svgUtils'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 } (window.d3));
