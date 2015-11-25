@@ -6,10 +6,12 @@
 </head>
 
 <body ng-app="dashboard-ui">
-    <input type="number" min="-10" max="100" ng-model="value">
-    <svg width="200" height="50">
-        <rect x="0" y="0" width="200" height="50" fill="gray" />
-        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="13" data-value="{{value || 0}}">
+    <input type="number" min="-60" max="600" ng-model="value">
+    <h2>Values 0..15, dot values 1..15</h2>
+    <p>First dot not visible when value is 0.</p>
+    <svg width="230" height="65">
+        <rect x="0" y="0" width="230" height="65" fill="gray" />
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="15" data-value="{{value || 0}}">
             <rect id="dot1" data-value="1" x="0" y="0" height="40" width="10" fill="black" />
             <rect id="dot2" data-value="2" x="15" y="0" height="40" width="10" fill="black" />
             <rect id="dot3" data-value="3" x="30" y="0" height="40" width="10" fill="black" />
@@ -23,25 +25,74 @@
             <rect id="dot11" data-value="11" x="150" y="0" height="40" width="10" fill="black" />
             <rect id="dot12" data-value="12" x="165" y="0" height="40" width="10" fill="black" />
             <rect id="dot13" data-value="13" x="180" y="0" height="40" width="10" fill="black" />
+            <rect id="dot13" data-value="14" x="195" y="0" height="40" width="10" fill="black" />
+            <rect id="dot13" data-value="15" x="210" y="0" height="40" width="10" fill="black" />
+        </g>
+        <text x="5" y="62">1</text>
+        <text x="210" y="62">15</text>
+    </svg>
+    <h2>Values -30..30, dot values -30..30</h2>
+    <p>First dot is visible when value is less or equal than -30.</p>
+    <svg width="200" height="65">
+        <rect x="0" y="0" width="200" height="65" fill="gray" />
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="-30" data-max-value="30" data-value="{{value || 0}}">
+            <rect id="dot1" data-value="-30" x="0" y="0" height="40" width="10" fill="black" />
+            <rect id="dot2" data-value="-25" x="15" y="0" height="40" width="10" fill="black" />
+            <rect id="dot3" data-value="-20" x="30" y="0" height="40" width="10" fill="black" />
+            <rect id="dot4" data-value="-15" x="45" y="0" height="40" width="10" fill="black" />
+            <rect id="dot5" data-value="-10" x="60" y="0" height="40" width="10" fill="black" />
+            <rect id="dot6" data-value="-5" x="75" y="0" height="40" width="10" fill="black" />
+            <rect id="dot7" data-value="0" x="90" y="0" height="40" width="10" fill="black" />
+            <rect id="dot8" data-value="5" x="105" y="0" height="40" width="10" fill="black" />
+            <rect id="dot9" data-value="10" x="120" y="0" height="40" width="10" fill="black" />
+            <rect id="dot10" data-value="15" x="135" y="0" height="40" width="10" fill="black" />
+            <rect id="dot11" data-value="20" x="150" y="0" height="40" width="10" fill="black" />
+            <rect id="dot12" data-value="25" x="165" y="0" height="40" width="10" fill="black" />
+            <rect id="dot13" data-value="30" x="180" y="0" height="40" width="10" fill="black" />
+        </g>
+        <text x="0" y="62">-30</text>
+        <text x="96" y="62">0</text>
+        <text x="180" y="62">30</text>
+    </svg>
+    <h2>Fibonacci sequence</h2>
+    <p>Values: 1, 2, 3, 5, 8, 13, 21, 34, 55, 89,...</p>
+    <svg width="200" height="50">
+        <rect x="0" y="0" width="200" height="50" fill="gray" />
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="377" data-value="{{value || 0}}">
+            <rect id="dot1" data-value="1" x="0" y="0" height="40" width="10" fill="black" />
+            <rect id="dot2" data-value="2" x="15" y="0" height="40" width="10" fill="black" />
+            <rect id="dot3" data-value="3" x="30" y="0" height="40" width="10" fill="black" />
+            <rect id="dot4" data-value="5" x="45" y="0" height="40" width="10" fill="black" />
+            <rect id="dot5" data-value="8" x="60" y="0" height="40" width="10" fill="black" />
+            <rect id="dot6" data-value="13" x="75" y="0" height="40" width="10" fill="black" />
+            <rect id="dot7" data-value="21" x="90" y="0" height="40" width="10" fill="black" />
+            <rect id="dot8" data-value="34" x="105" y="0" height="40" width="10" fill="black" />
+            <rect id="dot9" data-value="55" x="120" y="0" height="40" width="10" fill="black" />
+            <rect id="dot10" data-value="89" x="135" y="0" height="40" width="10" fill="black" />
+            <rect id="dot11" data-value="144" x="150" y="0" height="40" width="10" fill="black" />
+            <rect id="dot12" data-value="233" x="165" y="0" height="40" width="10" fill="black" />
+            <rect id="dot13" data-value="377" x="180" y="0" height="40" width="10" fill="black" />
         </g>
     </svg>
+    <h2>60 seconds on the clock</h2>
     <svg id="round-dot-meter" width="200" height="200">
-        <g class="dot-meter" data-min-value="0" data-max-value="20" data-value="{{value || 0}}"></g>
+        <circle cx="100" cy="100" r="95" fill="gray"></circle>
+        <g class="dot-meter" data-min-value="0" data-max-value="60" data-value="{{value || 0}}"></g>
     </svg>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
     <script src="../node_modules/d3/d3.js"></script>
-    <script src="../dist/dasboard-ui.js"></script>
+    <script src="../dist/dashboard-ui.js"></script>
     <script>
-        var n = 20,
-            r = 80;
+        var n = 59,
+            r = 90;
         var svg = d3.select('#round-dot-meter').select('.dot-meter');
         for (var i =0; i<n; i++) {
             var point = { x: 0.0, y: 0.0 };
             angle = ((i * (360.0/n)) - 90.0) * (Math.PI / 180);
             point.x = 100.0 + r * Math.cos(angle);
             point.y = 100.0 + r * Math.sin(angle);
-            svg.append('circle').attr('cx', point.x).attr('id', 'dot'+i).attr('data-value', i+1).attr('cy', point.y).attr('r', 10).fill('black');
+            svg.append('circle').attr('cx', point.x).attr('id', 'dot'+i).attr('data-value', i+1).attr('cy', point.y).attr('r', 4).fill('black');
         }
                             
     </script>

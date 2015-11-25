@@ -7,7 +7,6 @@
         concat = require('gulp-concat'),
         rimraf = require('gulp-rimraf'),
         uglify = require('gulp-uglify'),
-        rename = require('gulp-rename'),
         sourcemaps = require('gulp-sourcemaps'),
         sass = require('gulp-sass'),
         concatCss = require('gulp-concat-css'),
@@ -37,7 +36,7 @@
                 'src/directives/dashboard-ui.directives.js',
                 'src/directives/**/*.js',
             ])
-            .pipe(concat('dasboard-ui.js', {
+            .pipe(concat('dashboard-ui.js', {
                 newLine: '\n'
             }))
             .pipe(gulp.dest('./dist/'));
@@ -73,8 +72,8 @@
     });
 
     gulp.task('js:minify', function () {
-        return gulp.src('src/**/*.js')
-            .pipe(concat('dasboard-ui.min.js'))
+        return gulp.src('./dist/dashboard-ui.js')
+            .pipe(concat('dashboard-ui.min.js'))
             .pipe(sourcemaps.init())
             .pipe(uglify())
             .on('error', swallowError)
