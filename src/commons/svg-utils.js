@@ -18,15 +18,7 @@
 			},
 			transformOriginString: function (indicatorOriginX, indicatorOriginY) {
 				return indicatorOriginX + 'px ' + indicatorOriginY + 'px';
-			},
-			appendTransform: function (newTransform, oldTransform) {
-				var oldT = (oldTransform === undefined || oldTransform === null)? '' : oldTransform;
-				return oldT + newTransform;
-			},
-			prependTransform: function (newTransform, oldTransform) {
-				var oldT = (oldTransform === undefined || oldTransform === null)? '' : oldTransform;
-				return newTransform + oldT;
-			},
+			}
 		};
 	}
 

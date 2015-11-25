@@ -18,10 +18,11 @@
                 fontHeight = 18,
                 yPosition;
             function updateLines() {
-                var lineNumber;
+                var lineNumber,
+                    lines = scope.lines;
                 for (lineNumber = 0; lineNumber < rows; lineNumber += 1) {
-                    if (scope.lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(scope.lines).text(function (data) {
+                    if (lines[lineNumber] !== undefined) {
+                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(lines).text(function (data) {
                             return data.substring(0, columns);
                         });
                     }

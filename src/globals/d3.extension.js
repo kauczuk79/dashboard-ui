@@ -1,19 +1,22 @@
 (function (d3) {
-	d3.selection.prototype.appendAttr = function (attrName, attrValue) {
+	var selectionProto = d3.selection.prototype;
+	selectionProto.appendAttr = function (attrName, attrValue) {
+		var that = this;
 		if (attrName !== undefined && attrValue !== undefined) {
-			if (this.attr(attrName) === null) {
-				this.attr(attrName, attrValue);
+			if (that.attr(attrName) === null) {
+				that.attr(attrName, attrValue);
 			} else {
-				this.attr(attrName, this.attr(attrName) + ' ' + attrValue);
+				that.attr(attrName, that.attr(attrName) + ' ' + attrValue);
 			}
 		}
 	};
-	d3.selection.prototype.prependAttr = function (attrName, attrValue) {
+	selectionProto.prependAttr = function (attrName, attrValue) {
+		var that = this;
 		if (attrName !== undefined && attrValue !== undefined) {
-			if (this.attr(attrName) === null) {
-				this.attr(attrName, attrValue);
+			if (that.attr(attrName) === null) {
+				that.attr(attrName, attrValue);
 			} else {
-				this.attr(attrName, attrValue + ' ' + this.attr(attrName));
+				that.attr(attrName, attrValue + ' ' + that.attr(attrName));
 			}
 		}
 	}

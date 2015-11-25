@@ -1,19 +1,22 @@
 (function (d3) {
-	d3.selection.prototype.appendAttr = function (attrName, attrValue) {
+	var selectionProto = d3.selection.prototype;
+	selectionProto.appendAttr = function (attrName, attrValue) {
+		var that = this;
 		if (attrName !== undefined && attrValue !== undefined) {
-			if (this.attr(attrName) === null) {
-				this.attr(attrName, attrValue);
+			if (that.attr(attrName) === null) {
+				that.attr(attrName, attrValue);
 			} else {
-				this.attr(attrName, this.attr(attrName) + ' ' + attrValue);
+				that.attr(attrName, that.attr(attrName) + ' ' + attrValue);
 			}
 		}
 	};
-	d3.selection.prototype.prependAttr = function (attrName, attrValue) {
+	selectionProto.prependAttr = function (attrName, attrValue) {
+		var that = this;
 		if (attrName !== undefined && attrValue !== undefined) {
-			if (this.attr(attrName) === null) {
-				this.attr(attrName, attrValue);
+			if (that.attr(attrName) === null) {
+				that.attr(attrName, attrValue);
 			} else {
-				this.attr(attrName, attrValue + ' ' + this.attr(attrName));
+				that.attr(attrName, attrValue + ' ' + that.attr(attrName));
 			}
 		}
 	}
@@ -51,15 +54,7 @@
 			},
 			transformOriginString: function (indicatorOriginX, indicatorOriginY) {
 				return indicatorOriginX + 'px ' + indicatorOriginY + 'px';
-			},
-			appendTransform: function (newTransform, oldTransform) {
-				var oldT = (oldTransform === undefined || oldTransform === null)? '' : oldTransform;
-				return oldT + newTransform;
-			},
-			prependTransform: function (newTransform, oldTransform) {
-				var oldT = (oldTransform === undefined || oldTransform === null)? '' : oldTransform;
-				return newTransform + oldT;
-			},
+			}
 		};
 	}
 
@@ -107,10 +102,11 @@
                 fontHeight = 18,
                 yPosition;
             function updateLines() {
-                var lineNumber;
+                var lineNumber,
+                    lines = scope.lines;
                 for (lineNumber = 0; lineNumber < rows; lineNumber += 1) {
-                    if (scope.lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(scope.lines).text(function (data) {
+                    if (lines[lineNumber] !== undefined) {
+                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(lines).text(function (data) {
                             return data.substring(0, columns);
                         });
                     }
@@ -180,9 +176,8 @@
                 } else if (value > maxValue) {
                     angle = endAngle;
                 } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value)),
-                        clockwise = startAngle < endAngle;
-                    if (clockwise) {
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                    if (startAngle < endAngle) {
                         angle = startAngle + angleDifference;
                     } else {
                         angle = startAngle - angleDifference;
@@ -354,53 +349,6 @@
     'use strict';
     /*global angular, console*/
 
-    function SevenSegmentDisplayDirective(svgUtils, templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
-            scope.background = '8';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.8';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    SevenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
     function FourteenSegmentDisplayDirective(svgUtils, templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
@@ -514,4 +462,51 @@
     angular
         .module('dashboard-ui.directives')
         .directive('ledLight', LedLightDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function SevenSegmentDisplayDirective(svgUtils, templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            scope.background = '8';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.8';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    SevenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 } (window.d3));

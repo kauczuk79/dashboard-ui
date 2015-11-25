@@ -26,9 +26,8 @@
                 } else if (value > maxValue) {
                     angle = endAngle;
                 } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value)),
-                        clockwise = startAngle < endAngle;
-                    if (clockwise) {
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                    if (startAngle < endAngle) {
                         angle = startAngle + angleDifference;
                     } else {
                         angle = startAngle - angleDifference;
