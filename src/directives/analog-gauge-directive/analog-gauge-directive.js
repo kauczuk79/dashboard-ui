@@ -36,7 +36,7 @@
                 }
                 indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
             }
-            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), gaugeGroup.attr(svgUtils.transformAttr)));
+            gaugeGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
             scope.$watch('value', updateGaugeAngle);
         }

@@ -1,3 +1,23 @@
+(function (d3) {
+	d3.selection.prototype.appendAttr = function (attrName, attrValue) {
+		if (attrName !== undefined && attrValue !== undefined) {
+			if (this.attr(attrName) === null) {
+				this.attr(attrName, attrValue);
+			} else {
+				this.attr(attrName, this.attr(attrName) + ' ' + attrValue);
+			}
+		}
+	};
+	d3.selection.prototype.prependAttr = function (attrName, attrValue) {
+		if (attrName !== undefined && attrValue !== undefined) {
+			if (this.attr(attrName) === null) {
+				this.attr(attrName, attrValue);
+			} else {
+				this.attr(attrName, attrValue + ' ' + this.attr(attrName));
+			}
+		}
+	}
+} (window.d3));
 (function () {
     'use strict';
     /*global angular*/
@@ -96,7 +116,7 @@
                     }
                 }
             }
-            lcdGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), lcdGroup.attr(svgUtils.transformAttr)));
+            lcdGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
                 lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
@@ -170,7 +190,7 @@
                 }
                 indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
             }
-            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), gaugeGroup.attr(svgUtils.transformAttr)));
+            gaugeGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
             scope.$watch('value', updateGaugeAngle);
         }
@@ -253,7 +273,7 @@
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
 				}
 			}
-			meter.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), meter.attr(svgUtils.transformAttr)));
+			meter.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
 			scope.$watch('value', updateValue);
 		}
 
@@ -307,7 +327,7 @@
 				});
 				
 			}
-			dotsCollection.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), dotsCollection.attr(svgUtils.transformAttr)));
+			dotsCollection.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
 			scope.$watch('value', changeValue);
 		}
 
@@ -329,53 +349,6 @@
 	angular
 		.module('dashboard-ui.directives')
 		.directive('dotMeter', DotMeterDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(svgUtils, templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), d3element.attr(svgUtils.transformAttr)));
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
     'use strict';
@@ -413,7 +386,7 @@
                     }
                 }, 500);
             }
-            icon.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), icon.attr(svgUtils.transformAttr)));
+            icon.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             if (!isNaN(blinkingInterval)) {
                 icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
             }
@@ -458,8 +431,9 @@
                 background = (scope.showBackground === "true"),
                 x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
+                d3element = d3.select(element[0]),
                 iterator;
+            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             scope.background = '8';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
@@ -493,4 +467,51 @@
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(svgUtils, templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));

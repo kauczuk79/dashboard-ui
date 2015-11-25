@@ -34,7 +34,7 @@
                     }
                 }, 500);
             }
-            icon.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), icon.attr(svgUtils.transformAttr)));
+            icon.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             if (!isNaN(blinkingInterval)) {
                 icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
             }

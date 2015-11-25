@@ -8,8 +8,9 @@
                 background = (scope.showBackground === "true"),
                 x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
+                d3element = d3.select(element[0]),
                 iterator;
+            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             scope.background = '8';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {

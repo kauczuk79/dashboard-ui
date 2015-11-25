@@ -53,7 +53,7 @@
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
 				}
 			}
-			meter.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), meter.attr(svgUtils.transformAttr)));
+			meter.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
 			scope.$watch('value', updateValue);
 		}
 

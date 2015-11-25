@@ -30,7 +30,13 @@
     })
 
     gulp.task('js:concat', function (callback) {
-        return gulp.src('src/**/*.js')
+        return gulp.src([
+                'src/globals/*.js',
+                'src/dashboard-ui.js',
+                'src/commons/*.js',
+                'src/directives/dashboard-ui.directives.js',
+                'src/directives/**/*.js',
+            ])
             .pipe(concat('dasboard-ui.js', {
                 newLine: '\n'
             }))

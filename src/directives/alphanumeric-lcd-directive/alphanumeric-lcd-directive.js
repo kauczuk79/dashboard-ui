@@ -27,7 +27,7 @@
                     }
                 }
             }
-            lcdGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), lcdGroup.attr(svgUtils.transformAttr)));
+            lcdGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
                 lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));

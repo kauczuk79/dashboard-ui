@@ -26,7 +26,7 @@
 				});
 				
 			}
-			dotsCollection.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), dotsCollection.attr(svgUtils.transformAttr)));
+			dotsCollection.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
 			scope.$watch('value', changeValue);
 		}
 

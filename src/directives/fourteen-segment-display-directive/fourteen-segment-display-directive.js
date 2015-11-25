@@ -10,7 +10,7 @@
                 y = parseFloat(scope.y) || 0,
                 d3element = d3.select(element[0]),
                 iterator;
-            d3element.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), d3element.attr(svgUtils.transformAttr)));
+            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
             scope.background = '~';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
