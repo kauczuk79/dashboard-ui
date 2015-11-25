@@ -8,21 +8,21 @@
 <body ng-app="dashboard-ui">
     <input type="number" min="-10" max="100" ng-model="value">
     <svg width="200" height="50">
-        <g class="dot-meter" data-min-value="0" data-max-value="13" data-value="{{value || 0}}">
-            <rect x="0" y="0" width="200" height="50" fill="gray" />
-            <rect id="dot1" data-value="1" x="5" y="5" height="40" width="10" fill="black" />
-            <rect id="dot2" data-value="2" x="20" y="5" height="40" width="10" fill="black" />
-            <rect id="dot3" data-value="3" x="35" y="5" height="40" width="10" fill="black" />
-            <rect id="dot4" data-value="4" x="50" y="5" height="40" width="10" fill="black" />
-            <rect id="dot5" data-value="5" x="65" y="5" height="40" width="10" fill="black" />
-            <rect id="dot6" data-value="6" x="80" y="5" height="40" width="10" fill="black" />
-            <rect id="dot7" data-value="7" x="95" y="5" height="40" width="10" fill="black" />
-            <rect id="dot8" data-value="8" x="110" y="5" height="40" width="10" fill="black" />
-            <rect id="dot9" data-value="9" x="125" y="5" height="40" width="10" fill="black" />
-            <rect id="dot10" data-value="10" x="140" y="5" height="40" width="10" fill="black" />
-            <rect id="dot11" data-value="11" x="155" y="5" height="40" width="10" fill="black" />
-            <rect id="dot12" data-value="12" x="170" y="5" height="40" width="10" fill="black" />
-            <rect id="dot13" data-value="13" x="185" y="5" height="40" width="10" fill="black" />
+        <rect x="0" y="0" width="200" height="50" fill="gray" />
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="13" data-value="{{value || 0}}">
+            <rect id="dot1" data-value="1" x="0" y="0" height="40" width="10" fill="black" />
+            <rect id="dot2" data-value="2" x="15" y="0" height="40" width="10" fill="black" />
+            <rect id="dot3" data-value="3" x="30" y="0" height="40" width="10" fill="black" />
+            <rect id="dot4" data-value="4" x="45" y="0" height="40" width="10" fill="black" />
+            <rect id="dot5" data-value="5" x="60" y="0" height="40" width="10" fill="black" />
+            <rect id="dot6" data-value="6" x="75" y="0" height="40" width="10" fill="black" />
+            <rect id="dot7" data-value="7" x="90" y="0" height="40" width="10" fill="black" />
+            <rect id="dot8" data-value="8" x="105" y="0" height="40" width="10" fill="black" />
+            <rect id="dot9" data-value="9" x="120" y="0" height="40" width="10" fill="black" />
+            <rect id="dot10" data-value="10" x="135" y="0" height="40" width="10" fill="black" />
+            <rect id="dot11" data-value="11" x="150" y="0" height="40" width="10" fill="black" />
+            <rect id="dot12" data-value="12" x="165" y="0" height="40" width="10" fill="black" />
+            <rect id="dot13" data-value="13" x="180" y="0" height="40" width="10" fill="black" />
         </g>
     </svg>
     <svg id="round-dot-meter" width="200" height="200">

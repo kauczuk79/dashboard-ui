@@ -6,6 +6,9 @@
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
                 iterator;
             scope.background = '8';
             scope.opacity = 0.0;
@@ -16,8 +19,7 @@
                 scope.opacity = 0.1;
             }
             element.ready(function() {
-                var d3element = d3.select(element[0]),
-                    width = d3element.select('text#background').node().getBBox().width;
+                var width = d3element.select('text#background').node().getBBox().width;
                 d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
             });
         }
@@ -29,7 +31,9 @@
             scope: {
                 digits: '@',
                 value: '@',
-                showBackground: '@'
+                showBackground: '@',
+                x: '@',
+                y: '@'
             }
         };
     }

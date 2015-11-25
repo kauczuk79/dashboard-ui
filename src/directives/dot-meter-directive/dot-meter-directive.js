@@ -6,6 +6,8 @@
 		function link(scope, element, attrs) {
 			var minValue = parseInt(scope.minValue, 10) || 0,
 				maxValue = parseInt(scope.maxValue, 10),
+				x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
 				dotsCollection = d3.select(element[0]);
 			function changeValue() {
 				var value = parseInt(scope.value, 10) || 0;
@@ -24,6 +26,7 @@
 				});
 				
 			}
+			dotsCollection.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), dotsCollection.attr(svgUtils.transformAttr)));
 			scope.$watch('value', changeValue);
 		}
 
@@ -33,7 +36,9 @@
 			scope: {
 				minValue: '@',
 				maxValue: '@',
-				value: '@'
+				value: '@',
+				x: '@',
+				y: '@'
 			}
 		}
 	}

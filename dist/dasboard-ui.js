@@ -31,7 +31,15 @@
 			},
 			transformOriginString: function (indicatorOriginX, indicatorOriginY) {
 				return indicatorOriginX + 'px ' + indicatorOriginY + 'px';
-			}
+			},
+			appendTransform: function (newTransform, oldTransform) {
+				var oldT = (oldTransform === undefined || oldTransform === null)? '' : oldTransform;
+				return oldT + newTransform;
+			},
+			prependTransform: function (newTransform, oldTransform) {
+				var oldT = (oldTransform === undefined || oldTransform === null)? '' : oldTransform;
+				return newTransform + oldT;
+			},
 		};
 	}
 
@@ -74,7 +82,7 @@
                 x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
                 showBackground = (scope.showBackground === 'true'),
-                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
+                lcdGroup = d3.select(element[0]),
                 lineIterator,
                 fontHeight = 18,
                 yPosition;
@@ -88,6 +96,7 @@
                     }
                 }
             }
+            lcdGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), lcdGroup.attr(svgUtils.transformAttr)));
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
                 lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
@@ -122,79 +131,6 @@
     angular
         .module('dashboard-ui.directives')
         .directive('alphanumericLcd', AlphanumericLcdDirective);
-} (window.d3));
-(function (d3) {
-	'use strict';
-	/*global angular, console*/
-
-	function BarMeterDirective() {
-		function link(scope, element, attrs) {
-			var EASING_DURATION = 250,
-				EASING = 'linear',
-				bar = d3.select(element[0]).select('#bar'),
-				barWidth = parseInt(bar.attr('width')) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				minValue = parseInt(scope.minValue, 10) || 0,
-				minPosition = parseInt(scope.minPosition, 10) || 0,
-				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
-				vertical = (scope.vertical === 'true'),
-				originalX = parseInt(bar.attr('x'), 10) || 0,
-				originalY = parseInt(bar.attr('y'), 10) || 0,
-				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
-			function updateValue() {
-				var value = parseInt(scope.value, 10) || 0,
-					barLength = Math.abs(stepWidth * value),
-					x,
-                    y,
-                    height,
-                    width;
-				if (value >= 0 && value <= maxValue) {
-					y = originalY - barLength;
-					height = barLength;
-					x = originalX;
-					width = barLength;
-				} else if (value < 0 && value >= minValue) {
-					y = originalY;
-					height = barLength;
-					x = originalX - barLength;
-					width = barLength;
-				} else if (value > maxValue) {
-					y = maxPosition;
-					height = stepWidth * maxValue;
-					x = originalX;
-					width = stepWidth * maxValue;
-				} else if (value < minValue) {
-					y = originalY;
-					height = stepWidth * minValue;
-					x = minPosition;
-					width = stepWidth * minValue;
-				}
-				if (vertical) {
-					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', y).attr('height', Math.abs(height));
-				} else {
-					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', x).attr('width', Math.abs(width));
-				}
-			}
-			scope.$watch('value', updateValue);
-		}
-
-		return {
-			link: link,
-			restrict: 'C',
-			scope: {
-				minValue: '@',
-				maxValue: '@',
-				minPosition: '@',
-				maxPosition: '@',
-				value: '@',
-				vertical: '@'
-			}
-		};
-	}
-
-	angular
-		.module('dashboard-ui.directives')
-		.directive('barMeter', BarMeterDirective);
 } (window.d3));
 (function (d3) {
     'use strict';
@@ -234,7 +170,7 @@
                 }
                 indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
             }
-            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            gaugeGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), gaugeGroup.attr(svgUtils.transformAttr)));
             indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
             scope.$watch('value', updateGaugeAngle);
         }
@@ -264,12 +200,95 @@
 } (window.d3));
 (function (d3) {
 	'use strict';
+	/*global angular, console*/
+
+	function BarMeterDirective(svgUtils) {
+		function link(scope, element, attrs) {
+			var EASING_DURATION = 250,
+				EASING = 'linear',
+				x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+				maxValue = parseInt(scope.maxValue, 10),
+				minValue = parseInt(scope.minValue, 10) || 0,
+				minPosition = parseInt(scope.minPosition, 10) || 0,
+				meter = d3.select(element[0]),
+				bar = meter.select('#bar'),
+				barWidth = parseInt(bar.attr('width')) || 0,
+				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
+				vertical = (scope.vertical === 'true'),
+				originalBarX = parseInt(bar.attr('x'), 10) || 0,
+				originalBarY = parseInt(bar.attr('y'), 10) || 0,
+				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
+			function updateValue() {
+				var value = parseInt(scope.value, 10) || 0,
+					barLength = Math.abs(stepWidth * value),
+					currentX,
+                    currentY,
+                    height,
+                    width;
+				if (value >= 0 && value <= maxValue) {
+					currentY = originalBarY - barLength;
+					height = barLength;
+					currentX = originalBarX;
+					width = barLength;
+				} else if (value < 0 && value >= minValue) {
+					currentY = originalBarY;
+					height = barLength;
+					currentX = originalBarX - barLength;
+					width = barLength;
+				} else if (value > maxValue) {
+					currentY = maxPosition;
+					height = stepWidth * maxValue;
+					currentX = originalBarX;
+					width = stepWidth * maxValue;
+				} else if (value < minValue) {
+					currentY = originalBarY;
+					height = stepWidth * minValue;
+					currentX = minPosition;
+					width = stepWidth * minValue;
+				}
+				if (vertical) {
+					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', currentY).attr('height', Math.abs(height));
+				} else {
+					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
+				}
+			}
+			meter.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), meter.attr(svgUtils.transformAttr)));
+			scope.$watch('value', updateValue);
+		}
+
+		return {
+			link: link,
+			restrict: 'C',
+			scope: {
+				minValue: '@',
+				maxValue: '@',
+				minPosition: '@',
+				maxPosition: '@',
+				value: '@',
+				vertical: '@',
+				x: '@',
+				y: '@'
+			}
+		};
+	}
+	
+	BarMeterDirective.$inject = ['svgUtils'];
+
+	angular
+		.module('dashboard-ui.directives')
+		.directive('barMeter', BarMeterDirective);
+} (window.d3));
+(function (d3) {
+	'use strict';
 	/*global angular*/
 
 	function DotMeterDirective(svgUtils) {
 		function link(scope, element, attrs) {
 			var minValue = parseInt(scope.minValue, 10) || 0,
 				maxValue = parseInt(scope.maxValue, 10),
+				x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
 				dotsCollection = d3.select(element[0]);
 			function changeValue() {
 				var value = parseInt(scope.value, 10) || 0;
@@ -288,6 +307,7 @@
 				});
 				
 			}
+			dotsCollection.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), dotsCollection.attr(svgUtils.transformAttr)));
 			scope.$watch('value', changeValue);
 		}
 
@@ -297,7 +317,9 @@
 			scope: {
 				minValue: '@',
 				maxValue: '@',
-				value: '@'
+				value: '@',
+				x: '@',
+				y: '@'
 			}
 		}
 	}
@@ -316,7 +338,11 @@
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
                 iterator;
+            d3element.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), d3element.attr(svgUtils.transformAttr)));
             scope.background = '~';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
@@ -326,8 +352,7 @@
                 scope.opacity = 0.1;
             }
             element.ready(function() {
-                var d3element = d3.select(element[0]),
-                    width = d3element.select('text#background').node().getBBox().width;
+                var width = d3element.select('text#background').node().getBBox().width;
                 d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
             });
         }
@@ -339,7 +364,9 @@
             scope: {
                 digits: '@',
                 value: '@',
-                showBackground: '@'
+                showBackground: '@',
+                x: '@',
+                y: '@'
             }
         };
     }
@@ -352,59 +379,19 @@
 } (window.d3));
 (function (d3) {
     'use strict';
-    /*global angular, console*/
-
-    function SevenSegmentDisplayDirective(svgUtils, templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                iterator;
-            scope.background = '8';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.8';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var d3element = d3.select(element[0]),
-                    width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@'
-            }
-        };
-    }
-
-    SevenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
     /*global angular*/
 
     function LedLightDirective($interval, svgUtils) {
         function link(scope, element, attrs) {
-            var icon = d3.select(element[0]),
-                blinkingInterval = parseInt(scope.blinkingInterval) || 25,
+            var x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                icon = d3.select(element[0]),
+                blinkingInterval = parseInt(scope.blinkingInterval),
                 turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
             function setOpacity(opacity) {
-                icon.transition().duration(blinkingInterval).style(svgUtils.opacityStyle, opacity);
+                icon.style(svgUtils.opacityStyle, opacity);
             }
             function isVisible() {
                 return parseFloat(icon.style(svgUtils.opacityStyle)) === turnOnLevel;
@@ -426,6 +413,10 @@
                     }
                 }, 500);
             }
+            icon.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), icon.attr(svgUtils.transformAttr)));
+            if (!isNaN(blinkingInterval)) {
+                icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
+            }
             scope.$watch('mode', function () {
                 if (scope.mode.toLowerCase() === 'on') {
                     turnOn();
@@ -444,7 +435,9 @@
                 mode: '@',
                 turnOffLevel: '@',
                 turnOnLevel: '@',
-                blinkingInterval: '@'
+                blinkingInterval: '@',
+                x: '@',
+                y: '@'
             }
         };
     }
@@ -454,4 +447,50 @@
     angular
         .module('dashboard-ui.directives')
         .directive('ledLight', LedLightDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function SevenSegmentDisplayDirective(svgUtils, templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
+                iterator;
+            scope.background = '8';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.8';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    SevenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 } (window.d3));

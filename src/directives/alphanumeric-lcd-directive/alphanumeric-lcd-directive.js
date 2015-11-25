@@ -13,7 +13,7 @@
                 x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
                 showBackground = (scope.showBackground === 'true'),
-                lcdGroup = d3.select(element[0]).attr(svgUtils.transformAttr, svgUtils.translateString(x, y)),
+                lcdGroup = d3.select(element[0]),
                 lineIterator,
                 fontHeight = 18,
                 yPosition;
@@ -27,6 +27,7 @@
                     }
                 }
             }
+            lcdGroup.attr(svgUtils.transformAttr, svgUtils.prependTransform(svgUtils.translateString(x, y), lcdGroup.attr(svgUtils.transformAttr)));
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
                 lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));

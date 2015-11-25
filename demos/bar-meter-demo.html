@@ -9,8 +9,9 @@
     <input type="number" min="-100" max="100" ng-model="value">
     <h2>Bar meter 0..50</h2>
 	<svg width="200" height="50">
+        <!-- background outside the meter, data-x and data-y used -->
         <rect x="0" y="0" width="200" height="50" fill="gray"/>
-		<g class="bar-meter" data-max-value="50" data-value="{{value || 0}}" transform="translate(10, 5)">
+		<g class="bar-meter" data-x="10" data-y="5" data-max-value="50" data-value="{{value || 0}}">
             <text x="0" y="42" text-anchor="middle">0</text>
             <text x="90" y="42" text-anchor="middle">25</text>
             <text x="180" y="42" text-anchor="middle">50</text>
@@ -24,6 +25,7 @@
             <text x="10" y="47" text-anchor="middle">-50</text>
             <text x="100" y="47" text-anchor="middle">0</text>
             <text x="190" y="47" text-anchor="middle">50</text>
+            <!-- manual positioning of meter rectangle -->
             <rect id="bar" x="100" y="5" width="180" height="30"/>
         </g>
 	</svg>

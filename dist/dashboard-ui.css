@@ -116,6 +116,10 @@
   font-weight: bold;
   position: absolute;
 }
+.led-light {
+  -webkit-transition: all 0.025s linear;
+  transition: all 0.025s linear;
+}
 .seven-segment-display {
   display: block;
   direction: rtl;
