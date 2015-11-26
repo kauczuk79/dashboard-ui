@@ -33,11 +33,8 @@
 	function rotateString(rotateAngle, transformOriginX, transformOriginY) {
 		var rotateStr = 'rotate(';
 		if (rotateAngle !== undefined) {
-			if (rotateAngle === 0.0) {
-				return '';
-			}
-			rotateStr += rotateAngle;
-			if(transformOriginX !== 0.0 || transformOriginY !== 0.0) {
+			rotateStr += rotateAngle + 'deg';
+			if((transformOriginX !== undefined && transformOriginY !== undefined) && (transformOriginX !== 0.0 || transformOriginY !== 0.0)) {
 				rotateStr += ',' + transformOriginX + ',' + transformOriginY;
 			}
 		} else {
@@ -94,7 +91,7 @@
 		return this.appendAttr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY));
 	}
  	function rotate(rotateAngle, transformOriginX, transformOriginY) {
-		return this.attr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY))
+		return this.style(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY))
 	}
 	function opacity(opacityLevel) {
 		var that = this,
@@ -104,6 +101,9 @@
 		} else {
 			return that.style(opacityStr, opacityLevel);
 		}
+	}
+	function transformOrigin(originX, originY) {
+		return this.style('transform-origin', originX + 'px ' + originY + 'px')
 	}
 	selectionProto.appendAttr = appendAttr;
 	selectionProto.prependAttr = prependAttr;
@@ -121,6 +121,7 @@
 	selectionProto.appendRotate = appendRotate;
 	selectionProto.rotate = rotate;
 	selectionProto.opacity = opacity;
+	selectionProto.transformOrigin = transformOrigin;
 	
 	//Animation transform
 	transitionProto.prependScale = prependScale;
@@ -133,5 +134,6 @@
 	transitionProto.appendRotate = appendRotate;
 	transitionProto.rotate = rotate;
 	transitionProto.opacity = opacity;
+	transitionProto.transformOrigin = transformOrigin;
 	
 } (window.d3));

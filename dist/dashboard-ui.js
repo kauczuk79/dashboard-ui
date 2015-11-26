@@ -33,11 +33,8 @@
 	function rotateString(rotateAngle, transformOriginX, transformOriginY) {
 		var rotateStr = 'rotate(';
 		if (rotateAngle !== undefined) {
-			if (rotateAngle === 0.0) {
-				return '';
-			}
-			rotateStr += rotateAngle;
-			if(transformOriginX !== 0.0 || transformOriginY !== 0.0) {
+			rotateStr += rotateAngle + 'deg';
+			if((transformOriginX !== undefined && transformOriginY !== undefined) && (transformOriginX !== 0.0 || transformOriginY !== 0.0)) {
 				rotateStr += ',' + transformOriginX + ',' + transformOriginY;
 			}
 		} else {
@@ -94,7 +91,7 @@
 		return this.appendAttr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY));
 	}
  	function rotate(rotateAngle, transformOriginX, transformOriginY) {
-		return this.attr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY))
+		return this.style(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY))
 	}
 	function opacity(opacityLevel) {
 		var that = this,
@@ -104,6 +101,9 @@
 		} else {
 			return that.style(opacityStr, opacityLevel);
 		}
+	}
+	function transformOrigin(originX, originY) {
+		return this.style('transform-origin', originX + 'px ' + originY + 'px')
 	}
 	selectionProto.appendAttr = appendAttr;
 	selectionProto.prependAttr = prependAttr;
@@ -121,6 +121,7 @@
 	selectionProto.appendRotate = appendRotate;
 	selectionProto.rotate = rotate;
 	selectionProto.opacity = opacity;
+	selectionProto.transformOrigin = transformOrigin;
 	
 	//Animation transform
 	transitionProto.prependScale = prependScale;
@@ -133,6 +134,7 @@
 	transitionProto.appendRotate = appendRotate;
 	transitionProto.rotate = rotate;
 	transitionProto.opacity = opacity;
+	transitionProto.transformOrigin = transformOrigin;
 	
 } (window.d3));
 (function () {
@@ -244,11 +246,11 @@
                 minValue = parseInt(scope.minValue, 10) || 0,
                 x = parseFloat(scope.x) || 0.0,
                 y = parseFloat(scope.y) || 0.0,
-                gaugeGroup = d3.select(element[0]),
-                indicator = gaugeGroup.select('#indicator'),
-                indicatorBoundingBox = indicator.node().getBBox(),
+                gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
+                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY),
+                indicatorBoundingBox = indicator.node().getBBox(),
                 angle,
                 deltaAngle = endAngle - startAngle,
                 deltaValue = maxValue - minValue;
@@ -267,9 +269,8 @@
                         angle = startAngle - angleDifference;
                     }
                 }
-                indicator.transition().duration(250).ease('linear').rotate(angle, indicatorOriginX, indicatorOriginY);
+                indicator.rotate(angle);
             }
-            gaugeGroup.prependTranslate(x, y);
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -426,7 +427,7 @@
     'use strict';
     /*global angular, console*/
 
-    function SevenSegmentDisplayDirective(templates) {
+    function FourteenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
@@ -435,10 +436,10 @@
                 d3element = d3.select(element[0]),
                 iterator;
             d3element.prependTranslate(x, y);
-            scope.background = '8';
+            scope.background = '~';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.8';
+                scope.background += '.~';
             }
             if (background) {
                 scope.opacity = 0.1;
@@ -463,11 +464,11 @@
         };
     }
 
-    SevenSegmentDisplayDirective.$inject = ['templates'];
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
 
     angular
         .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
     'use strict';
@@ -538,7 +539,7 @@
     'use strict';
     /*global angular, console*/
 
-    function FourteenSegmentDisplayDirective(templates) {
+    function SevenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
@@ -547,10 +548,10 @@
                 d3element = d3.select(element[0]),
                 iterator;
             d3element.prependTranslate(x, y);
-            scope.background = '~';
+            scope.background = '8';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
+                scope.background += '.8';
             }
             if (background) {
                 scope.opacity = 0.1;
@@ -575,9 +576,9 @@
         };
     }
 
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
+    SevenSegmentDisplayDirective.$inject = ['templates'];
 
     angular
         .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 } (window.d3));

@@ -10,11 +10,11 @@
                 minValue = parseInt(scope.minValue, 10) || 0,
                 x = parseFloat(scope.x) || 0.0,
                 y = parseFloat(scope.y) || 0.0,
-                gaugeGroup = d3.select(element[0]),
-                indicator = gaugeGroup.select('#indicator'),
-                indicatorBoundingBox = indicator.node().getBBox(),
+                gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
+                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY),
+                indicatorBoundingBox = indicator.node().getBBox(),
                 angle,
                 deltaAngle = endAngle - startAngle,
                 deltaValue = maxValue - minValue;
@@ -33,9 +33,8 @@
                         angle = startAngle - angleDifference;
                     }
                 }
-                indicator.transition().duration(250).ease('linear').rotate(angle, indicatorOriginX, indicatorOriginY);
+                indicator.rotate(angle);
             }
-            gaugeGroup.prependTranslate(x, y);
             scope.$watch('value', updateGaugeAngle);
         }
 

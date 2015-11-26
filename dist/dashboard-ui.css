@@ -101,6 +101,10 @@
 .alphanumeric-lcd .background {
   opacity: 0.2;
 }
+#indicator {
+  -webkit-transition: all 0.25s linear;
+  transition: all 0.25s linear;
+}
 .fourteen-segment-display {
   display: block;
   direction: rtl;
