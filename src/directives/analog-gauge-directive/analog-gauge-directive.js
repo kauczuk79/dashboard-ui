@@ -2,7 +2,7 @@
     'use strict';
     /*global angular, console*/
 
-    function AnalogGaugeDirective(svgUtils) {
+    function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
             var startAngle = parseInt(scope.startAngle, 10),
                 maxValue = parseInt(scope.maxValue, 10),
@@ -33,10 +33,9 @@
                         angle = startAngle - angleDifference;
                     }
                 }
-                indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
+                indicator.transition().duration(250).ease('linear').rotate(angle, indicatorOriginX, indicatorOriginY);
             }
-            gaugeGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
-            indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
+            gaugeGroup.prependTranslate(x, y);
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -56,8 +55,6 @@
             }
         };
     }
-
-    AnalogGaugeDirective.$inject = ['svgUtils'];
 
     angular
         .module('dashboard-ui.directives')

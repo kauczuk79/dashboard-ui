@@ -2,7 +2,7 @@
 	'use strict';
 	/*global angular, console*/
 
-	function BarMeterDirective(svgUtils) {
+	function BarMeterDirective() {
 		function link(scope, element, attrs) {
 			var EASING_DURATION = 250,
 				EASING = 'linear',
@@ -53,7 +53,7 @@
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
 				}
 			}
-			meter.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+			meter.prependTranslate(x,y);
 			scope.$watch('value', updateValue);
 		}
 
@@ -72,8 +72,6 @@
 			}
 		};
 	}
-	
-	BarMeterDirective.$inject = ['svgUtils'];
 
 	angular
 		.module('dashboard-ui.directives')

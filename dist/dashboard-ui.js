@@ -1,25 +1,139 @@
 (function (d3) {
-	var selectionProto = d3.selection.prototype;
-	selectionProto.appendAttr = function (attrName, attrValue) {
-		var that = this;
-		if (attrName !== undefined && attrValue !== undefined) {
-			if (that.attr(attrName) === null) {
-				that.attr(attrName, attrValue);
+	var TRANSFORM_ATTR = 'transform',
+		selectionProto = d3.selection.prototype,
+		transitionProto = d3.transition.prototype;
+	function scaleString(scaleFactorX, scaleFactorY) {
+		var scaleStr = 'scale(';
+		if (scaleFactorX !== undefined) {
+			if (scaleFactorY !== undefined && scaleFactorY !== 1.0) {
+				scaleStr += scaleFactorX + ',' + scaleFactorY;
 			} else {
-				that.attr(attrName, that.attr(attrName) + ' ' + attrValue);
+				if (scaleFactorX === 1.0) {
+					return '';
+				}
+				scaleStr += scaleFactorX;
 			}
 		}
-	};
-	selectionProto.prependAttr = function (attrName, attrValue) {
-		var that = this;
-		if (attrName !== undefined && attrValue !== undefined) {
-			if (that.attr(attrName) === null) {
-				that.attr(attrName, attrValue);
+		return scaleStr + ')';
+	}
+	function translateString(translateFactorX, translateFactorY) {
+		var translateStr = 'translate(';
+		if (translateFactorX !== undefined) {
+			if (translateFactorY !== undefined && translateFactorY !== 0.0) {
+				translateStr += translateFactorX + ',' + translateFactorY;
 			} else {
-				that.attr(attrName, attrValue + ' ' + that.attr(attrName));
+				if (translateFactorX === 0.0) {
+					return '';
+				}
+				translateStr += translateFactorX;
+			}
+		}
+		return translateStr + ')';
+	}
+	function rotateString(rotateAngle, transformOriginX, transformOriginY) {
+		var rotateStr = 'rotate(';
+		if (rotateAngle !== undefined) {
+			if (rotateAngle === 0.0) {
+				return '';
+			}
+			rotateStr += rotateAngle;
+			if(transformOriginX !== 0.0 || transformOriginY !== 0.0) {
+				rotateStr += ',' + transformOriginX + ',' + transformOriginY;
+			}
+		} else {
+			return '';
+		}
+		return rotateStr + ')';
+	}
+	function addAttr(d3element, attrName, attrValue, prepend) {
+		if (attrName !== undefined && attrValue !== undefined) {
+			if (attrValue === '') {
+				return;
+			}
+			if (d3element.attr(attrName) === null) {
+				d3element.attr(attrName, attrValue);
+			} else {
+				if (prepend === undefined || !prepend) {
+					d3element.attr(attrName, d3element.attr(attrName) + ' ' + attrValue);
+				} else {
+					d3element.attr(attrName, attrValue + ' ' + d3element.attr(attrName));
+				}
 			}
 		}
 	}
+	function appendAttr(attrName, attrValue) {
+		addAttr(this, attrName, attrValue);
+		return this;
+	}
+	function prependAttr(attrName, attrValue) {
+		addAttr(this, attrName, attrValue, true);
+		return this;
+	}
+	function prependScale(scaleFactorX, scaleFactorY) {
+		return this.prependAttr(TRANSFORM_ATTR, scaleString(scaleFactorX, scaleFactorY));
+	}
+	function appendScale(scaleFactorX, scaleFactorY) {
+		return this.appendAttr(TRANSFORM_ATTR, scaleString(scaleFactorX, scaleFactorY));
+	}
+	function scale(scaleFactorX, scaleFactorY) {
+		return this.attr(TRANSFORM_ATTR, scaleString(scaleFactorX, scaleFactorY));
+	}
+	function prependTranslate(translateFactorX, translateFactorY) {
+		return this.prependAttr(TRANSFORM_ATTR, translateString(translateFactorX, translateFactorY));
+	}
+	function appendTranslate(translateFactorX, translateFactorY) {
+		return this.appendAttr(TRANSFORM_ATTR, translateString(translateFactorX, translateFactorY));
+	}
+	function translate(translateFactorX, translateFactorY) {
+		return this.attr(TRANSFORM_ATTR, translateString(translateFactorX, translateFactorY));
+	}
+	function prependRotate(rotateAngle, transformOriginX, transformOriginY) {
+		return this.prependAttr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY));
+	}
+	function appendRotate(rotateAngle, transformOriginX, transformOriginY) {
+		return this.appendAttr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY));
+	}
+ 	function rotate(rotateAngle, transformOriginX, transformOriginY) {
+		return this.attr(TRANSFORM_ATTR, rotateString(rotateAngle, transformOriginX, transformOriginY))
+	}
+	function opacity(opacityLevel) {
+		var that = this,
+			opacityStr = 'opacity'
+		if (opacityLevel === undefined) {
+			return parseFloat(that.style(opacityStr));
+		} else {
+			return that.style(opacityStr, opacityLevel);
+		}
+	}
+	selectionProto.appendAttr = appendAttr;
+	selectionProto.prependAttr = prependAttr;
+	transitionProto.appendAttr = appendAttr;
+	transitionProto.prependAttr = prependAttr;
+	
+	//Selection transform
+	selectionProto.prependScale = prependScale;
+	selectionProto.appendScale = appendScale;
+	selectionProto.scale = scale;
+	selectionProto.prependTranslate = prependTranslate;
+	selectionProto.appendTranslate = appendTranslate;
+	selectionProto.translate = translate;
+	selectionProto.prependRotate = prependRotate;
+	selectionProto.appendRotate = appendRotate;
+	selectionProto.rotate = rotate;
+	selectionProto.opacity = opacity;
+	
+	//Animation transform
+	transitionProto.prependScale = prependScale;
+	transitionProto.appendScale = appendScale;
+	transitionProto.scale = scale;
+	transitionProto.prependTranslate = prependTranslate;
+	transitionProto.appendTranslate = appendTranslate;
+	transitionProto.translate = translate;
+	transitionProto.prependRotate = prependRotate;
+	transitionProto.appendRotate = appendRotate;
+	transitionProto.rotate = rotate;
+	transitionProto.opacity = opacity;
+	
 } (window.d3));
 (function () {
     'use strict';
@@ -33,34 +147,6 @@
 
 	angular
 		.module('dashboard-ui.commons', []);
-} ());
-(function () {
-	'use strict';
-	/*global angular*/
-
-	function SvgUtilsFactory() {
-		return {
-			transformAttr: 'transform',
-			transformOriginAttr: 'transform-origin',
-			opacityStyle: 'opacity',
-			translateString: function (x, y) {
-                return 'translate(' + x + ', ' + y + ')';
-            },
-            scaleString: function (scale) {
-                return 'scale(' + scale + ')';
-            },
-			rotateString: function (angle) {
-				return 'rotate(' + angle + 'deg)';
-			},
-			transformOriginString: function (indicatorOriginX, indicatorOriginY) {
-				return indicatorOriginX + 'px ' + indicatorOriginY + 'px';
-			}
-		};
-	}
-
-	angular
-		.module('dashboard-ui.commons')
-		.factory('svgUtils', SvgUtilsFactory);
 } ());
 (function () {
 	'use strict';
@@ -86,7 +172,7 @@
     'use strict';
     /*global angular, console*/
 
-    function AlphanumericLcdDirective(svgUtils) {
+    function AlphanumericLcdDirective() {
         function link(scope, element, attrs) {
             var RECTANGLE_CHAR = '\u0B8F',
                 FOREGROUND_CLASS = 'foreground',
@@ -112,12 +198,12 @@
                     }
                 }
             }
-            lcdGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            lcdGroup.prependTranslate(x, y);
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
-                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
+                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).prependScale(scale);
                 if (showBackground) {
-                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale)).data(RECTANGLE_CHAR).text(function (data) {
+                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).prependScale(scale).data(RECTANGLE_CHAR).text(function (data) {
                         var arr = [];
                         arr.length = columns + 1;
                         return arr.join(data);
@@ -142,8 +228,6 @@
         };
     }
 
-    AlphanumericLcdDirective.$inject = ['svgUtils'];
-
     angular
         .module('dashboard-ui.directives')
         .directive('alphanumericLcd', AlphanumericLcdDirective);
@@ -152,7 +236,7 @@
     'use strict';
     /*global angular, console*/
 
-    function AnalogGaugeDirective(svgUtils) {
+    function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
             var startAngle = parseInt(scope.startAngle, 10),
                 maxValue = parseInt(scope.maxValue, 10),
@@ -183,10 +267,9 @@
                         angle = startAngle - angleDifference;
                     }
                 }
-                indicator.style(svgUtils.transformAttr, svgUtils.rotateString(angle));
+                indicator.transition().duration(250).ease('linear').rotate(angle, indicatorOriginX, indicatorOriginY);
             }
-            gaugeGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
-            indicator.style(svgUtils.transformOriginAttr, svgUtils.transformOriginString(indicatorOriginX, indicatorOriginY));
+            gaugeGroup.prependTranslate(x, y);
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -207,8 +290,6 @@
         };
     }
 
-    AnalogGaugeDirective.$inject = ['svgUtils'];
-
     angular
         .module('dashboard-ui.directives')
         .directive('analogGauge', AnalogGaugeDirective);
@@ -217,7 +298,7 @@
 	'use strict';
 	/*global angular, console*/
 
-	function BarMeterDirective(svgUtils) {
+	function BarMeterDirective() {
 		function link(scope, element, attrs) {
 			var EASING_DURATION = 250,
 				EASING = 'linear',
@@ -268,7 +349,7 @@
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
 				}
 			}
-			meter.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+			meter.prependTranslate(x,y);
 			scope.$watch('value', updateValue);
 		}
 
@@ -287,8 +368,6 @@
 			}
 		};
 	}
-	
-	BarMeterDirective.$inject = ['svgUtils'];
 
 	angular
 		.module('dashboard-ui.directives')
@@ -298,7 +377,7 @@
 	'use strict';
 	/*global angular*/
 
-	function DotMeterDirective(svgUtils) {
+	function DotMeterDirective() {
 		function link(scope, element, attrs) {
 			var minValue = parseInt(scope.minValue, 10) || 0,
 				maxValue = parseInt(scope.maxValue, 10),
@@ -318,11 +397,11 @@
 					if(parseInt(selection.attr('data-value'), 10) > value) {
 						opacity = 0.0;
 					}
-					selection.style(svgUtils.opacityStyle, opacity);
+					selection.opacity(opacity);
 				});
 				
 			}
-			dotsCollection.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+			dotsCollection.prependTranslate(x, y);
 			scope.$watch('value', changeValue);
 		}
 
@@ -338,8 +417,6 @@
 			}
 		}
 	}
-	
-	DotMeterDirective.$inject = ['svgUtils'];
 
 	angular
 		.module('dashboard-ui.directives')
@@ -349,7 +426,7 @@
     'use strict';
     /*global angular, console*/
 
-    function FourteenSegmentDisplayDirective(svgUtils, templates) {
+    function SevenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
@@ -357,18 +434,18 @@
                 y = parseFloat(scope.y) || 0,
                 d3element = d3.select(element[0]),
                 iterator;
-            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
-            scope.background = '~';
+            d3element.prependTranslate(x, y);
+            scope.background = '8';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
+                scope.background += '.8';
             }
             if (background) {
                 scope.opacity = 0.1;
             }
             element.ready(function() {
                 var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+                d3element.select('text#value').translate(width, 0);
             });
         }
 
@@ -386,17 +463,17 @@
         };
     }
 
-    FourteenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
+    SevenSegmentDisplayDirective.$inject = ['templates'];
 
     angular
         .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
     'use strict';
     /*global angular*/
 
-    function LedLightDirective($interval, svgUtils) {
+    function LedLightDirective($interval) {
         function link(scope, element, attrs) {
             var x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
@@ -405,30 +482,24 @@
                 turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
-            function setOpacity(opacity) {
-                icon.style(svgUtils.opacityStyle, opacity);
-            }
-            function isVisible() {
-                return parseFloat(icon.style(svgUtils.opacityStyle)) === turnOnLevel;
-            }
             function turnOn() {
                 $interval.cancel(blinkingTimer);
-                setOpacity(turnOnLevel);
+                icon.opacity(turnOnLevel);
             }
             function turnOff() {
                 $interval.cancel(blinkingTimer);
-                setOpacity(turnOffLevel);
+                icon.opacity(turnOffLevel);
             }
             function blinkingMode() {
                 blinkingTimer = $interval(function () {
-                    if (isVisible()) {
-                        setOpacity(turnOffLevel);
+                    if (icon.opacity() === turnOnLevel) {
+                        icon.opacity(turnOffLevel);
                     } else {
-                        setOpacity(turnOnLevel);
+                        icon.opacity(turnOnLevel);
                     }
                 }, 500);
             }
-            icon.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            icon.prependTranslate(x, y);
             if (!isNaN(blinkingInterval)) {
                 icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
             }
@@ -457,7 +528,7 @@
         };
     }
 
-    LedLightDirective.$inject = ['$interval', 'svgUtils'];
+    LedLightDirective.$inject = ['$interval'];
 
     angular
         .module('dashboard-ui.directives')
@@ -467,7 +538,7 @@
     'use strict';
     /*global angular, console*/
 
-    function SevenSegmentDisplayDirective(svgUtils, templates) {
+    function FourteenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
                 background = (scope.showBackground === "true"),
@@ -475,18 +546,18 @@
                 y = parseFloat(scope.y) || 0,
                 d3element = d3.select(element[0]),
                 iterator;
-            d3element.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
-            scope.background = '8';
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
             scope.opacity = 0.0;
             for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.8';
+                scope.background += '.~';
             }
             if (background) {
                 scope.opacity = 0.1;
             }
             element.ready(function() {
                 var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').attr(svgUtils.transformAttr, svgUtils.translateString(width, 0));
+                d3element.select('text#value').translate(width, 0);
             });
         }
 
@@ -504,9 +575,9 @@
         };
     }
 
-    SevenSegmentDisplayDirective.$inject = ['svgUtils', 'templates'];
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
 
     angular
         .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));

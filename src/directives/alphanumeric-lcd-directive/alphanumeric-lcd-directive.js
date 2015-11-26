@@ -2,7 +2,7 @@
     'use strict';
     /*global angular, console*/
 
-    function AlphanumericLcdDirective(svgUtils) {
+    function AlphanumericLcdDirective() {
         function link(scope, element, attrs) {
             var RECTANGLE_CHAR = '\u0B8F',
                 FOREGROUND_CLASS = 'foreground',
@@ -28,12 +28,12 @@
                     }
                 }
             }
-            lcdGroup.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            lcdGroup.prependTranslate(x, y);
             for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
-                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale));
+                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).prependScale(scale);
                 if (showBackground) {
-                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).attr(svgUtils.transformAttr, svgUtils.scaleString(scale)).data(RECTANGLE_CHAR).text(function (data) {
+                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).prependScale(scale).data(RECTANGLE_CHAR).text(function (data) {
                         var arr = [];
                         arr.length = columns + 1;
                         return arr.join(data);
@@ -57,8 +57,6 @@
             }
         };
     }
-
-    AlphanumericLcdDirective.$inject = ['svgUtils'];
 
     angular
         .module('dashboard-ui.directives')

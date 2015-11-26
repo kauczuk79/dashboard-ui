@@ -2,7 +2,7 @@
     'use strict';
     /*global angular*/
 
-    function LedLightDirective($interval, svgUtils) {
+    function LedLightDirective($interval) {
         function link(scope, element, attrs) {
             var x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
@@ -11,30 +11,24 @@
                 turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
-            function setOpacity(opacity) {
-                icon.style(svgUtils.opacityStyle, opacity);
-            }
-            function isVisible() {
-                return parseFloat(icon.style(svgUtils.opacityStyle)) === turnOnLevel;
-            }
             function turnOn() {
                 $interval.cancel(blinkingTimer);
-                setOpacity(turnOnLevel);
+                icon.opacity(turnOnLevel);
             }
             function turnOff() {
                 $interval.cancel(blinkingTimer);
-                setOpacity(turnOffLevel);
+                icon.opacity(turnOffLevel);
             }
             function blinkingMode() {
                 blinkingTimer = $interval(function () {
-                    if (isVisible()) {
-                        setOpacity(turnOffLevel);
+                    if (icon.opacity() === turnOnLevel) {
+                        icon.opacity(turnOffLevel);
                     } else {
-                        setOpacity(turnOnLevel);
+                        icon.opacity(turnOnLevel);
                     }
                 }, 500);
             }
-            icon.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+            icon.prependTranslate(x, y);
             if (!isNaN(blinkingInterval)) {
                 icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
             }
@@ -63,7 +57,7 @@
         };
     }
 
-    LedLightDirective.$inject = ['$interval', 'svgUtils'];
+    LedLightDirective.$inject = ['$interval'];
 
     angular
         .module('dashboard-ui.directives')

@@ -101,10 +101,6 @@
 .alphanumeric-lcd .background {
   opacity: 0.2;
 }
-#indicator {
-  -webkit-transition: all 0.25s linear;
-  transition: all 0.25s linear;
-}
 .fourteen-segment-display {
   display: block;
   direction: rtl;
@@ -115,10 +111,6 @@
   font-style: italic;
   font-weight: bold;
   position: absolute;
-}
-.led-light {
-  -webkit-transition: all 0.025s linear;
-  transition: all 0.025s linear;
 }
 .seven-segment-display {
   display: block;

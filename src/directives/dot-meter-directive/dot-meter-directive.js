@@ -2,7 +2,7 @@
 	'use strict';
 	/*global angular*/
 
-	function DotMeterDirective(svgUtils) {
+	function DotMeterDirective() {
 		function link(scope, element, attrs) {
 			var minValue = parseInt(scope.minValue, 10) || 0,
 				maxValue = parseInt(scope.maxValue, 10),
@@ -22,11 +22,11 @@
 					if(parseInt(selection.attr('data-value'), 10) > value) {
 						opacity = 0.0;
 					}
-					selection.style(svgUtils.opacityStyle, opacity);
+					selection.opacity(opacity);
 				});
 				
 			}
-			dotsCollection.prependAttr(svgUtils.transformAttr, svgUtils.translateString(x, y));
+			dotsCollection.prependTranslate(x, y);
 			scope.$watch('value', changeValue);
 		}
 
@@ -42,8 +42,6 @@
 			}
 		}
 	}
-	
-	DotMeterDirective.$inject = ['svgUtils'];
 
 	angular
 		.module('dashboard-ui.directives')
