@@ -13,7 +13,7 @@
                 gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
-                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY),
+                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY).style('transition', 'all 0.25s linear'),
                 indicatorBoundingBox = indicator.node().getBBox(),
                 angle,
                 deltaAngle = endAngle - startAngle,

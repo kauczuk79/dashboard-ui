@@ -249,7 +249,7 @@
                 gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
                 indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
                 indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
-                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY),
+                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY).style('transition', 'all 0.25s linear'),
                 indicatorBoundingBox = indicator.node().getBBox(),
                 angle,
                 deltaAngle = endAngle - startAngle,
@@ -425,53 +425,6 @@
 } (window.d3));
 (function (d3) {
     'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
     /*global angular*/
 
     function LedLightDirective($interval) {
@@ -581,4 +534,51 @@
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
