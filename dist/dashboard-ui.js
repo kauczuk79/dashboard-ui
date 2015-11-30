@@ -240,37 +240,37 @@
 
     function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
-            var startAngle = parseInt(scope.startAngle, 10),
-                maxValue = parseInt(scope.maxValue, 10),
-                endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
-                minValue = parseInt(scope.minValue, 10) || 0,
-                x = parseFloat(scope.x) || 0.0,
-                y = parseFloat(scope.y) || 0.0,
+            var x = scope.x || 0.0,
+                y = scope.y || 0.0,
                 gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
-                indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
-                indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
-                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY).style('transition', 'all 0.25s linear'),
-                indicatorBoundingBox = indicator.node().getBBox(),
+                indicator = gaugeGroup.select('#indicator'),
+                indicatorBoundingBox = indicator.node().getBoundingClientRect(),
                 angle,
-                deltaAngle = endAngle - startAngle,
-                deltaValue = maxValue - minValue;
-
+                deltaAngle,
+                deltaValue;
             function updateGaugeAngle() {
                 var value = parseInt(scope.value, 10);
-                if (value < minValue) {
-                    angle = startAngle;
-                } else if (value > maxValue) {
-                    angle = endAngle;
+                if (value < scope.minValue) {
+                    angle = scope.startAngle;
+                } else if (value > scope.maxValue) {
+                    angle = scope.endAngle;
                 } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value));
-                    if (startAngle < endAngle) {
-                        angle = startAngle + angleDifference;
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (scope.minValue - value));
+                    if (scope.startAngle < scope.endAngle) {
+                        angle = scope.startAngle + angleDifference;
                     } else {
-                        angle = startAngle - angleDifference;
+                        angle = scope.startAngle - angleDifference;
                     }
                 }
                 indicator.rotate(angle);
             }
+            scope.indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.left + (indicatorBoundingBox.width / 2));
+            scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.top + (indicatorBoundingBox.height / 2));
+            scope.endAngle = scope.endAngle || (scope.startAngle * -1);
+            scope.minValue = scope.minValue || 0;
+            deltaAngle = scope.endAngle - scope.startAngle;
+            deltaValue = scope.maxValue - scope.minValue;
+            indicator.transformOrigin(scope.indicatorOriginX, scope.indicatorOriginY).style('transition', 'all 0.25s linear');
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -278,15 +278,15 @@
             link: link,
             restrict: 'C',
             scope: {
-                value: '@',
-                startAngle: '@',
-                endAngle: '@',
-                maxValue: '@',
-                minValue: '@',
-                indicatorOriginX: '@',
-                indicatorOriginY: '@',
-                x: '@',
-                y: '@'
+                value: '=',
+                startAngle: '=',
+                endAngle: '=',
+                maxValue: '=',
+                minValue: '=',
+                indicatorOriginX: '=',
+                indicatorOriginY: '=',
+                x: '=',
+                y: '='
             }
         };
     }
@@ -425,6 +425,53 @@
 } (window.d3));
 (function (d3) {
     'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
     /*global angular*/
 
     function LedLightDirective($interval) {
@@ -534,51 +581,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
