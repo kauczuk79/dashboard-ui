@@ -103,7 +103,7 @@
 		}
 	}
 	function transformOrigin(originX, originY) {
-		return this.style('transform-origin', originX + 'px ' + originY + 'px')
+		return this.style('transform-origin', originX + 'px ' + originY + 'px');
 	}
 	selectionProto.appendAttr = appendAttr;
 	selectionProto.prependAttr = prependAttr;

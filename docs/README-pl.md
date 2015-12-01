@@ -36,8 +36,8 @@ Licznik analogowy posiada kilka atrybutów, które są opisane w tabeli poniżej
 | Parametr | Opis | Wymagany |
 | -------- | ---- |:--------:|
 | ***data-end-angle*** | Kąt położenia wskazówki w stopniach osiągany wtedy, gdy parametr ***data-value*** ma wartość maksymalną równą ***data-max-value***. Wartość domyślna to kąt przeciwny do kąta ***data-start-angle***. | Nie |
-| ***data-indicator-origin-x*** | Pozycja X środka obrotu wskazówki licznika. Wartością domyślną jest pozycja X środka prostokąta zawierającego wskazówkę. Zalecane jest podanie punktu obrotu wskazówki | Zalecany |
-| ***data-indicator-origin-y*** | Pozycja Y środka obrotu wskazówki licznika. Wartością domyślną jest pozycja Y środka prostokąta zawierającego wskazówkę. | Zalecany |
+| ***data-indicator-origin-x*** | Pozycja X środka obrotu wskazówki licznika. Wartością domyślną jest pozycja X środka dolnej krawędzi prostokąta zawierającego wskazówkę. Zalecane jest podanie punktu obrotu wskazówki | Zalecany |
+| ***data-indicator-origin-y*** | Pozycja Y środka obrotu wskazówki licznika. Wartością domyślną jest pozycja Y środka dolnej krawędzi prostokąta zawierającego wskazówkę. | Zalecany |
 | ***data-max-value*** | Maksymalna wartość wskazywana przez licznik. | Tak |
 | ***data-min-value*** | Minimalna wartość wskazywana przez licznik. Wartość domyślna to 0. | Nie |
 | ***data-start-angle*** | Kąt położenia wskazówki w stopniach osiągany wtedy, gdy parametr ***data-value*** ma wartość minimalną równą ***data-min-value***. | Tak |

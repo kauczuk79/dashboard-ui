@@ -6,14 +6,15 @@
         function link(scope, element, attrs) {
             var x = scope.x || 0.0,
                 y = scope.y || 0.0,
-                gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
+                gaugeGroup = d3.select(element[0]),
                 indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBoundingClientRect(),
+                svgBBox = d3.select('svg').node().getBoundingClientRect(),
                 angle,
                 deltaAngle,
                 deltaValue;
             function updateGaugeAngle() {
-                var value = parseInt(scope.value, 10);
+                var value = scope.value;
                 if (value < scope.minValue) {
                     angle = scope.startAngle;
                 } else if (value > scope.maxValue) {
@@ -28,8 +29,9 @@
                 }
                 indicator.rotate(angle);
             }
-            scope.indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.left + (indicatorBoundingBox.width / 2));
-            scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.top + (indicatorBoundingBox.height / 2));
+            scope.indicatorOriginX = scope.indicatorOriginX || ((indicatorBoundingBox.left + indicatorBoundingBox.right) / 2) - svgBBox.left;
+            scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.bottom - svgBBox.top);
+            gaugeGroup.prependTranslate(x, y);
             scope.endAngle = scope.endAngle || (scope.startAngle * -1);
             scope.minValue = scope.minValue || 0;
             deltaAngle = scope.endAngle - scope.startAngle;

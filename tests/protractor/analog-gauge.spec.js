@@ -2,9 +2,9 @@
 /*global describe, it, browser, element, expect, by, beforeEach*/
 
 describe('Analog gauges demo', function () {
-    var gauges = element.all(by.css('.analog-gauge')),
-        indicators = element.all(by.css('#indicator')),
-        input = element(by.css('#valueInput'));
+    var gauges,
+        indicators,
+        input;
 
     function getRotateInDegrees(styleAttributeValue) {
         var rotate = styleAttributeValue.match(/rotate\([\-]?([0-9]{0,3})deg\)/);
@@ -14,8 +14,16 @@ describe('Analog gauges demo', function () {
         return null;
     }
 
+    function getTransformOrigin(styleAttributeValue) {
+        var transformOrigin = styleAttributeValue.match(/(?:transform-origin:\s)(((\d+)(?:px.)){0,3})/)[1].split('px');
+        return transformOrigin;
+    }
+
     beforeEach(function () {
         browser.get('http://localhost:3000/test/analog-gauges-demo.html');
+        gauges = element.all(by.css('.analog-gauge')),
+        indicators = element.all(by.css('#indicator')),
+        input = element(by.css('#valueInput'));
         expect(input.getAttribute('value')).toEqual('');
     });
 
@@ -35,7 +43,7 @@ describe('Analog gauges demo', function () {
     it('should move gauges into right position', function () {
         gauges.each(function (gauge, index) {
             gauge.getAttribute('transform').then(function (transform) {
-                var values, 
+                var values,
                     actualX = 0,
                     actualY = 0;
                 if (transform !== null) {
@@ -65,7 +73,7 @@ describe('Analog gauges demo', function () {
         });
     });
 
-    describe('Indicator\'s gauges should has got right angle', function () {
+    describe('Indicator', function () {
 
         function checkIndicatorsRotates(expectedRotates) {
             indicators.each(function (indicator, index) {
@@ -74,6 +82,17 @@ describe('Analog gauges demo', function () {
                 });
             });
         }
+
+        it('should has got right transform origin paramter', function () {
+            indicators.each(function (indicator, index) {
+                indicator.getAttribute('style').then(function (value) {
+                    var transformOrigin = getTransformOrigin(value);
+                    expect(parseInt(transformOrigin[0])).toEqual(100);
+                    expect(parseInt(transformOrigin[1])).toEqual(100);
+                    expect(parseInt(transformOrigin[2])).toEqual(0);
+                });
+            });
+        });
 
         it('should point 0 when input\'s value is equal to 0', function () {
             var expectedRotates = [-120, 0, 120, 0, 45];
@@ -87,13 +106,13 @@ describe('Analog gauges demo', function () {
             checkIndicatorsRotates(expectedRotates);
         });
 
-        it('should point maximum gauge value when input\'s value is bigger', function () {
+        it('should point maximum gauge value when input\'s value is bigger than max-value', function () {
             var expectedRotates = [120, 120, -120, -120, 135];
             input.sendKeys('200');
             checkIndicatorsRotates(expectedRotates);
         });
 
-        it('should point minimum gauge value when input\'s value is lower', function () {
+        it('should point minimum gauge value when input\'s value is lower than min-value', function () {
             var expectedRotates = [-120, -120, 120, 120, 45];
             input.sendKeys('-200');
             checkIndicatorsRotates(expectedRotates);
