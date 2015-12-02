@@ -240,9 +240,7 @@
 
     function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
-            var x = scope.x || 0.0,
-                y = scope.y || 0.0,
-                gaugeGroup = d3.select(element[0]),
+            var gaugeGroup = d3.select(element[0]),
                 indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBoundingClientRect(),
                 svgBBox = d3.select('svg').node().getBoundingClientRect(),
@@ -265,9 +263,11 @@
                 }
                 indicator.rotate(angle);
             }
+            scope.x = scope.x || 0.0;
+            scope.y = scope.y || 0.0;
             scope.indicatorOriginX = scope.indicatorOriginX || ((indicatorBoundingBox.left + indicatorBoundingBox.right) / 2) - svgBBox.left;
             scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.bottom - svgBBox.top);
-            gaugeGroup.prependTranslate(x, y);
+            gaugeGroup.prependTranslate(scope.x,scope.y);
             scope.endAngle = scope.endAngle || (scope.startAngle * -1);
             scope.minValue = scope.minValue || 0;
             deltaAngle = scope.endAngle - scope.startAngle;
@@ -347,165 +347,6 @@
 		.directive('dotMeter', DotMeterDirective);
 } (window.d3));
 (function (d3) {
-    'use strict';
-    /*global angular*/
-
-    function LedLightDirective($interval) {
-        function link(scope, element, attrs) {
-            var x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                icon = d3.select(element[0]),
-                blinkingInterval = parseInt(scope.blinkingInterval),
-                turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
-                turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
-                blinkingTimer;
-            function turnOn() {
-                $interval.cancel(blinkingTimer);
-                icon.opacity(turnOnLevel);
-            }
-            function turnOff() {
-                $interval.cancel(blinkingTimer);
-                icon.opacity(turnOffLevel);
-            }
-            function blinkingMode() {
-                blinkingTimer = $interval(function () {
-                    if (icon.opacity() === turnOnLevel) {
-                        icon.opacity(turnOffLevel);
-                    } else {
-                        icon.opacity(turnOnLevel);
-                    }
-                }, 500);
-            }
-            icon.prependTranslate(x, y);
-            if (!isNaN(blinkingInterval)) {
-                icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
-            }
-            scope.$watch('mode', function () {
-                if (scope.mode.toLowerCase() === 'on') {
-                    turnOn();
-                } else if (scope.mode.toLowerCase() === 'blinking') {
-                    blinkingMode();
-                } else {
-                    turnOff();
-                }
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            scope: {
-                mode: '@',
-                turnOffLevel: '@',
-                turnOnLevel: '@',
-                blinkingInterval: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    LedLightDirective.$inject = ['$interval'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('ledLight', LedLightDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function SevenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '8';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.8';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    SevenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
 	'use strict';
 	/*global angular, console*/
 
@@ -583,4 +424,163 @@
 	angular
 		.module('dashboard-ui.directives')
 		.directive('barMeter', BarMeterDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular*/
+
+    function LedLightDirective($interval) {
+        function link(scope, element, attrs) {
+            var x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                icon = d3.select(element[0]),
+                blinkingInterval = parseInt(scope.blinkingInterval),
+                turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
+                turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
+                blinkingTimer;
+            function turnOn() {
+                $interval.cancel(blinkingTimer);
+                icon.opacity(turnOnLevel);
+            }
+            function turnOff() {
+                $interval.cancel(blinkingTimer);
+                icon.opacity(turnOffLevel);
+            }
+            function blinkingMode() {
+                blinkingTimer = $interval(function () {
+                    if (icon.opacity() === turnOnLevel) {
+                        icon.opacity(turnOffLevel);
+                    } else {
+                        icon.opacity(turnOnLevel);
+                    }
+                }, 500);
+            }
+            icon.prependTranslate(x, y);
+            if (!isNaN(blinkingInterval)) {
+                icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
+            }
+            scope.$watch('mode', function () {
+                if (scope.mode.toLowerCase() === 'on') {
+                    turnOn();
+                } else if (scope.mode.toLowerCase() === 'blinking') {
+                    blinkingMode();
+                } else {
+                    turnOff();
+                }
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            scope: {
+                mode: '@',
+                turnOffLevel: '@',
+                turnOnLevel: '@',
+                blinkingInterval: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    LedLightDirective.$inject = ['$interval'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('ledLight', LedLightDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function SevenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '8';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.8';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    SevenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));

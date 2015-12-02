@@ -4,9 +4,7 @@
 
     function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
-            var x = scope.x || 0.0,
-                y = scope.y || 0.0,
-                gaugeGroup = d3.select(element[0]),
+            var gaugeGroup = d3.select(element[0]),
                 indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBoundingClientRect(),
                 svgBBox = d3.select('svg').node().getBoundingClientRect(),
@@ -29,9 +27,11 @@
                 }
                 indicator.rotate(angle);
             }
+            scope.x = scope.x || 0.0;
+            scope.y = scope.y || 0.0;
             scope.indicatorOriginX = scope.indicatorOriginX || ((indicatorBoundingBox.left + indicatorBoundingBox.right) / 2) - svgBBox.left;
             scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.bottom - svgBBox.top);
-            gaugeGroup.prependTranslate(x, y);
+            gaugeGroup.prependTranslate(scope.x,scope.y);
             scope.endAngle = scope.endAngle || (scope.startAngle * -1);
             scope.minValue = scope.minValue || 0;
             deltaAngle = scope.endAngle - scope.startAngle;
