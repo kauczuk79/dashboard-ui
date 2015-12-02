@@ -42,19 +42,13 @@ describe('Analog gauges demo', function () {
 
     it('should move gauges into right position', function () {
         gauges.each(function (gauge, index) {
+            var actualX = 0,
+                actualY = 0;
+            gauge.getLocation().then(function(location) {
+                actualX = location.x - 8 - 5; // body margin (8px) + gauge's circle left padding (5px) 
+                actualY = location.y - 8 - 26; // body margin (8px) + gauge's circle top padding (26px)
+            });
             gauge.getAttribute('transform').then(function (transform) {
-                var values,
-                    actualX = 0,
-                    actualY = 0;
-                if (transform !== null) {
-                    values = transform.substring(10, transform.length - 1).split(',');
-                    if (values[0] !== undefined) {
-                        actualX = parseInt(values[0]);
-                        if (values[1] !== undefined) {
-                            actualY = parseInt(values[1]);
-                        }
-                    }
-                }
                 gauge.getAttribute('data-x').then(function (x) {
                     var expectedX = 0;
                     if (x !== null) {

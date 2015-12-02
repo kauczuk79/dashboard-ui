@@ -235,85 +235,6 @@
         .directive('alphanumericLcd', AlphanumericLcdDirective);
 } (window.d3));
 (function (d3) {
-	'use strict';
-	/*global angular, console*/
-
-	function BarMeterDirective() {
-		function link(scope, element, attrs) {
-			var EASING_DURATION = 250,
-				EASING = 'linear',
-				x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				minValue = parseInt(scope.minValue, 10) || 0,
-				minPosition = parseInt(scope.minPosition, 10) || 0,
-				meter = d3.select(element[0]),
-				bar = meter.select('#bar'),
-				barWidth = parseInt(bar.attr('width')) || 0,
-				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
-				vertical = (scope.vertical === 'true'),
-				originalBarX = parseInt(bar.attr('x'), 10) || 0,
-				originalBarY = parseInt(bar.attr('y'), 10) || 0,
-				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
-			function updateValue() {
-				var value = parseInt(scope.value, 10) || 0,
-					barLength = Math.abs(stepWidth * value),
-					currentX,
-                    currentY,
-                    height,
-                    width;
-				if (value >= 0 && value <= maxValue) {
-					currentY = originalBarY - barLength;
-					height = barLength;
-					currentX = originalBarX;
-					width = barLength;
-				} else if (value < 0 && value >= minValue) {
-					currentY = originalBarY;
-					height = barLength;
-					currentX = originalBarX - barLength;
-					width = barLength;
-				} else if (value > maxValue) {
-					currentY = maxPosition;
-					height = stepWidth * maxValue;
-					currentX = originalBarX;
-					width = stepWidth * maxValue;
-				} else if (value < minValue) {
-					currentY = originalBarY;
-					height = stepWidth * minValue;
-					currentX = minPosition;
-					width = stepWidth * minValue;
-				}
-				if (vertical) {
-					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', currentY).attr('height', Math.abs(height));
-				} else {
-					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
-				}
-			}
-			meter.prependTranslate(x,y);
-			scope.$watch('value', updateValue);
-		}
-
-		return {
-			link: link,
-			restrict: 'C',
-			scope: {
-				minValue: '@',
-				maxValue: '@',
-				minPosition: '@',
-				maxPosition: '@',
-				value: '@',
-				vertical: '@',
-				x: '@',
-				y: '@'
-			}
-		};
-	}
-
-	angular
-		.module('dashboard-ui.directives')
-		.directive('barMeter', BarMeterDirective);
-} (window.d3));
-(function (d3) {
     'use strict';
     /*global angular, console*/
 
@@ -427,53 +348,6 @@
 } (window.d3));
 (function (d3) {
     'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
     /*global angular*/
 
     function LedLightDirective($interval) {
@@ -541,6 +415,53 @@
     'use strict';
     /*global angular, console*/
 
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
     function SevenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
             var digits = scope.digits,
@@ -583,4 +504,83 @@
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+	'use strict';
+	/*global angular, console*/
+
+	function BarMeterDirective() {
+		function link(scope, element, attrs) {
+			var EASING_DURATION = 250,
+				EASING = 'linear',
+				x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+				maxValue = parseInt(scope.maxValue, 10),
+				minValue = parseInt(scope.minValue, 10) || 0,
+				minPosition = parseInt(scope.minPosition, 10) || 0,
+				meter = d3.select(element[0]),
+				bar = meter.select('#bar'),
+				barWidth = parseInt(bar.attr('width')) || 0,
+				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
+				vertical = (scope.vertical === 'true'),
+				originalBarX = parseInt(bar.attr('x'), 10) || 0,
+				originalBarY = parseInt(bar.attr('y'), 10) || 0,
+				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
+			function updateValue() {
+				var value = parseInt(scope.value, 10) || 0,
+					barLength = Math.abs(stepWidth * value),
+					currentX,
+                    currentY,
+                    height,
+                    width;
+				if (value >= 0 && value <= maxValue) {
+					currentY = originalBarY - barLength;
+					height = barLength;
+					currentX = originalBarX;
+					width = barLength;
+				} else if (value < 0 && value >= minValue) {
+					currentY = originalBarY;
+					height = barLength;
+					currentX = originalBarX - barLength;
+					width = barLength;
+				} else if (value > maxValue) {
+					currentY = maxPosition;
+					height = stepWidth * maxValue;
+					currentX = originalBarX;
+					width = stepWidth * maxValue;
+				} else if (value < minValue) {
+					currentY = originalBarY;
+					height = stepWidth * minValue;
+					currentX = minPosition;
+					width = stepWidth * minValue;
+				}
+				if (vertical) {
+					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', currentY).attr('height', Math.abs(height));
+				} else {
+					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
+				}
+			}
+			meter.prependTranslate(x,y);
+			scope.$watch('value', updateValue);
+		}
+
+		return {
+			link: link,
+			restrict: 'C',
+			scope: {
+				minValue: '@',
+				maxValue: '@',
+				minPosition: '@',
+				maxPosition: '@',
+				value: '@',
+				vertical: '@',
+				x: '@',
+				y: '@'
+			}
+		};
+	}
+
+	angular
+		.module('dashboard-ui.directives')
+		.directive('barMeter', BarMeterDirective);
 } (window.d3));
