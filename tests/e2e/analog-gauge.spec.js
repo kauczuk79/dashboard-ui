@@ -1,7 +1,7 @@
 'use strict';
 /*global describe, it, browser, element, expect, by, beforeEach*/
 
-describe('Analog gauges demo', function () {
+xdescribe('Analog gauges demo', function () {
     var gauges,
         indicators,
         input;
