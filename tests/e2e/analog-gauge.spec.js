@@ -1,7 +1,7 @@
 'use strict';
 /*global describe, it, browser, element, expect, by, beforeEach*/
 
-xdescribe('Analog gauges demo', function () {
+describe('Analog gauges demo', function () {
     var gauges,
         indicators,
         input;
@@ -91,24 +91,28 @@ xdescribe('Analog gauges demo', function () {
         it('should point 0 when input\'s value is equal to 0', function () {
             var expectedRotates = [-120, 0, 120, 0, 45];
             input.sendKeys('0');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotates);
         });
 
         it('should point proper value from gauge range', function () {
             var expectedRotates = [0, 60, 0, -60, 90];
             input.sendKeys('50');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotates);
         });
 
         it('should point maximum gauge value when input\'s value is bigger than max-value', function () {
             var expectedRotates = [120, 120, -120, -120, 135];
             input.sendKeys('200');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotates);
         });
 
         it('should point minimum gauge value when input\'s value is lower than min-value', function () {
             var expectedRotates = [-120, -120, 120, 120, 45];
             input.sendKeys('-200');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotates);
         });
 
@@ -117,10 +121,13 @@ xdescribe('Analog gauges demo', function () {
                 expectedRotatesAt200 = [120, 120, -120, -120, 135],
                 expectedRotatesAtMinus200 = [-120, -120, 120, 120, 45];
             input.sendKeys('50');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotatesAt50);
             input.clear().sendKeys('200');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotatesAt200);
             input.clear().sendKeys('-200');
+            browser.sleep(250);
             checkIndicatorsRotates(expectedRotatesAtMinus200);
         })
     });

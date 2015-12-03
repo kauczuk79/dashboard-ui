@@ -1,4 +1,4 @@
-xdescribe('Alphanumeric LCD demo', function () {
+describe('Alphanumeric LCD demo', function () {
 	var displays,
 		textarea,
 		lcdForeground;

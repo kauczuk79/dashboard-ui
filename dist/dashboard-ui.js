@@ -299,55 +299,6 @@
 } (window.d3));
 (function (d3) {
 	'use strict';
-	/*global angular*/
-
-	function DotMeterDirective() {
-		function link(scope, element, attrs) {
-			var minValue = parseInt(scope.minValue, 10) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-				dotsCollection = d3.select(element[0]);
-			function changeValue() {
-				var value = parseInt(scope.value, 10) || 0;
-				if (value > maxValue) {
-					value = maxValue;
-				} else if (value < minValue) {
-					value = minValue;
-				}
-				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
-					var opacity = 1.0,
-						selection = d3.select(domElement);
-					if(parseInt(selection.attr('data-value'), 10) > value) {
-						opacity = 0.0;
-					}
-					selection.opacity(opacity);
-				});
-				
-			}
-			dotsCollection.prependTranslate(x, y);
-			scope.$watch('value', changeValue);
-		}
-
-		return {
-			link: link,
-			restrict: 'C',
-			scope: {
-				minValue: '@',
-				maxValue: '@',
-				value: '@',
-				x: '@',
-				y: '@'
-			}
-		}
-	}
-
-	angular
-		.module('dashboard-ui.directives')
-		.directive('dotMeter', DotMeterDirective);
-} (window.d3));
-(function (d3) {
-	'use strict';
 	/*global angular, console*/
 
 	function BarMeterDirective() {
@@ -424,6 +375,102 @@
 	angular
 		.module('dashboard-ui.directives')
 		.directive('barMeter', BarMeterDirective);
+} (window.d3));
+(function (d3) {
+	'use strict';
+	/*global angular*/
+
+	function DotMeterDirective() {
+		function link(scope, element, attrs) {
+			var minValue = parseInt(scope.minValue, 10) || 0,
+				maxValue = parseInt(scope.maxValue, 10),
+				x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+				dotsCollection = d3.select(element[0]);
+			function changeValue() {
+				var value = parseInt(scope.value, 10) || 0;
+				if (value > maxValue) {
+					value = maxValue;
+				} else if (value < minValue) {
+					value = minValue;
+				}
+				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
+					var opacity = 1.0,
+						selection = d3.select(domElement);
+					if(parseInt(selection.attr('data-value'), 10) > value) {
+						opacity = 0.0;
+					}
+					selection.opacity(opacity);
+				});
+				
+			}
+			dotsCollection.prependTranslate(x, y);
+			scope.$watch('value', changeValue);
+		}
+
+		return {
+			link: link,
+			restrict: 'C',
+			scope: {
+				minValue: '@',
+				maxValue: '@',
+				value: '@',
+				x: '@',
+				y: '@'
+			}
+		}
+	}
+
+	angular
+		.module('dashboard-ui.directives')
+		.directive('dotMeter', DotMeterDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
     'use strict';
@@ -536,51 +583,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
