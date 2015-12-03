@@ -1,6 +1,5 @@
 'use strict';
-/*global describe, it, browser, element, expect, by, beforeEach*/
-
+/*global browser, element, by*/
 describe('Analog gauges demo', function () {
     var gauges,
         indicators,

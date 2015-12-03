@@ -305,54 +305,54 @@
 		function link(scope, element, attrs) {
 			var EASING_DURATION = 250,
 				EASING = 'linear',
-				x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				minValue = parseInt(scope.minValue, 10) || 0,
-				minPosition = parseInt(scope.minPosition, 10) || 0,
 				meter = d3.select(element[0]),
 				bar = meter.select('#bar'),
 				barWidth = parseInt(bar.attr('width')) || 0,
-				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
-				vertical = (scope.vertical === 'true'),
 				originalBarX = parseInt(bar.attr('x'), 10) || 0,
 				originalBarY = parseInt(bar.attr('y'), 10) || 0,
-				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
+				stepWidth;
 			function updateValue() {
-				var value = parseInt(scope.value, 10) || 0,
+				var value = scope.value || 0,
 					barLength = Math.abs(stepWidth * value),
-					currentX,
-                    currentY,
-                    height,
-                    width;
-				if (value >= 0 && value <= maxValue) {
+					currentX = 0,
+                    currentY = 0,
+                    height = 0,
+                    width = 0;
+				if (value >= 0 && value <= scope.maxValue) {
 					currentY = originalBarY - barLength;
 					height = barLength;
 					currentX = originalBarX;
 					width = barLength;
-				} else if (value < 0 && value >= minValue) {
+				} else if (value < 0 && value >= scope.minValue) {
 					currentY = originalBarY;
 					height = barLength;
 					currentX = originalBarX - barLength;
 					width = barLength;
-				} else if (value > maxValue) {
-					currentY = maxPosition;
-					height = stepWidth * maxValue;
+				} else if (value > scope.maxValue) {
+					currentY = scope.maxPosition;
+					height = stepWidth * scope.maxValue;
 					currentX = originalBarX;
-					width = stepWidth * maxValue;
-				} else if (value < minValue) {
+					width = stepWidth * scope.maxValue;
+				} else if (value < scope.minValue) {
 					currentY = originalBarY;
-					height = stepWidth * minValue;
-					currentX = minPosition;
-					width = stepWidth * minValue;
+					height = stepWidth * scope.minValue;
+					currentX = scope.minPosition;
+					width = stepWidth * scope.minValue;
 				}
-				if (vertical) {
+				if (scope.vertical) {
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', currentY).attr('height', Math.abs(height));
 				} else {
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
 				}
 			}
-			meter.prependTranslate(x,y);
+			scope.x = scope.x || 0;
+            scope.y = scope.y || 0;
+			scope.vertical = scope.vertical || false;
+			scope.minValue = scope.minValue || 0,
+			scope.minPosition = scope.minPosition || 0,
+			scope.maxPosition = scope.maxPosition || barWidth,
+			stepWidth = ((scope.maxPosition - scope.minPosition) / (scope.maxValue - scope.minValue));
+			meter.prependTranslate(scope.x,scope.y);
 			scope.$watch('value', updateValue);
 		}
 
@@ -360,14 +360,14 @@
 			link: link,
 			restrict: 'C',
 			scope: {
-				minValue: '@',
-				maxValue: '@',
-				minPosition: '@',
-				maxPosition: '@',
-				value: '@',
-				vertical: '@',
-				x: '@',
-				y: '@'
+				minValue: '=',
+				maxValue: '=',
+				minPosition: '=',
+				maxPosition: '=',
+				value: '=',
+				vertical: '=',
+				x: '=',
+				y: '='
 			}
 		};
 	}
@@ -375,6 +375,53 @@
 	angular
 		.module('dashboard-ui.directives')
 		.directive('barMeter', BarMeterDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var digits = scope.digits,
+                background = (scope.showBackground === "true"),
+                x = parseFloat(scope.x) || 0,
+                y = parseFloat(scope.y) || 0,
+                d3element = d3.select(element[0]),
+                iterator;
+            d3element.prependTranslate(x, y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (background) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '@',
+                value: '@',
+                showBackground: '@',
+                x: '@',
+                y: '@'
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
 	'use strict';
@@ -424,53 +471,6 @@
 	angular
 		.module('dashboard-ui.directives')
 		.directive('dotMeter', DotMeterDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));
 (function (d3) {
     'use strict';

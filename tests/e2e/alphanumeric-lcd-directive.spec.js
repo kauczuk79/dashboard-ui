@@ -1,3 +1,5 @@
+'use strict';
+/*global browser, element, by*/
 describe('Alphanumeric LCD demo', function () {
 	var displays,
 		textarea,

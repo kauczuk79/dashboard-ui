@@ -1,5 +1,5 @@
-var q = require('q');
-
+'use strict';
+/*global browser, element, by*/
 describe('Bar meter demo', function () {
 	var input,
 		meters,
