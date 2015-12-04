@@ -1,5 +1,5 @@
 'use strict';
-/*global browser, element, by*/
+/*global browser, element, by, describe, beforeEach, expect, it*/
 describe('Alphanumeric LCD demo', function () {
 	var displays,
 		textarea,
@@ -49,20 +49,23 @@ describe('Alphanumeric LCD demo', function () {
 			matchPrecision = 0.01;
 		expect(scaledDisplays.count()).toEqual(4);
 		scaledDisplays.first().getSize().then(function (elementSize) {
-			var baseWidth = elementSize.width,
-				baseHeight = elementSize.height;
+			return elementSize;
+		}).then(function(baseSize) {
 			scaledDisplays.each(function (display, index) {
-				display.getAttribute('data-scale').then(function (value) {
-					var scale = parseFloat(value),
-						expectedWidth = scale * baseWidth,
-						expectedHeight = scale * baseHeight;
+				display.getAttribute('data-scale').then(function (scale) {
+					var	scaledSize = {
+							width: parseFloat(scale) * baseSize.width,
+							height: parseFloat(scale) * baseSize.height
+						};
+					return scaledSize;
+				}).then(function(expectedSize) {
 					display.getSize().then(function (size) {
-						var widthDiff = Math.abs(expectedWidth - size.width),
-							heightDiff = Math.abs(expectedHeight - size.height);
-						expect(widthDiff).toBeLessThan(expectedWidth * matchPrecision);
-						expect(heightDiff).toBeLessThan(expectedHeight * matchPrecision);
+						var widthDiff = Math.abs(expectedSize.width - size.width),
+							heightDiff = Math.abs(expectedSize.height - size.height);
+						expect(widthDiff).toBeLessThan(expectedSize.width * matchPrecision);
+						expect(heightDiff).toBeLessThan(expectedSize.height * matchPrecision);
 					});
-				});
+				})
 			});
 		});
 	});

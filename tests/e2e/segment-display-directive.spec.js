@@ -1,3 +1,5 @@
+'use strict';
+/*global browser, element, by, describe, beforeEach, expect, it*/
 describe('segment display demo', function () {
 	var input;
 
@@ -36,6 +38,28 @@ describe('segment display demo', function () {
 		});
 	}
 
+	function checkUsedFont(displays) {
+		//Font DSEG14 and DSEG7 has got the same width for text '123' and '12.3' because comma is rendered between other characters
+		input.clear().sendKeys('123');
+		displays.first().getSize().then(function (size) {
+			return size.width;
+		}).then(function (baseWidth) {
+			displays.each(function (display, indexOfDisplay) {
+				display.getSize().then(function (size) {
+					expect(size.width).toEqual(baseWidth)
+				});
+			});
+			return baseWidth;
+		}).then(function(baseWidth) {
+			input.clear().sendKeys('12.3');
+			displays.each(function (display, indexOfDisplay) {
+				display.getSize().then(function (size) {
+					expect(size.width).toEqual(baseWidth)
+				});
+			});
+		});
+	}
+
 	describe('14-segment display', function () {
 		var displays14;
 
@@ -54,6 +78,10 @@ describe('segment display demo', function () {
 		it('should have proper visibility of background', function () {
 			checkBackgroundVisibility(displays14);
 		});
+		
+		it('should use DSEG14 font', function () {
+			checkUsedFont(displays14);
+		});
 	});
 
 	describe('7-segment display', function () {
@@ -70,9 +98,13 @@ describe('segment display demo', function () {
 		it('should have right text alignment', function () {
 			checkAlignment(displays7);
 		});
-		
+
 		it('should have proper visibility of background', function () {
 			checkBackgroundVisibility(displays7);
+		});
+
+		it('should use DSEG14 font', function () {
+			checkUsedFont(displays7);
 		});
 	});
 });

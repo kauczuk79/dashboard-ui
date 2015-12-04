@@ -1,5 +1,5 @@
 'use strict';
-/*global browser, element, by*/
+/*global browser, element, by, describe, beforeEach, expect, it*/
 describe('Dot meter demo', function () {
 	var input,
 		dotMeters;

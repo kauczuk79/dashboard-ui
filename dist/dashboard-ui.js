@@ -156,7 +156,7 @@
 
 	function TemplatesFactory() {
 		return {
-			segmentDisplayTemplate: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>'
+			segmentDisplayTemplate: '<text seven-segment-display id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>'
 		};
 	}
 
@@ -431,19 +431,18 @@
 
     function FourteenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
+            var d3element = d3.select(element[0]),
                 iterator;
-            d3element.prependTranslate(x, y);
+            scope.x = scope.x || 0,
+            scope.y = scope.y || 0,
+            scope.showBackground = scope.showBackground || false;
+            d3element.prependTranslate(scope.x, scope.y);
             scope.background = '~';
             scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+            for (iterator = 0; iterator < scope.digits - 1; iterator += 1) {
                 scope.background += '.~';
             }
-            if (background) {
+            if (scope.showBackground) {
                 scope.opacity = 0.1;
             }
             element.ready(function() {
@@ -457,11 +456,11 @@
             restrict: 'C',
             template: templates.segmentDisplayTemplate,
             scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
+                digits: '=',
+                value: '=',
+                showBackground: '=',
+                x: '=',
+                y: '='
             }
         };
     }
@@ -543,19 +542,18 @@
 
     function SevenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
+            var d3element = d3.select(element[0]),
                 iterator;
-            d3element.prependTranslate(x, y);
+            scope.x = scope.x || 0,
+            scope.y = scope.y || 0,
+            scope.showBackground = scope.showBackground || false;
+            d3element.prependTranslate(scope.x, scope.y);
             scope.background = '8';
             scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+            for (iterator = 0; iterator < scope.digits - 1; iterator += 1) {
                 scope.background += '.8';
             }
-            if (background) {
+            if (scope.showBackground) {
                 scope.opacity = 0.1;
             }
             element.ready(function() {
@@ -569,11 +567,11 @@
             restrict: 'C',
             template: templates.segmentDisplayTemplate,
             scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
+                digits: '=',
+                value: '=',
+                showBackground: '=',
+                x: '=',
+                y: '='
             }
         };
     }
