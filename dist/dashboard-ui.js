@@ -480,7 +480,8 @@
             var x = parseFloat(scope.x) || 0,
                 y = parseFloat(scope.y) || 0,
                 icon = d3.select(element[0]),
-                blinkingInterval = parseInt(scope.blinkingInterval),
+                blinkingInterval = parseInt(scope.blinkingInterval) || 500,
+                blinkingDelay = parseInt(scope.blinkingDelay),
                 turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
@@ -499,11 +500,11 @@
                     } else {
                         icon.opacity(turnOnLevel);
                     }
-                }, 500);
+                }, blinkingInterval);
             }
             icon.prependTranslate(x, y);
             if (!isNaN(blinkingInterval)) {
-                icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
+                icon.style('transition', 'all ' + (blinkingDelay / 1000) + 's linear 0s');
             }
             scope.$watch('mode', function () {
                 if (scope.mode.toLowerCase() === 'on') {
@@ -524,6 +525,7 @@
                 turnOffLevel: '@',
                 turnOnLevel: '@',
                 blinkingInterval: '@',
+                blinkingDelay: '@',
                 x: '@',
                 y: '@'
             }

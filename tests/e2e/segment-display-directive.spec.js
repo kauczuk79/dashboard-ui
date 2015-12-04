@@ -1,6 +1,6 @@
 'use strict';
 /*global browser, element, by, describe, beforeEach, expect, it*/
-describe('segment display demo', function () {
+describe('Segment display demo', function () {
 	var input;
 
 	beforeEach(function () {
