@@ -11,7 +11,7 @@
     <p>First dot not visible when value is 0.</p>
     <svg width="230" height="65">
         <rect x="0" y="0" width="230" height="65" fill="gray" />
-        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="15" data-value="{{value || 0}}">
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="15" data-value="value">
             <rect id="dot1" data-value="1" x="0" y="0" height="40" width="10" fill="black" />
             <rect id="dot2" data-value="2" x="15" y="0" height="40" width="10" fill="black" />
             <rect id="dot3" data-value="3" x="30" y="0" height="40" width="10" fill="black" />
@@ -35,7 +35,7 @@
     <p>First dot is visible when value is less or equal than -30.</p>
     <svg width="200" height="65">
         <rect x="0" y="0" width="200" height="65" fill="gray" />
-        <g class="dot-meter"data-x="5" data-y="5" data-min-value="-30" data-max-value="30" data-value="{{value || 0}}">
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="-30" data-max-value="30" data-value="value">
             <rect id="dot1" data-value="-30" x="0" y="0" height="40" width="10" fill="black" />
             <rect id="dot2" data-value="-25" x="15" y="0" height="40" width="10" fill="black" />
             <rect id="dot3" data-value="-20" x="30" y="0" height="40" width="10" fill="black" />
@@ -58,7 +58,7 @@
     <p>Values: 1, 2, 3, 5, 8, 13, 21, 34, 55, 89,...</p>
     <svg width="200" height="50">
         <rect x="0" y="0" width="200" height="50" fill="gray" />
-        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="377" data-value="{{value || 0}}">
+        <g class="dot-meter"data-x="5" data-y="5" data-min-value="0" data-max-value="377" data-value="value">
             <rect id="dot1" data-value="1" x="0" y="0" height="40" width="10" fill="black" />
             <rect id="dot2" data-value="2" x="15" y="0" height="40" width="10" fill="black" />
             <rect id="dot3" data-value="3" x="30" y="0" height="40" width="10" fill="black" />
@@ -77,7 +77,7 @@
     <h2>60 seconds on the clock</h2>
     <svg id="round-dot-meter" width="200" height="200">
         <circle cx="100" cy="100" r="95" fill="gray"></circle>
-        <g class="dot-meter" data-min-value="0" data-max-value="60" data-value="{{value || 0}}"></g>
+        <g class="dot-meter" data-min-value="0" data-max-value="60" data-value="value"></g>
     </svg>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>

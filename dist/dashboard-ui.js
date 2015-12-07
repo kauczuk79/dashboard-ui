@@ -382,17 +382,13 @@
 
 	function DotMeterDirective() {
 		function link(scope, element, attrs) {
-			var minValue = parseInt(scope.minValue, 10) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-				dotsCollection = d3.select(element[0]);
-			function changeValue() {
-				var value = parseInt(scope.value, 10) || 0;
-				if (value > maxValue) {
-					value = maxValue;
-				} else if (value < minValue) {
-					value = minValue;
+			var dotsCollection = d3.select(element[0]);
+			function updateValue() {
+				var value = scope.value || 0;
+				if (value > scope.maxValue) {
+					value = scope.maxValue;
+				} else if (value < scope.minValue) {
+					value = scope.minValue;
 				}
 				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
 					var opacity = 1.0,
@@ -402,21 +398,23 @@
 					}
 					selection.opacity(opacity);
 				});
-				
 			}
-			dotsCollection.prependTranslate(x, y);
-			scope.$watch('value', changeValue);
+			scope.minValue = scope.minValue || 0;
+			scope.x = scope.x || 0;
+            scope.y = scope.y || 0;
+			dotsCollection.prependTranslate(scope.x, scope.y);
+			scope.$watch('value', updateValue);
 		}
 
 		return {
 			link: link,
 			restrict: 'C',
 			scope: {
-				minValue: '@',
-				maxValue: '@',
-				value: '@',
-				x: '@',
-				y: '@'
+				minValue: '=',
+				maxValue: '=',
+				value: '=',
+				x: '=',
+				y: '='
 			}
 		}
 	}
@@ -477,36 +475,26 @@
 
     function LedLightDirective($interval) {
         function link(scope, element, attrs) {
-            var x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                icon = d3.select(element[0]),
-                blinkingInterval = parseInt(scope.blinkingInterval) || 500,
-                blinkingDelay = parseInt(scope.blinkingDelay),
-                turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
-                turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
+            var icon = d3.select(element[0]),
                 blinkingTimer;
             function turnOn() {
                 $interval.cancel(blinkingTimer);
-                icon.opacity(turnOnLevel);
+                icon.opacity(scope.turnOnLevel);
             }
             function turnOff() {
                 $interval.cancel(blinkingTimer);
-                icon.opacity(turnOffLevel);
+                icon.opacity(scope.turnOffLevel);
             }
             function blinkingMode() {
                 blinkingTimer = $interval(function () {
-                    if (icon.opacity() === turnOnLevel) {
-                        icon.opacity(turnOffLevel);
+                    if (icon.opacity() === scope.turnOnLevel) {
+                        icon.opacity(scope.turnOffLevel);
                     } else {
-                        icon.opacity(turnOnLevel);
+                        icon.opacity(scope.turnOnLevel);
                     }
-                }, blinkingInterval);
+                }, scope.blinkingInterval);
             }
-            icon.prependTranslate(x, y);
-            if (!isNaN(blinkingInterval)) {
-                icon.style('transition', 'all ' + (blinkingDelay / 1000) + 's linear 0s');
-            }
-            scope.$watch('mode', function () {
+            function updateLightMode() {
                 if (scope.mode.toLowerCase() === 'on') {
                     turnOn();
                 } else if (scope.mode.toLowerCase() === 'blinking') {
@@ -514,7 +502,18 @@
                 } else {
                     turnOff();
                 }
-            });
+            }
+            scope.y = scope.y || 0.0;
+            scope.x = scope.x || 0.0;
+            scope.blinkingInterval = scope.blinkingInterval || 500;
+            scope.blinkingDelay = scope.blinkingDelay || 0;
+            scope.turnOnLevel = scope.turnOnLevel || 1.0;
+            scope.turnOffLevel = scope.turnOffLevel || 0.0;
+            icon.prependTranslate(scope.x, scope.y);
+            if (scope.blinkingDelay > 0) {
+                icon.style('transition', 'all ' + (scope.blinkingDelay / 1000) + 's linear 0s');
+            }
+            attrs.$observe('mode', updateLightMode);
         }
 
         return {
@@ -522,12 +521,12 @@
             restrict: 'C',
             scope: {
                 mode: '@',
-                turnOffLevel: '@',
-                turnOnLevel: '@',
-                blinkingInterval: '@',
-                blinkingDelay: '@',
-                x: '@',
-                y: '@'
+                turnOffLevel: '=',
+                turnOnLevel: '=',
+                blinkingInterval: '=',
+                blinkingDelay: '=',
+                x: '=',
+                y: '='
             }
         };
     }

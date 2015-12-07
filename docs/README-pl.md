@@ -91,7 +91,8 @@ Czcionka użyta w wyświetlaczu to [DSEG]. Na stronie twórcy znajduje się list
 | Parametr | Opis | Wymagany |
 | -------- | ---- |:--------:|
 | ***data-mode*** | Stan diody, może przyjąć następujące wartości: <ul><li>`off` - dioda wyłączona</li><li>`on` - dioda włączona</li><li>`blinking` - dioda migająca</li></ul>| Tak |
-| ***data-blinking-interval*** | Szybkość zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 25. | Nie |
+| ***data-blinking-interval*** | Szybkość zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 500. | Nie |
+| ***data-blinking-delay*** | Opóźnienie zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 0 (dioda wygasza się bez animacji) | Nie |
 | ***data-turn-off-level*** | Poziom maksymalnego wygaszenia diody. Standardowa wartość to 0.0. Większa wartość spowoduje, że dioda w trybie `off` oraz `blinking` będzie bardziej widoczna. | Nie |
 | ***data-turn-on-level*** | Poziom maksymalnego zapalenia diody. Standardowa wartość to 1.0. Mniejsza wartość spowoduje, że dioda w trybie `on` oraz `blinking` będzie mniej widoczna. | Nie |
 | ***data-x*** | Pozycja diody na osi X (lewy górny róg). Domyślnie X=0.| Nie |

@@ -9,10 +9,17 @@
 	<table>
 		<tbody>
 			<tr>
-				<td>data-mode=on</td>
+				<td ng-init="value='on'">
+					<input type="radio" ng-model="value" value="off">Off
+					<br>
+					<input type="radio" ng-model="value" value="on">On
+					<br>
+					<input type="radio" ng-model="value" value="blinking">Blinking
+					<br>
+				</td>
 				<td>
 					<svg width="100" height="100">
-						<circle class="led-light" data-mode="on" cx="50" cy="50" r="40" fill="green"></circle>
+						<circle class="led-light" data-mode="{{value}}" cx="50" cy="50" r="40" fill="green"></circle>
 					</svg>
 				</td>
 			</tr>
@@ -31,15 +38,15 @@
 	c0,5.464,4.429,9.893,9.894,9.893c5.464,0,9.894-4.43,9.894-9.893v-28.074h17.847v23.203c0,5.465,4.43,9.894,9.895,9.894h24.881
 	l34.907,42.989c1.879,2.313,4.701,3.656,7.68,3.656h107.709c5.464,0,9.893-4.432,9.893-9.895v-13.073h9.803v13.073
 	c0,3.865,2.249,7.372,5.758,8.99c1.323,0.607,2.735,0.904,4.135,0.904c2.319,0,4.609-0.816,6.441-2.383l33.141-28.404
-	c2.193-1.882,3.453-4.625,3.453-7.514v-68.663C295.329,147.164,293.88,144.246,291.416,142.376z"/>
+	c2.193-1.882,3.453-4.625,3.453-7.514v-68.663C295.329,147.164,293.88,144.246,291.416,142.376z" />
 						</g>
 					</svg>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					data-mode=blinking<br>
-					data-blinking-interval=100
+					data-mode=blinking
+					<br> data-blinking-interval=100
 				</td>
 				<td>
 					<svg width="100" height="100">
@@ -52,15 +59,16 @@
 	c0,5.464,4.429,9.893,9.894,9.893c5.464,0,9.894-4.43,9.894-9.893v-28.074h17.847v23.203c0,5.465,4.43,9.894,9.895,9.894h24.881
 	l34.907,42.989c1.879,2.313,4.701,3.656,7.68,3.656h107.709c5.464,0,9.893-4.432,9.893-9.895v-13.073h9.803v13.073
 	c0,3.865,2.249,7.372,5.758,8.99c1.323,0.607,2.735,0.904,4.135,0.904c2.319,0,4.609-0.816,6.441-2.383l33.141-28.404
-	c2.193-1.882,3.453-4.625,3.453-7.514v-68.663C295.329,147.164,293.88,144.246,291.416,142.376z"/>
+	c2.193-1.882,3.453-4.625,3.453-7.514v-68.663C295.329,147.164,293.88,144.246,291.416,142.376z" />
 						</g>
 					</svg>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					data-mode=off<br>
-					turn-off-level=0.15</td>
+					data-mode=off
+					<br> turn-off-level=0.15
+				</td>
 				<td>
 					<svg width="100" height="100">
 						<g class="led-light" data-mode="off" data-turn-off-level="0.15" transform="translate(20 10) scale(0.25)" fill="orange">
@@ -79,9 +87,9 @@
 			</tr>
 			<tr>
 				<td>
-					data-mode=on<br>
-					data-turn-on-level=0.75
-					</td>
+					data-mode=on
+					<br> data-turn-on-level=0.75
+				</td>
 				<td>
 					<svg width="100" height="100">
 						<g class="led-light" data-mode="on" data-turn-on-level="0.75" transform="translate(20 10) scale(0.25)" fill="orange">
@@ -100,14 +108,15 @@
 			</tr>
 			<tr>
 				<td>
-					data-mode=blinking<br>
-					data-turn-on-level=0.75<br>
-					data-turn-off-level=0.1<br>
-					data-blinking-delay=100
+					data-mode=blinking
+					<br> data-turn-on-level=0.75
+					<br> data-turn-off-level=0.1
+					<br> data-blinking-delay=100
 				</td>
 				<td>
 					<svg width="100" height="100">
-						<g class="led-light" data-mode="blinking" data-turn-on-level="0.75" data-turn-off-level="0.1" data-blinking-delay="100" transform="translate(20 10) scale(0.00025)" fill="orange">
+						<g class="led-light" data-mode="blinking" data-turn-on-level="0.75" data-turn-off-level="0.1" data-blinking-delay="100" transform="translate(20 10) scale(0.00025)"
+						fill="orange">
 							<!-- optimized path -->
 							<path id="XMLID_49_" d="M291416,142376l-33140-25160c-2997-2275-7010-2661-10383-980c-3362,1666-5492,5101-5492,8861
 	v15395h-9803v-15559c0-5465-4430-9896-9893-9896h-19696V78294c0-5466-4431-9896-9894-9896h-30773V57896h8284
