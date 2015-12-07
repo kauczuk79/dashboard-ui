@@ -8,70 +8,73 @@
 <body ng-app="dashboard-ui">
     <input type="number" min="-100" max="100" ng-model="value">
     <h2>Bar meter 0..50</h2>
-	<svg width="200" height="50">
+    <svg width="200" height="50">
         <!-- background outside the meter, data-x and data-y used -->
-        <rect x="0" y="0" width="200" height="50" fill="gray"/>
-		<g class="bar-meter" data-x="10" data-y="5" data-max-value="50" data-value="{{value || 0}}">
-            <text x="0" y="42" text-anchor="middle">0</text>
-            <text x="90" y="42" text-anchor="middle">25</text>
-            <text x="180" y="42" text-anchor="middle">50</text>
-            <rect id="bar" width="180" height="30"/>
+        <g class="bar-meter" data-max-value="50" data-value="value">
+            <rect x="0" y="0" width="200" height="50" fill="gray" />
+            <text x="10" y="47" text-anchor="middle">0</text>
+            <text x="100" y="47" text-anchor="middle">25</text>
+            <text x="190" y="47" text-anchor="middle">50</text>
+            <rect id="bar" x="10" y="5" width="180" height="30" />
         </g>
-	</svg>
+    </svg>
     <h2>Bar meter -50..50</h2>
     <svg width="200" height="50">
-		<g class="bar-meter" data-min-value="-50" data-max-value="50" data-min-position="10" data-max-position="190" data-value="{{value || 0}}">
-            <rect x="0" y="0" width="200" height="50" fill="gray"/>
+        <g class="bar-meter" data-min-value="-50" data-max-value="50" data-min-position="10" data-max-position="190" data-value="value">
+            <rect x="0" y="0" width="200" height="50" fill="gray" />
             <text x="10" y="47" text-anchor="middle">-50</text>
             <text x="100" y="47" text-anchor="middle">0</text>
             <text x="190" y="47" text-anchor="middle">50</text>
             <!-- manual positioning of meter rectangle -->
-            <rect id="bar" x="100" y="5" width="180" height="30"/>
+            <rect id="bar" x="100" y="5" width="180" height="30" />
         </g>
-	</svg>
+    </svg>
     <h2>Bar meter -25..75</h2>
     <svg width="200" height="50">
-		<g class="bar-meter" data-min-value="-25" data-max-value="75" data-min-position="10" data-max-position="190" data-value="{{value || 0}}">
-            <rect x="0" y="0" width="200" height="50" fill="gray"/>
+        <g class="bar-meter" data-min-value="-25" data-max-value="75" data-min-position="10" data-max-position="190" data-value="value">
+            <rect x="0" y="0" width="200" height="50" fill="gray" />
             <text x="10" y="47" text-anchor="middle">-25</text>
             <text x="55" y="47" text-anchor="middle">0</text>
             <text x="190" y="47" text-anchor="middle">75</text>
-            <rect id="bar" x="55" y="5" width="180" height="30"/>
+            <rect id="bar" x="55" y="5" width="180" height="30" />
         </g>
-	</svg>
+    </svg>
     <h2>Bar meter 0..50 vertical</h2>
     <svg width="60" height="200">
-        <g class="bar-meter" data-max-value="50" data-min-position="190" data-max-position="10" data-value="{{value || 0}}" data-vertical="true">
-            <rect x="0" y="0" width="60" height="200" fill="gray"/>
+        <g class="bar-meter" data-max-value="50" data-min-position="190" data-max-position="10" data-value="value" data-vertical="true">
+            <rect x="0" y="0" width="60" height="200" fill="gray" />
             <text x="41" y="10" text-anchor="begin" style="dominant-baseline: mathematical;">50</text>
             <text x="41" y="100" text-anchor="begin" style="dominant-baseline: mathematical;">25</text>
             <text x="41" y="190" text-anchor="begin" style="dominant-baseline: mathematical;">0</text>
-            <rect id="bar" x="5" y="190" width="30" height="0"/>
+            <rect id="bar" x="5" y="190" width="30" height="0" />
         </g>
     </svg>
     <h2>Bar meter -50..50 vertical</h2>
     <svg width="60" height="200">
-        <g class="bar-meter" data-min-value="-50" data-max-value="50" data-min-position="190" data-max-position="10" data-value="{{value || 0}}" data-vertical="true">
-            <rect x="0" y="0" width="60" height="200" fill="gray"/>
+        <g class="bar-meter" data-min-value="-50" data-max-value="50" data-min-position="190" data-max-position="10" data-value="value"
+        data-vertical="true">
+            <rect x="0" y="0" width="60" height="200" fill="gray" />
             <text x="41" y="10" text-anchor="begin" style="dominant-baseline: mathematical;">50</text>
             <text x="41" y="100" text-anchor="begin" style="dominant-baseline: mathematical;">0</text>
             <text x="41" y="190" text-anchor="begin" style="dominant-baseline: mathematical;">-50</text>
-            <rect id="bar" x="5" y="100" width="30" height="0"/>
+            <rect id="bar" x="5" y="100" width="30" height="0" />
         </g>
     </svg>
     <h2>Bar meter -25..75 vertical</h2>
     <svg width="60" height="200">
-        <g class="bar-meter" data-min-value="-25" data-max-value="75" data-min-position="190" data-max-position="10" data-value="{{value || 0}}" data-vertical="true">
-            <rect x="0" y="0" width="60" height="200" fill="gray"/>
+        <g class="bar-meter" data-min-value="-25" data-max-value="75" data-min-position="190" data-max-position="10" data-value="value"
+        data-vertical="true">
+            <rect x="0" y="0" width="60" height="200" fill="gray" />
             <text x="41" y="10" text-anchor="begin" style="dominant-baseline: mathematical;">75</text>
             <text x="41" y="145" text-anchor="begin" style="dominant-baseline: mathematical;">0</text>
             <text x="41" y="190" text-anchor="begin" style="dominant-baseline: mathematical;">-25</text>
-            <rect id="bar" x="5" y="145" width="30" height="0"/>
+            <rect id="bar" x="5" y="145" width="30" height="0" />
         </g>
     </svg>
-	<script src="../node_modules/angular/angular.js"></script>
+    <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
     <script src="../node_modules/d3/d3.js"></script>
     <script src="../dist/dashboard-ui.js"></script>
 </body>
+
 </html>

@@ -103,7 +103,7 @@
 		}
 	}
 	function transformOrigin(originX, originY) {
-		return this.style('transform-origin', originX + 'px ' + originY + 'px')
+		return this.style('transform-origin', originX + 'px ' + originY + 'px');
 	}
 	selectionProto.appendAttr = appendAttr;
 	selectionProto.prependAttr = prependAttr;
@@ -156,7 +156,7 @@
 
 	function TemplatesFactory() {
 		return {
-			segmentDisplayTemplate: '<text id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>'
+			segmentDisplayTemplate: '<text seven-segment-display id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>'
 		};
 	}
 
@@ -179,12 +179,6 @@
             var RECTANGLE_CHAR = '\u0B8F',
                 FOREGROUND_CLASS = 'foreground',
                 BACKGROUND_CLASS = 'background',
-                rows = parseInt(scope.rows, 10) || 2,
-                columns = parseInt(scope.columns, 10) || 16,
-                scale = parseFloat(scope.scale, 10) || 1.0,
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                showBackground = (scope.showBackground === 'true'),
                 lcdGroup = d3.select(element[0]),
                 lineIterator,
                 fontHeight = 18,
@@ -192,40 +186,46 @@
             function updateLines() {
                 var lineNumber,
                     lines = scope.lines;
-                for (lineNumber = 0; lineNumber < rows; lineNumber += 1) {
+                for (lineNumber = 0; lineNumber < scope.rows; lineNumber += 1) {
                     if (lines[lineNumber] !== undefined) {
-                        d3.select(element[0]).selectAll('.'+FOREGROUND_CLASS).data(lines).text(function (data) {
-                            return data.substring(0, columns);
+                        d3.select(element[0]).selectAll('.' + FOREGROUND_CLASS).data(lines).text(function (data) {
+                            return data.substring(0, scope.columns);
                         });
                     }
                 }
             }
-            lcdGroup.prependTranslate(x, y);
-            for (lineIterator = 0; lineIterator < rows; lineIterator += 1) {
+            scope.rows = scope.rows || 2;
+            scope.columns = scope.columns || 16;
+            scope.scale = scope.scale || 1.0;
+            scope.x = scope.x || 0;
+            scope.y = scope.y || 0;
+            scope.showBackground = scope.showBackground || false;
+            scope.$watch('lines', updateLines);
+            lcdGroup.prependTranslate(scope.x, scope.y);
+            for (lineIterator = 0; lineIterator < scope.rows; lineIterator += 1) {
                 yPosition = fontHeight * (lineIterator + 1);
-                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).prependScale(scale);
-                if (showBackground) {
-                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).prependScale(scale).data(RECTANGLE_CHAR).text(function (data) {
+                lcdGroup.append('text').classed(FOREGROUND_CLASS, true).attr('y', yPosition).prependScale(scope.scale);
+                if (scope.showBackground) {
+                    lcdGroup.append('text').classed(BACKGROUND_CLASS, true).attr('y', yPosition).prependScale(scope.scale).data(RECTANGLE_CHAR).text(function (data) {
                         var arr = [];
-                        arr.length = columns + 1;
+                        arr.length = scope.columns + 1;
                         return arr.join(data);
                     });
                 }
             }
-            scope.$watch('lines', updateLines);
         }
 
         return {
             link: link,
             restrict: 'C',
             scope: {
-                rows: '@',
-                columns: '@',
-                scale: '@',
-                showBackground: '@',
+                rows: '=',
+                columns: '=',
+                scale: '=',
+                showBackground: '=',
                 lines: '=',
-                x: '@',
-                y: '@'
+                x: '=',
+                y: '='
             }
         };
     }
@@ -240,37 +240,39 @@
 
     function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
-            var startAngle = parseInt(scope.startAngle, 10),
-                maxValue = parseInt(scope.maxValue, 10),
-                endAngle = parseInt(scope.endAngle, 10) || (startAngle * -1),
-                minValue = parseInt(scope.minValue, 10) || 0,
-                x = parseFloat(scope.x) || 0.0,
-                y = parseFloat(scope.y) || 0.0,
-                gaugeGroup = d3.select(element[0]).prependTranslate(x, y),
-                indicatorOriginX = scope.indicatorOriginX || (indicatorBoundingBox.x + (indicatorBoundingBox.width / 2)),
-                indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.y + (indicatorBoundingBox.height / 2)),
-                indicator = gaugeGroup.select('#indicator').transformOrigin(indicatorOriginX, indicatorOriginY).style('transition', 'all 0.25s linear'),
-                indicatorBoundingBox = indicator.node().getBBox(),
+            var gaugeGroup = d3.select(element[0]),
+                indicator = gaugeGroup.select('#indicator'),
+                indicatorBoundingBox = indicator.node().getBoundingClientRect(),
+                svgBBox = d3.select('svg').node().getBoundingClientRect(),
                 angle,
-                deltaAngle = endAngle - startAngle,
-                deltaValue = maxValue - minValue;
-
+                deltaAngle,
+                deltaValue;
             function updateGaugeAngle() {
-                var value = parseInt(scope.value, 10);
-                if (value < minValue) {
-                    angle = startAngle;
-                } else if (value > maxValue) {
-                    angle = endAngle;
+                var value = scope.value;
+                if (value < scope.minValue) {
+                    angle = scope.startAngle;
+                } else if (value > scope.maxValue) {
+                    angle = scope.endAngle;
                 } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value));
-                    if (startAngle < endAngle) {
-                        angle = startAngle + angleDifference;
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (scope.minValue - value));
+                    if (scope.startAngle < scope.endAngle) {
+                        angle = scope.startAngle + angleDifference;
                     } else {
-                        angle = startAngle - angleDifference;
+                        angle = scope.startAngle - angleDifference;
                     }
                 }
                 indicator.rotate(angle);
             }
+            scope.x = scope.x || 0.0;
+            scope.y = scope.y || 0.0;
+            scope.indicatorOriginX = scope.indicatorOriginX || ((indicatorBoundingBox.left + indicatorBoundingBox.right) / 2) - svgBBox.left;
+            scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.bottom - svgBBox.top);
+            gaugeGroup.prependTranslate(scope.x,scope.y);
+            scope.endAngle = scope.endAngle || (scope.startAngle * -1);
+            scope.minValue = scope.minValue || 0;
+            deltaAngle = scope.endAngle - scope.startAngle;
+            deltaValue = scope.maxValue - scope.minValue;
+            indicator.transformOrigin(scope.indicatorOriginX, scope.indicatorOriginY).style('transition', 'all 0.25s linear');
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -278,15 +280,15 @@
             link: link,
             restrict: 'C',
             scope: {
-                value: '@',
-                startAngle: '@',
-                endAngle: '@',
-                maxValue: '@',
-                minValue: '@',
-                indicatorOriginX: '@',
-                indicatorOriginY: '@',
-                x: '@',
-                y: '@'
+                value: '=',
+                startAngle: '=',
+                endAngle: '=',
+                maxValue: '=',
+                minValue: '=',
+                indicatorOriginX: '=',
+                indicatorOriginY: '=',
+                x: '=',
+                y: '='
             }
         };
     }
@@ -303,54 +305,54 @@
 		function link(scope, element, attrs) {
 			var EASING_DURATION = 250,
 				EASING = 'linear',
-				x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				minValue = parseInt(scope.minValue, 10) || 0,
-				minPosition = parseInt(scope.minPosition, 10) || 0,
 				meter = d3.select(element[0]),
 				bar = meter.select('#bar'),
 				barWidth = parseInt(bar.attr('width')) || 0,
-				maxPosition = parseInt(scope.maxPosition, 10) || barWidth,
-				vertical = (scope.vertical === 'true'),
 				originalBarX = parseInt(bar.attr('x'), 10) || 0,
 				originalBarY = parseInt(bar.attr('y'), 10) || 0,
-				stepWidth = ((maxPosition - minPosition) / (maxValue - minValue));
+				stepWidth;
 			function updateValue() {
-				var value = parseInt(scope.value, 10) || 0,
+				var value = scope.value || 0,
 					barLength = Math.abs(stepWidth * value),
-					currentX,
-                    currentY,
-                    height,
-                    width;
-				if (value >= 0 && value <= maxValue) {
+					currentX = 0,
+                    currentY = 0,
+                    height = 0,
+                    width = 0;
+				if (value >= 0 && value <= scope.maxValue) {
 					currentY = originalBarY - barLength;
 					height = barLength;
 					currentX = originalBarX;
 					width = barLength;
-				} else if (value < 0 && value >= minValue) {
+				} else if (value < 0 && value >= scope.minValue) {
 					currentY = originalBarY;
 					height = barLength;
 					currentX = originalBarX - barLength;
 					width = barLength;
-				} else if (value > maxValue) {
-					currentY = maxPosition;
-					height = stepWidth * maxValue;
+				} else if (value > scope.maxValue) {
+					currentY = scope.maxPosition;
+					height = stepWidth * scope.maxValue;
 					currentX = originalBarX;
-					width = stepWidth * maxValue;
-				} else if (value < minValue) {
+					width = stepWidth * scope.maxValue;
+				} else if (value < scope.minValue) {
 					currentY = originalBarY;
-					height = stepWidth * minValue;
-					currentX = minPosition;
-					width = stepWidth * minValue;
+					height = stepWidth * scope.minValue;
+					currentX = scope.minPosition;
+					width = stepWidth * scope.minValue;
 				}
-				if (vertical) {
+				if (scope.vertical) {
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('y', currentY).attr('height', Math.abs(height));
 				} else {
 					bar.transition().duration(EASING_DURATION).ease(EASING).attr('x', currentX).attr('width', Math.abs(width));
 				}
 			}
-			meter.prependTranslate(x,y);
+			scope.x = scope.x || 0;
+            scope.y = scope.y || 0;
+			scope.vertical = scope.vertical || false;
+			scope.minValue = scope.minValue || 0,
+			scope.minPosition = scope.minPosition || 0,
+			scope.maxPosition = scope.maxPosition || barWidth,
+			stepWidth = ((scope.maxPosition - scope.minPosition) / (scope.maxValue - scope.minValue));
+			meter.prependTranslate(scope.x,scope.y);
 			scope.$watch('value', updateValue);
 		}
 
@@ -358,14 +360,14 @@
 			link: link,
 			restrict: 'C',
 			scope: {
-				minValue: '@',
-				maxValue: '@',
-				minPosition: '@',
-				maxPosition: '@',
-				value: '@',
-				vertical: '@',
-				x: '@',
-				y: '@'
+				minValue: '=',
+				maxValue: '=',
+				minPosition: '=',
+				maxPosition: '=',
+				value: '=',
+				vertical: '=',
+				x: '=',
+				y: '='
 			}
 		};
 	}
@@ -380,17 +382,13 @@
 
 	function DotMeterDirective() {
 		function link(scope, element, attrs) {
-			var minValue = parseInt(scope.minValue, 10) || 0,
-				maxValue = parseInt(scope.maxValue, 10),
-				x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-				dotsCollection = d3.select(element[0]);
-			function changeValue() {
-				var value = parseInt(scope.value, 10) || 0;
-				if (value > maxValue) {
-					value = maxValue;
-				} else if (value < minValue) {
-					value = minValue;
+			var dotsCollection = d3.select(element[0]);
+			function updateValue() {
+				var value = scope.value || 0;
+				if (value > scope.maxValue) {
+					value = scope.maxValue;
+				} else if (value < scope.minValue) {
+					value = scope.minValue;
 				}
 				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
 					var opacity = 1.0,
@@ -400,21 +398,23 @@
 					}
 					selection.opacity(opacity);
 				});
-				
 			}
-			dotsCollection.prependTranslate(x, y);
-			scope.$watch('value', changeValue);
+			scope.minValue = scope.minValue || 0;
+			scope.x = scope.x || 0;
+            scope.y = scope.y || 0;
+			dotsCollection.prependTranslate(scope.x, scope.y);
+			scope.$watch('value', updateValue);
 		}
 
 		return {
 			link: link,
 			restrict: 'C',
 			scope: {
-				minValue: '@',
-				maxValue: '@',
-				value: '@',
-				x: '@',
-				y: '@'
+				minValue: '=',
+				maxValue: '=',
+				value: '=',
+				x: '=',
+				y: '='
 			}
 		}
 	}
@@ -425,39 +425,76 @@
 } (window.d3));
 (function (d3) {
     'use strict';
+    /*global angular, console*/
+
+    function FourteenSegmentDisplayDirective(templates) {
+        function link(scope, element, attrs) {
+            var d3element = d3.select(element[0]),
+                iterator;
+            scope.x = scope.x || 0,
+            scope.y = scope.y || 0,
+            scope.showBackground = scope.showBackground || false;
+            d3element.prependTranslate(scope.x, scope.y);
+            scope.background = '~';
+            scope.opacity = 0.0;
+            for (iterator = 0; iterator < scope.digits - 1; iterator += 1) {
+                scope.background += '.~';
+            }
+            if (scope.showBackground) {
+                scope.opacity = 0.1;
+            }
+            element.ready(function() {
+                var width = d3element.select('text#background').node().getBBox().width;
+                d3element.select('text#value').translate(width, 0);
+            });
+        }
+
+        return {
+            link: link,
+            restrict: 'C',
+            template: templates.segmentDisplayTemplate,
+            scope: {
+                digits: '=',
+                value: '=',
+                showBackground: '=',
+                x: '=',
+                y: '='
+            }
+        };
+    }
+
+    FourteenSegmentDisplayDirective.$inject = ['templates'];
+
+    angular
+        .module('dashboard-ui.directives')
+        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
+} (window.d3));
+(function (d3) {
+    'use strict';
     /*global angular*/
 
     function LedLightDirective($interval) {
         function link(scope, element, attrs) {
-            var x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                icon = d3.select(element[0]),
-                blinkingInterval = parseInt(scope.blinkingInterval),
-                turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
-                turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
+            var icon = d3.select(element[0]),
                 blinkingTimer;
             function turnOn() {
                 $interval.cancel(blinkingTimer);
-                icon.opacity(turnOnLevel);
+                icon.opacity(scope.turnOnLevel);
             }
             function turnOff() {
                 $interval.cancel(blinkingTimer);
-                icon.opacity(turnOffLevel);
+                icon.opacity(scope.turnOffLevel);
             }
             function blinkingMode() {
                 blinkingTimer = $interval(function () {
-                    if (icon.opacity() === turnOnLevel) {
-                        icon.opacity(turnOffLevel);
+                    if (icon.opacity() === scope.turnOnLevel) {
+                        icon.opacity(scope.turnOffLevel);
                     } else {
-                        icon.opacity(turnOnLevel);
+                        icon.opacity(scope.turnOnLevel);
                     }
-                }, 500);
+                }, scope.blinkingInterval);
             }
-            icon.prependTranslate(x, y);
-            if (!isNaN(blinkingInterval)) {
-                icon.style('transition', 'all ' + (blinkingInterval / 1000) + 's linear 0s');
-            }
-            scope.$watch('mode', function () {
+            function updateLightMode() {
                 if (scope.mode.toLowerCase() === 'on') {
                     turnOn();
                 } else if (scope.mode.toLowerCase() === 'blinking') {
@@ -465,7 +502,18 @@
                 } else {
                     turnOff();
                 }
-            });
+            }
+            scope.y = scope.y || 0.0;
+            scope.x = scope.x || 0.0;
+            scope.blinkingInterval = scope.blinkingInterval || 500;
+            scope.blinkingDelay = scope.blinkingDelay || 0;
+            scope.turnOnLevel = scope.turnOnLevel || 1.0;
+            scope.turnOffLevel = scope.turnOffLevel || 0.0;
+            icon.prependTranslate(scope.x, scope.y);
+            if (scope.blinkingDelay > 0) {
+                icon.style('transition', 'all ' + (scope.blinkingDelay / 1000) + 's linear 0s');
+            }
+            attrs.$observe('mode', updateLightMode);
         }
 
         return {
@@ -473,11 +521,12 @@
             restrict: 'C',
             scope: {
                 mode: '@',
-                turnOffLevel: '@',
-                turnOnLevel: '@',
-                blinkingInterval: '@',
-                x: '@',
-                y: '@'
+                turnOffLevel: '=',
+                turnOnLevel: '=',
+                blinkingInterval: '=',
+                blinkingDelay: '=',
+                x: '=',
+                y: '='
             }
         };
     }
@@ -494,19 +543,18 @@
 
     function SevenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
+            var d3element = d3.select(element[0]),
                 iterator;
-            d3element.prependTranslate(x, y);
+            scope.x = scope.x || 0,
+            scope.y = scope.y || 0,
+            scope.showBackground = scope.showBackground || false;
+            d3element.prependTranslate(scope.x, scope.y);
             scope.background = '8';
             scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+            for (iterator = 0; iterator < scope.digits - 1; iterator += 1) {
                 scope.background += '.8';
             }
-            if (background) {
+            if (scope.showBackground) {
                 scope.opacity = 0.1;
             }
             element.ready(function() {
@@ -520,11 +568,11 @@
             restrict: 'C',
             template: templates.segmentDisplayTemplate,
             scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
+                digits: '=',
+                value: '=',
+                showBackground: '=',
+                x: '=',
+                y: '='
             }
         };
     }
@@ -534,51 +582,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('sevenSegmentDisplay', SevenSegmentDisplayDirective);
-} (window.d3));
-(function (d3) {
-    'use strict';
-    /*global angular, console*/
-
-    function FourteenSegmentDisplayDirective(templates) {
-        function link(scope, element, attrs) {
-            var digits = scope.digits,
-                background = (scope.showBackground === "true"),
-                x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0,
-                d3element = d3.select(element[0]),
-                iterator;
-            d3element.prependTranslate(x, y);
-            scope.background = '~';
-            scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
-                scope.background += '.~';
-            }
-            if (background) {
-                scope.opacity = 0.1;
-            }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
-            });
-        }
-
-        return {
-            link: link,
-            restrict: 'C',
-            template: templates.segmentDisplayTemplate,
-            scope: {
-                digits: '@',
-                value: '@',
-                showBackground: '@',
-                x: '@',
-                y: '@'
-            }
-        };
-    }
-
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
-
-    angular
-        .module('dashboard-ui.directives')
-        .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
 } (window.d3));

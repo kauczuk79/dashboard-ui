@@ -36,8 +36,8 @@ Licznik analogowy posiada kilka atrybutów, które są opisane w tabeli poniżej
 | Parametr | Opis | Wymagany |
 | -------- | ---- |:--------:|
 | ***data-end-angle*** | Kąt położenia wskazówki w stopniach osiągany wtedy, gdy parametr ***data-value*** ma wartość maksymalną równą ***data-max-value***. Wartość domyślna to kąt przeciwny do kąta ***data-start-angle***. | Nie |
-| ***data-indicator-origin-x*** | Pozycja X środka obrotu wskazówki licznika. Wartością domyślną jest pozycja X środka prostokąta zawierającego wskazówkę. Zalecane jest podanie punktu obrotu wskazówki | Zalecany |
-| ***data-indicator-origin-y*** | Pozycja Y środka obrotu wskazówki licznika. Wartością domyślną jest pozycja Y środka prostokąta zawierającego wskazówkę. | Zalecany |
+| ***data-indicator-origin-x*** | Pozycja X środka obrotu wskazówki licznika. Wartością domyślną jest pozycja X środka dolnej krawędzi prostokąta zawierającego wskazówkę. Zalecane jest podanie punktu obrotu wskazówki | Zalecany |
+| ***data-indicator-origin-y*** | Pozycja Y środka obrotu wskazówki licznika. Wartością domyślną jest pozycja Y środka dolnej krawędzi prostokąta zawierającego wskazówkę. | Zalecany |
 | ***data-max-value*** | Maksymalna wartość wskazywana przez licznik. | Tak |
 | ***data-min-value*** | Minimalna wartość wskazywana przez licznik. Wartość domyślna to 0. | Nie |
 | ***data-start-angle*** | Kąt położenia wskazówki w stopniach osiągany wtedy, gdy parametr ***data-value*** ma wartość minimalną równą ***data-min-value***. | Tak |
@@ -91,7 +91,8 @@ Czcionka użyta w wyświetlaczu to [DSEG]. Na stronie twórcy znajduje się list
 | Parametr | Opis | Wymagany |
 | -------- | ---- |:--------:|
 | ***data-mode*** | Stan diody, może przyjąć następujące wartości: <ul><li>`off` - dioda wyłączona</li><li>`on` - dioda włączona</li><li>`blinking` - dioda migająca</li></ul>| Tak |
-| ***data-blinking-interval*** | Szybkość zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 25. | Nie |
+| ***data-blinking-interval*** | Szybkość zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 500. | Nie |
+| ***data-blinking-delay*** | Opóźnienie zmiany stanu w trybie blinking wyrażona w milisekundach. Standardowa wartość to 0 (dioda wygasza się bez animacji) | Nie |
 | ***data-turn-off-level*** | Poziom maksymalnego wygaszenia diody. Standardowa wartość to 0.0. Większa wartość spowoduje, że dioda w trybie `off` oraz `blinking` będzie bardziej widoczna. | Nie |
 | ***data-turn-on-level*** | Poziom maksymalnego zapalenia diody. Standardowa wartość to 1.0. Mniejsza wartość spowoduje, że dioda w trybie `on` oraz `blinking` będzie mniej widoczna. | Nie |
 | ***data-x*** | Pozycja diody na osi X (lewy górny róg). Domyślnie X=0.| Nie |

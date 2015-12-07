@@ -7,12 +7,12 @@
 
 <body ng-app="dashboard-ui" ng-controller="stringArrayController">
     <svg width="640" height="360" style="border: 1px solid black;">
-        <g class="alphanumeric-lcd" data-x="0" data-y="0" data-rows="5" data-columns="16" data-lines="['abcdefghijklmnop', 'rstuvwxyz0123456','789/*-+,./;\'\\[]<','>?|{}!@#$%^&*()_','=:&quot;|~&#x0b8f;']"></g>
-        <g class="alphanumeric-lcd" data-x="0" data-y="100" data-rows="1" data-columns="16" data-lines="['Scale 1.0x']"></g>
-        <g class="alphanumeric-lcd" data-x="0" data-y="115" data-rows="1" data-columns="16" data-scale="1.5" data-lines="['Scale 1.5x']"></g>
-        <g class="alphanumeric-lcd" data-x="0" data-y="140" data-rows="1" data-columns="16" data-scale="2" data-lines="['Scale 2.0x']"></g>
-        <g class="alphanumeric-lcd" data-x="0" data-y="170" data-rows="1" data-columns="16" data-scale="3" data-lines="['Scale 3.0x']"></g>
-        <g class="alphanumeric-lcd" data-x="0" data-y="225" data-rows="4" data-columns="24" data-lines="data" data-show-background="true"></g>
+        <g class="alphanumeric-lcd" data-x="10" data-y="0" data-rows="5" data-columns="16" data-lines="['abcdefghijklmnop', 'rstuvwxyz0123456','789/*-+,./;\'\\[]<','>?|{}!@#$%^&*()_','=:&quot;|~&#x0b8f;']"></g>
+        <g class="alphanumeric-lcd" data-x="10" data-y="100" data-rows="1" data-columns="16" data-scale="1" data-lines="['Scale 1.0x']"></g>
+        <g class="alphanumeric-lcd" data-x="10" data-y="115" data-rows="1" data-columns="16" data-scale="1.5" data-lines="['Scale 1.5x']"></g>
+        <g class="alphanumeric-lcd" data-x="10" data-y="140" data-rows="1" data-columns="16" data-scale="2" data-lines="['Scale 2.0x']"></g>
+        <g class="alphanumeric-lcd" data-x="10" data-y="170" data-rows="1" data-columns="16" data-scale="3" data-lines="['Scale 3.0x']"></g>
+        <g class="alphanumeric-lcd" id="test" data-x="10" data-y="225" data-rows="4" data-columns="24" data-lines="data" data-show-background="true"></g>
     </svg>
     <textarea ng-model="data" cols="24" cols="4" split-array></textarea>
     <script src="../node_modules/angular/angular.js"></script>
