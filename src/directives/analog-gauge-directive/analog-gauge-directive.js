@@ -8,35 +8,33 @@
                 indicator = gaugeGroup.select('#indicator'),
                 indicatorBoundingBox = indicator.node().getBoundingClientRect(),
                 svgBBox = d3.select('svg').node().getBoundingClientRect(),
-                angle,
-                deltaAngle,
-                deltaValue;
+                x = parseFloat(scope.x) || 0.0,
+                y = parseFloat(scope.y) || 0.0,
+                indicatorOriginX = parseFloat(scope.indicatorOriginX) || ((indicatorBoundingBox.left + indicatorBoundingBox.right) / 2) - svgBBox.left,
+                indicatorOriginY = parseFloat(scope.indicatorOriginY) || (indicatorBoundingBox.bottom - svgBBox.top),
+                startAngle = parseFloat(scope.startAngle) || 0.0,
+                endAngle = parseFloat(scope.endAngle) || (startAngle * -1),
+                minValue = parseFloat(scope.minValue) || 0,
+                maxValue = parseFloat(scope.maxValue) || 100.0,
+                deltaAngle = endAngle - startAngle,
+                deltaValue = maxValue - minValue;
             function updateGaugeAngle() {
-                var value = scope.value;
-                if (value < scope.minValue) {
-                    angle = scope.startAngle;
-                } else if (value > scope.maxValue) {
-                    angle = scope.endAngle;
+                var value = parseFloat(scope.value);
+                if (value < minValue) {
+                    indicator.rotate(startAngle);
+                } else if (value > maxValue) {
+                    indicator.rotate(endAngle);
                 } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (scope.minValue - value));
-                    if (scope.startAngle < scope.endAngle) {
-                        angle = scope.startAngle + angleDifference;
+                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (minValue - value));
+                    if (startAngle < endAngle) {
+                        indicator.rotate(startAngle + angleDifference);
                     } else {
-                        angle = scope.startAngle - angleDifference;
+                        indicator.rotate(startAngle - angleDifference);
                     }
                 }
-                indicator.rotate(angle);
             }
-            scope.x = scope.x || 0.0;
-            scope.y = scope.y || 0.0;
-            scope.indicatorOriginX = scope.indicatorOriginX || ((indicatorBoundingBox.left + indicatorBoundingBox.right) / 2) - svgBBox.left;
-            scope.indicatorOriginY = scope.indicatorOriginY || (indicatorBoundingBox.bottom - svgBBox.top);
-            gaugeGroup.prependTranslate(scope.x,scope.y);
-            scope.endAngle = scope.endAngle || (scope.startAngle * -1);
-            scope.minValue = scope.minValue || 0;
-            deltaAngle = scope.endAngle - scope.startAngle;
-            deltaValue = scope.maxValue - scope.minValue;
-            indicator.transformOrigin(scope.indicatorOriginX, scope.indicatorOriginY).style('transition', 'all 0.25s linear');
+            gaugeGroup.prependTranslate(x,y);
+            indicator.transformOrigin(indicatorOriginX, indicatorOriginY).style('transition', 'all 0.25s linear');
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -45,14 +43,14 @@
             restrict: 'C',
             scope: {
                 value: '=',
-                startAngle: '=',
-                endAngle: '=',
-                maxValue: '=',
-                minValue: '=',
-                indicatorOriginX: '=',
-                indicatorOriginY: '=',
-                x: '=',
-                y: '='
+                startAngle: '@',
+                endAngle: '@',
+                maxValue: '@',
+                minValue: '@',
+                indicatorOriginX: '@',
+                indicatorOriginY: '@',
+                x: '@',
+                y: '@'
             }
         };
     }
