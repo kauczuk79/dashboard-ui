@@ -5,23 +5,29 @@
     function LedLightDirective($interval) {
         function link(scope, element, attrs) {
             var icon = d3.select(element[0]),
+                y = parseFloat(scope.y) || 0.0,
+                x = parseFloat(scope.x) || 0.0,
+                blinkingInterval = parseInt(scope.blinkingInterval, 10) || 500,
+                blinkingDelay = parseInt(scope.blinkingDelay, 10) || 0,
+                turnOnLevel = parseFloat(scope.turnOnLevel) || 1.0,
+                turnOffLevel = parseFloat(scope.turnOffLevel) || 0.0,
                 blinkingTimer;
             function turnOn() {
                 $interval.cancel(blinkingTimer);
-                icon.opacity(scope.turnOnLevel);
+                icon.opacity(turnOnLevel);
             }
             function turnOff() {
                 $interval.cancel(blinkingTimer);
-                icon.opacity(scope.turnOffLevel);
+                icon.opacity(turnOffLevel);
             }
             function blinkingMode() {
                 blinkingTimer = $interval(function () {
-                    if (icon.opacity() === scope.turnOnLevel) {
-                        icon.opacity(scope.turnOffLevel);
+                    if (icon.opacity() === turnOnLevel) {
+                        icon.opacity(turnOffLevel);
                     } else {
-                        icon.opacity(scope.turnOnLevel);
+                        icon.opacity(turnOnLevel);
                     }
-                }, scope.blinkingInterval);
+                }, blinkingInterval);
             }
             function updateLightMode() {
                 if (scope.mode.toLowerCase() === 'on') {
@@ -32,15 +38,9 @@
                     turnOff();
                 }
             }
-            scope.y = scope.y || 0.0;
-            scope.x = scope.x || 0.0;
-            scope.blinkingInterval = scope.blinkingInterval || 500;
-            scope.blinkingDelay = scope.blinkingDelay || 0;
-            scope.turnOnLevel = scope.turnOnLevel || 1.0;
-            scope.turnOffLevel = scope.turnOffLevel || 0.0;
-            icon.prependTranslate(scope.x, scope.y);
-            if (scope.blinkingDelay > 0) {
-                icon.style('transition', 'all ' + (scope.blinkingDelay / 1000) + 's linear 0s');
+            icon.prependTranslate(x, y);
+            if (blinkingDelay > 0) {
+                icon.style('transition', 'all ' + (blinkingDelay / 1000) + 's linear 0s');
             }
             attrs.$observe('mode', updateLightMode);
         }
@@ -50,12 +50,12 @@
             restrict: 'C',
             scope: {
                 mode: '@',
-                turnOffLevel: '=',
-                turnOnLevel: '=',
-                blinkingInterval: '=',
-                blinkingDelay: '=',
-                x: '=',
-                y: '='
+                turnOffLevel: '@',
+                turnOnLevel: '@',
+                blinkingInterval: '@',
+                blinkingDelay: '@',
+                x: '@',
+                y: '@'
             }
         };
     }

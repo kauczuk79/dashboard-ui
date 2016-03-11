@@ -33,11 +33,11 @@
 			link: link,
 			restrict: 'C',
 			scope: {
-				minValue: '=',
-				maxValue: '=',
+				minValue: '@',
+				maxValue: '@',
 				value: '=',
-				x: '=',
-				y: '='
+				x: '@',
+				y: '@'
 			}
 		}
 	}

@@ -7,7 +7,7 @@
             var d3element = d3.select(element[0]),
                 x = parseFloat(scope.x) || 0.0,
                 y = parseFloat(scope.y) || 0.0,
-                showBackground = !!scope.showBackground,
+                showBackground = scope.showBackground === 'true',
                 digits = parseInt(scope.digits, 10) || 3, 
                 iterator;
             d3element.prependTranslate(x, y);
@@ -32,7 +32,7 @@
             scope: {
                 digits: '@',
                 value: '=',
-                showBackground: '=',
+                showBackground: '@',
                 x: '@',
                 y: '@'
             }
