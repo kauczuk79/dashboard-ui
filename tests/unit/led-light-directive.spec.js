@@ -13,22 +13,22 @@ describe('Led light directive', function () {
 	
 	it('should have proper values of not requred (calculated) parameters', function () {
 		var scope = getElementScope(HTML_WITH_REQUIRED_ATTRIBUTES, $compile, $scope);
-		expect(scope.blinkingInterval).toEqual(500);
-		expect(scope.blinkingDelay).toEqual(0);
-		expect(scope.turnOffLevel).toEqual(0.0);
-		expect(scope.turnOnLevel).toEqual(1.0);
-		expect(scope.x).toEqual(0);
-		expect(scope.y).toEqual(0);
+		expect(scope.parameters.blinkingInterval).toEqual(500);
+		expect(scope.parameters.blinkingDelay).toEqual(0);
+		expect(scope.parameters.turnOffLevel).toEqual(0.0);
+		expect(scope.parameters.turnOnLevel).toEqual(1.0);
+		expect(scope.parameters.x).toEqual(0);
+		expect(scope.parameters.y).toEqual(0);
 	});
 	
 	it('should have proper values of given parameters', function () {
 		var scope = getElementScope(HTML_WITH_ALL_ATTRIBUTES, $compile, $scope);
 		expect(scope.mode).toEqual('blinking');
-		expect(scope.blinkingInterval).toEqual(250);
-		expect(scope.blinkingDelay).toEqual(100);
-		expect(scope.turnOffLevel).toEqual(0.1);
-		expect(scope.turnOnLevel).toEqual(0.9);
-		expect(scope.x).toEqual(5);
-		expect(scope.y).toEqual(10);
+		expect(scope.parameters.blinkingInterval).toEqual(250);
+		expect(scope.parameters.blinkingDelay).toEqual(100);
+		expect(scope.parameters.turnOffLevel).toEqual(0.1);
+		expect(scope.parameters.turnOnLevel).toEqual(0.9);
+		expect(scope.parameters.x).toEqual(5);
+		expect(scope.parameters.y).toEqual(10);
 	});
 });

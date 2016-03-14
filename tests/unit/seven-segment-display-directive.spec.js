@@ -13,17 +13,17 @@ describe('Seven segment display directive', function () {
 	
 	it('should have proper values of not requred (calculated) parameters', function () {
 		var scope = getElementScope(HTML_WITH_REQUIRED_ATTRIBUTES, $compile, $scope);
-		expect(scope.x).toEqual(0);
-        expect(scope.y).toEqual(0);
-        expect(scope.showBackground).toEqual(false);
+		expect(scope.parameters.x).toEqual(0);
+        expect(scope.parameters.y).toEqual(0);
+        expect(scope.parameters.showBackground).toEqual(false);
 	});
 	
 	it('should have proper values of given parameters', function () {
 		var scope = getElementScope(HTML_WITH_ALL_ATTRIBUTES, $compile, $scope);
 		expect(scope.value).toEqual(123);
-		expect(scope.digits).toEqual(3);
-		expect(scope.x).toEqual(5);
-        expect(scope.y).toEqual(10);
-        expect(scope.showBackground).toEqual(true);
+		expect(scope.parameters.digits).toEqual(3);
+		expect(scope.parameters.x).toEqual(5);
+        expect(scope.parameters.y).toEqual(10);
+        expect(scope.parameters.showBackground).toEqual(true);
 	});
 });

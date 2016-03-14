@@ -13,24 +13,24 @@ describe('Bar meter directive', function () {
 	
 	it('should have proper values of not requred (calculated) parameters', function () {
 		var scope = getElementScope(HTML_WITH_REQUIRED_ATTRIBUTES, $compile, $scope);
-		expect(scope.x).toEqual(0);
-		expect(scope.y).toEqual(0);
-		expect(scope.maxPosition).toEqual(GET_ATTRIBUTE_MOCK_VALUE);
-		expect(scope.minPosition).toEqual(0);
-		expect(scope.minValue).toEqual(0);
-		expect(scope.vertical).toEqual(false);
+		expect(scope.parameters.x).toEqual(0);
+		expect(scope.parameters.y).toEqual(0);
+		expect(scope.parameters.maxPosition).toEqual(GET_ATTRIBUTE_MOCK_VALUE);
+		expect(scope.parameters.minPosition).toEqual(0);
+		expect(scope.parameters.minValue).toEqual(0);
+		expect(scope.parameters.vertical).toEqual(false);
 	});
 	
 	it('should have proper values of given parameters', function () {
 		var scope = getElementScope(HTML_WITH_ALL_ATTRIBUTES, $compile, $scope);
-		expect(scope.maxPosition).toEqual(150);
-		expect(scope.maxValue).toEqual(150);
-		expect(scope.minPosition).toEqual(10);
-		expect(scope.minValue).toEqual(-10);
+		expect(scope.parameters.maxPosition).toEqual(150);
+		expect(scope.parameters.maxValue).toEqual(150);
+		expect(scope.parameters.minPosition).toEqual(10);
+		expect(scope.parameters.minValue).toEqual(-10);
+		expect(scope.parameters.vertical).toEqual(true);
+		expect(scope.parameters.x).toEqual(10);
+		expect(scope.parameters.y).toEqual(10);
 		expect(scope.value).toEqual(50);
-		expect(scope.vertical).toEqual(true);
-		expect(scope.x).toEqual(10);
-		expect(scope.y).toEqual(10);
 	});
 	
 	it('should call updateValue when data-value was changed', function () {
