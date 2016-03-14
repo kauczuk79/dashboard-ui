@@ -1,6 +1,6 @@
+/*global window, angular*/
 (function (d3) {
     'use strict';
-    /*global angular*/
 
     function LedLightDirective($interval) {
         function link(scope, element, attrs) {
@@ -14,14 +14,17 @@
                 turnOnLevel: parseFloat(scope.turnOnLevel) || 1.0,
                 turnOffLevel: parseFloat(scope.turnOffLevel) || 0.0
             };
+
             function turnOn() {
                 $interval.cancel(blinkingTimer);
                 icon.opacity(scope.parameters.turnOnLevel);
             }
+
             function turnOff() {
                 $interval.cancel(blinkingTimer);
                 icon.opacity(scope.parameters.turnOffLevel);
             }
+
             function blinkingMode() {
                 blinkingTimer = $interval(function () {
                     if (icon.opacity() === scope.parameters.turnOnLevel) {
@@ -31,6 +34,7 @@
                     }
                 }, scope.parameters.blinkingInterval);
             }
+
             function updateLightMode() {
                 if (scope.mode.toLowerCase() === 'on') {
                     turnOn();
@@ -67,4 +71,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('ledLight', LedLightDirective);
-} (window.d3));
+}(window.d3));

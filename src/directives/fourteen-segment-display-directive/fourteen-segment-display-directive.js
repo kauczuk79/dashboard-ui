@@ -1,6 +1,6 @@
+/*global window, angular*/
 (function (d3) {
     'use strict';
-    /*global angular, console*/
 
     function FourteenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
@@ -21,9 +21,13 @@
             if (scope.parameters.showBackground) {
                 scope.opacity = 0.1;
             }
-            element.ready(function() {
-                var width = d3element.select('text#background').node().getBBox().width;
-                d3element.select('text#value').translate(width, 0);
+            element.ready(function () {
+                var width = d3element.select('text#background')
+                    .node()
+                    .getBBox()
+                    .width;
+                d3element.select('text#value')
+                    .translate(width, 0);
             });
         }
 
@@ -46,4 +50,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('fourteenSegmentDisplay', FourteenSegmentDisplayDirective);
-} (window.d3));
+}(window.d3));

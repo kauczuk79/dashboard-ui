@@ -1,7 +1,7 @@
 (function () {
-	'use strict';
-	/*global angular*/
+    'use strict';
+    /*global angular*/
 
-	angular
-		.module('dashboard-ui.commons', []);
-} ());
+    angular
+        .module('dashboard-ui.commons', []);
+}());

@@ -1,13 +1,16 @@
+/*global window, angular*/
 (function (d3) {
     'use strict';
-    /*global angular, console*/
 
     function AnalogGaugeDirective() {
         function link(scope, element, attrs) {
             var gaugeGroup = d3.select(element[0]),
                 indicator = gaugeGroup.select('#indicator'),
-                indicatorBoundingBox = indicator.node().getBoundingClientRect(),
-                svgBBox = d3.select('svg').node().getBoundingClientRect(),
+                indicatorBoundingBox = indicator.node()
+                    .getBoundingClientRect(),
+                svgBBox = d3.select('svg')
+                    .node()
+                    .getBoundingClientRect(),
                 deltaAngle,
                 deltaValue;
             scope.parameters = {
@@ -22,14 +25,16 @@
             };
             deltaAngle = scope.parameters.endAngle - scope.parameters.startAngle;
             deltaValue = scope.parameters.maxValue - scope.parameters.minValue;
+
             function updateGaugeAngle() {
-                var value = parseFloat(scope.value);
+                var value = parseFloat(scope.value),
+                    angleDifference;
                 if (value < scope.parameters.minValue) {
                     indicator.rotate(scope.parameters.startAngle);
                 } else if (value > scope.parameters.maxValue) {
                     indicator.rotate(scope.parameters.endAngle);
                 } else {
-                    var angleDifference = Math.abs((deltaAngle / deltaValue) * (scope.parameters.minValue - value));
+                    angleDifference = Math.abs((deltaAngle / deltaValue) * (scope.parameters.minValue - value));
                     if (scope.parameters.startAngle < scope.parameters.endAngle) {
                         indicator.rotate(scope.parameters.startAngle + angleDifference);
                     } else {
@@ -37,8 +42,9 @@
                     }
                 }
             }
-            gaugeGroup.prependTranslate(scope.parameters.x,scope.parameters.y);
-            indicator.transformOrigin(scope.parameters.indicatorOriginX, scope.parameters.indicatorOriginY).style('transition', 'all 0.25s linear');
+            gaugeGroup.prependTranslate(scope.parameters.x, scope.parameters.y);
+            indicator.transformOrigin(scope.parameters.indicatorOriginX, scope.parameters.indicatorOriginY)
+                .style('transition', 'all 0.25s linear');
             scope.$watch('value', updateGaugeAngle);
         }
 
@@ -62,4 +68,4 @@
     angular
         .module('dashboard-ui.directives')
         .directive('analogGauge', AnalogGaugeDirective);
-} (window.d3));
+}(window.d3));
