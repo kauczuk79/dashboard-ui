@@ -5,18 +5,20 @@
     function FourteenSegmentDisplayDirective(templates) {
         function link(scope, element, attrs) {
             var d3element = d3.select(element[0]),
-                x = parseFloat(scope.x) || 0.0,
-                y = parseFloat(scope.y) || 0.0,
-                showBackground = scope.showBackground === 'true',
-                digits = parseInt(scope.digits, 10) || 3, 
                 iterator;
-            d3element.prependTranslate(x, y);
+            scope.parameters = {
+                x: parseFloat(scope.x) || 0.0,
+                y: parseFloat(scope.y) || 0.0,
+                showBackground: scope.showBackground === 'true',
+                digits: parseInt(scope.digits, 10) || 3
+            };
+            d3element.prependTranslate(scope.parameters.x, scope.parameters.y);
             scope.background = '~';
             scope.opacity = 0.0;
-            for (iterator = 0; iterator < digits - 1; iterator += 1) {
+            for (iterator = 0; iterator < scope.parameters.digits - 1; iterator += 1) {
                 scope.background += '.~';
             }
-            if (showBackground) {
+            if (scope.parameters.showBackground) {
                 scope.opacity = 0.1;
             }
             element.ready(function() {

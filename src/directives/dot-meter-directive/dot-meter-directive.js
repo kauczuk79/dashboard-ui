@@ -4,17 +4,19 @@
 
 	function DotMeterDirective() {
 		function link(scope, element, attrs) {
-			var dotsCollection = d3.select(element[0]),
-                maxValue = parseInt(scope.maxValue, 10) || 0,
-                minValue = parseInt(scope.minValue, 10) || 0,
-			    x = parseFloat(scope.x) || 0,
-                y = parseFloat(scope.y) || 0;
+			var dotsCollection = d3.select(element[0]);
+            scope.parameters = {
+                maxValue: parseInt(scope.maxValue, 10) || 0,
+                minValue: parseInt(scope.minValue, 10) || 0,
+			    x: parseFloat(scope.x) || 0,
+                y: parseFloat(scope.y) || 0
+            };
 			function updateValue() {
 				var value = parseInt(scope.value, 10) || 0;
-				if (value > maxValue) {
-					value = maxValue;
-				} else if (value < minValue) {
-					value = minValue;
+				if (value > scope.parameters.maxValue) {
+					value = scope.parameters.maxValue;
+				} else if (value < scope.parameters.minValue) {
+					value = scope.parameters.minValue;
 				}
 				dotsCollection.selectAll('[id^=dot]')[0].forEach(function(domElement) {
 					var opacity = 1.0,
@@ -25,7 +27,7 @@
 					selection.opacity(opacity);
 				});
 			}
-			dotsCollection.prependTranslate(x, y);
+			dotsCollection.prependTranslate(scope.parameters.x, scope.parameters.y);
 			scope.$watch('value', updateValue);
 		}
 
