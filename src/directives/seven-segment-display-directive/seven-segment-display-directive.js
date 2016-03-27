@@ -24,7 +24,7 @@
             element.ready(function () {
                 var width = d3element.select('text#background')
                     .node()
-                    .getBBox()
+                    .getBoundingClientRect()
                     .width;
                 d3element.select('text#value')
                     .translate(width, 0);
