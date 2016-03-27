@@ -164,6 +164,7 @@
 
     angular.module('dashboard-ui', ['ngRoute', 'dashboard-ui.directives']);
 }());
+
 (function () {
     'use strict';
     /*global angular*/
@@ -178,7 +179,7 @@
 
     function TemplatesFactory() {
         return {
-            segmentDisplayTemplate: '<text seven-segment-display id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{value}}</text>'
+            segmentDisplayTemplate: '<text seven-segment-display id="background" text-anchor="end" dominant-baseline="text-before-edge" fill="black" opacity="{{opacity}}">{{background}}</text><text id="value" dominant-baseline="text-before-edge" writing-mode="lr">{{filteredValue}}</text>'
         };
     }
 
@@ -190,15 +191,120 @@
 (function () {
     'use strict';
     /*global angular*/
+    
+    angular.module('dashboard-ui.filters', []);
+}());
 
-    angular.module('dashboard-ui.directives', ['dashboard-ui.commons']);
+(function () {
+    'use strict';
+    /*global angular*/
+
+    angular.module('dashboard-ui.directives', ['dashboard-ui.commons', 'dashboard-ui.filters']);
+}());
+
+(function () {
+    'use strict';
+    /*global angular*/
+    angular.module('dashboard-ui.filters').filter('alphanumericLcdFilter', ['regularExpressions', function (regularExpressions) {
+        return function (input) {
+            var position,
+                output = '',
+                regexpOut,
+                regexp = regularExpressions.getAlphanumericLcdRegexp();
+            if (input !== undefined) {
+                for (position = 0; position < input.length; position += 1) {
+                    regexpOut = regexp.exec(input[position]);
+                    if (regexpOut !== null) {
+                        output += regexpOut[0];
+                    }
+                }
+            }
+            return output;
+        };
+    }]);
+}());
+
+(function () {
+    'use strict';
+    /*global angular*/
+    angular.module('dashboard-ui.filters').filter('fourteenSegmentDisplayFilter', ['regularExpressions', function (regularExpressions) {
+        return function (input) {
+            var position,
+                output = '',
+                regexpOut,
+                regexp = regularExpressions.getFourteenSegmendDisplayRegexp();
+            if (input !== undefined) {
+                for (position = 0; position < input.length; position += 1) {
+                    regexpOut = regexp.exec(input[position]);
+                    if (regexpOut !== null) {
+                        output += regexpOut[0];
+                    }
+                }
+            }
+            return output;
+        };
+    }]);
+}());
+
+(function () {
+    'use strict';
+    /*global angular*/
+    angular.module('dashboard-ui.filters').filter('sevenSegmentDisplayFilter', ['regularExpressions', function (regularExpressions) {
+        return function (input) {
+            var position,
+                output = '',
+                regexpOut,
+                regexp = regularExpressions.getSevenSegmentDisplayRegexp();
+            if (input !== undefined) {
+                for (position = 0; position < input.length; position += 1) {
+                    regexpOut = regexp.exec(input[position]);
+                    if (regexpOut !== null) {
+                        output += regexpOut[0];
+                    }
+                }
+            }
+            return output;
+        };
+    }]);
+}());
+
+(function () {
+    'use strict';
+    /*global angular*/
+
+    function regularExpressions() {
+
+        var alphanumericLcdRegexp = /[\u000d\u0020-\u007e\u00a0-\u00ff\u0152\u0153\u0160\u0161\u0178\u017d\u017e\u0192\u0b82\u0b83\u0b85\u0b86\u0b87\u0b88\u0b89\u0b8a\u0b8e\u0b8f\u0b90\u0b92\u2014\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u2020\u2022\u2026\u2039\u203a\u20ac\u2122\ufb01\ufb02]{0,}/,
+            fourteenSegmentDisplayRegexp = /[\u0022\u0024-\u003a\u003c-\u005a\u005c\u005e-\u007a\u007c\u007e\u00a5\u00a6\u00b1]/,
+            sevenSegmentDisplayRegexp = /[\u002d\u002e\u0030-\u003a\u0041-\u005a\u0061-\u007a]/;
+
+        function getAlphanumericLcdRegexp() {
+            return alphanumericLcdRegexp;
+        }
+
+        function getFourteenSegmendDisplayRegexp() {
+            return fourteenSegmentDisplayRegexp;
+        }
+
+        function getSevenSegmentDisplayRegexp() {
+            return sevenSegmentDisplayRegexp;
+        }
+
+        return {
+            getAlphanumericLcdRegexp: getAlphanumericLcdRegexp,
+            getFourteenSegmendDisplayRegexp: getFourteenSegmendDisplayRegexp,
+            getSevenSegmentDisplayRegexp: getSevenSegmentDisplayRegexp
+        };
+    }
+
+    angular.module('dashboard-ui.filters').service('regularExpressions', regularExpressions);
 }());
 
 /*global window, angular*/
 (function (d3) {
     'use strict';
 
-    function AlphanumericLcdDirective() {
+    function AlphanumericLcdDirective($filter) {
         function link(scope, element, attrs) {
             var RECTANGLE_CHAR = '\u0B8F',
                 FOREGROUND_CLASS = 'foreground',
@@ -217,7 +323,7 @@
             };
 
             function trimLine(data) {
-                return data.substring(0, scope.parameters.columns);
+                return $filter('alphanumericLcdFilter')(data.substring(0, scope.parameters.columns));
             }
 
             function fillLine(data) {
@@ -229,14 +335,10 @@
             function updateLines() {
                 var lineNumber,
                     lines = scope.lines;
-                for (lineNumber = 0; lineNumber < scope.parameters.rows; lineNumber += 1) {
-                    if (lines[lineNumber] !== undefined) {
-                        d3.select(element[0])
-                            .selectAll('.' + FOREGROUND_CLASS)
-                            .data(lines)
-                            .text(trimLine);
-                    }
-                }
+                d3.select(element[0])
+                    .selectAll('.' + FOREGROUND_CLASS)
+                    .data(lines)
+                    .text(trimLine);
             }
             scope.$watch('lines', updateLines);
             lcdGroup.prependTranslate(scope.parameters.x, scope.parameters.y);
@@ -271,6 +373,8 @@
             }
         };
     }
+
+    AlphanumericLcdDirective.$inject = ['$filter'];
 
     angular
         .module('dashboard-ui.directives')
@@ -497,16 +601,20 @@
 (function (d3) {
     'use strict';
 
-    function FourteenSegmentDisplayDirective(templates) {
+    function FourteenSegmentDisplayDirective(templates, $filter) {
         function link(scope, element, attrs) {
             var d3element = d3.select(element[0]),
                 iterator;
+            scope.filteredValue = '';
             scope.parameters = {
                 x: parseFloat(scope.x) || 0.0,
                 y: parseFloat(scope.y) || 0.0,
                 showBackground: scope.showBackground === 'true',
                 digits: parseInt(scope.digits, 10) || 3
             };
+            scope.$watch('value', function () {
+                scope.filteredValue = $filter('fourteenSegmentDisplayFilter')(scope.value);
+            });
             d3element.prependTranslate(scope.parameters.x, scope.parameters.y);
             scope.background = '~';
             scope.opacity = 0.0;
@@ -519,7 +627,7 @@
             element.ready(function () {
                 var width = d3element.select('text#background')
                     .node()
-                    .getBBox()
+                    .getBoundingClientRect()
                     .width;
                 d3element.select('text#value')
                     .translate(width, 0);
@@ -540,7 +648,7 @@
         };
     }
 
-    FourteenSegmentDisplayDirective.$inject = ['templates'];
+    FourteenSegmentDisplayDirective.$inject = ['templates', '$filter'];
 
     angular
         .module('dashboard-ui.directives')
@@ -626,16 +734,20 @@
 (function (d3) {
     'use strict';
 
-    function SevenSegmentDisplayDirective(templates) {
+    function SevenSegmentDisplayDirective(templates, $filter) {
         function link(scope, element, attrs) {
             var d3element = d3.select(element[0]),
                 iterator;
+            scope.filteredValue = '';
             scope.parameters = {
                 x: parseFloat(scope.x) || 0.0,
                 y: parseFloat(scope.y) || 0.0,
                 showBackground: scope.showBackground === 'true',
                 digits: parseInt(scope.digits, 10) || 3
             };
+            scope.$watch('value', function () {
+                scope.filteredValue = $filter('sevenSegmentDisplayFilter')(scope.value);
+            });
             d3element.prependTranslate(scope.parameters.x, scope.parameters.y);
             scope.background = '8';
             scope.opacity = 0.0;
@@ -648,7 +760,7 @@
             element.ready(function () {
                 var width = d3element.select('text#background')
                     .node()
-                    .getBBox()
+                    .getBoundingClientRect()
                     .width;
                 d3element.select('text#value')
                     .translate(width, 0);
@@ -669,7 +781,7 @@
         };
     }
 
-    SevenSegmentDisplayDirective.$inject = ['templates'];
+    SevenSegmentDisplayDirective.$inject = ['templates', '$filter'];
 
     angular
         .module('dashboard-ui.directives')

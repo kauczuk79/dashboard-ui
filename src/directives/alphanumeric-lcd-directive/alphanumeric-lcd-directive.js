@@ -2,7 +2,7 @@
 (function (d3) {
     'use strict';
 
-    function AlphanumericLcdDirective(regularExpressions) {
+    function AlphanumericLcdDirective($filter) {
         function link(scope, element, attrs) {
             var RECTANGLE_CHAR = '\u0B8F',
                 FOREGROUND_CLASS = 'foreground',
@@ -21,12 +21,7 @@
             };
 
             function trimLine(data) {
-                var filtered = '',
-                    position;
-                for (position = 0; position < data.length; position += 1) {
-                    filtered += data[position].match(regularExpressions.getAlphanumericLcdRegexp());
-                }
-                return filtered.substring(0, scope.parameters.columns);
+                return $filter('alphanumericLcdFilter')(data.substring(0, scope.parameters.columns));
             }
 
             function fillLine(data) {
@@ -76,8 +71,8 @@
             }
         };
     }
-    
-    AlphanumericLcdDirective.$inject = ['regularExpressions'];
+
+    AlphanumericLcdDirective.$inject = ['$filter'];
 
     angular
         .module('dashboard-ui.directives')
