@@ -2,16 +2,20 @@
 (function (d3) {
     'use strict';
 
-    function SevenSegmentDisplayDirective(templates) {
+    function SevenSegmentDisplayDirective(templates, $filter) {
         function link(scope, element, attrs) {
             var d3element = d3.select(element[0]),
                 iterator;
+            scope.filteredValue = '';
             scope.parameters = {
                 x: parseFloat(scope.x) || 0.0,
                 y: parseFloat(scope.y) || 0.0,
                 showBackground: scope.showBackground === 'true',
                 digits: parseInt(scope.digits, 10) || 3
             };
+            scope.$watch('value', function () {
+                scope.filteredValue = $filter('sevenSegmentDisplayFilter')(scope.value);
+            });
             d3element.prependTranslate(scope.parameters.x, scope.parameters.y);
             scope.background = '8';
             scope.opacity = 0.0;
@@ -24,7 +28,7 @@
             element.ready(function () {
                 var width = d3element.select('text#background')
                     .node()
-                    .getBBox()
+                    .getBoundingClientRect()
                     .width;
                 d3element.select('text#value')
                     .translate(width, 0);
@@ -45,7 +49,7 @@
         };
     }
 
-    SevenSegmentDisplayDirective.$inject = ['templates'];
+    SevenSegmentDisplayDirective.$inject = ['templates', '$filter'];
 
     angular
         .module('dashboard-ui.directives')

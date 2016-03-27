@@ -26,16 +26,17 @@
     gulp.task('js:clean', function () {
         return gulp.src('./dist/*.js')
             .pipe(rimraf());
-    })
+    });
 
     gulp.task('js:concat', function (callback) {
         return gulp.src([
-                'src/globals/*.js',
-                'src/dashboard-ui.js',
-                'src/commons/*.js',
-                'src/directives/dashboard-ui.directives.js',
-                'src/directives/**/*.js',
-            ])
+            'src/globals/*.js',
+            'src/dashboard-ui.js',
+            'src/commons/*.js',
+            'src/filters/dashboard-ui.filters.js',
+            'src/directives/dashboard-ui.directives.js',
+            'src/filters/**/*.js',
+            'src/directives/**/*.js'])
             .pipe(concat('dashboard-ui.js', {
                 newLine: '\n'
             }))
@@ -64,7 +65,7 @@
     gulp.task('style:clean', function () {
         return gulp.src('./dist/*.css')
             .pipe(rimraf());
-    })
+    });
 
     gulp.task('style:cleantemp', function () {
         return gulp.src(['./dist/directives', './dist/styles'])
