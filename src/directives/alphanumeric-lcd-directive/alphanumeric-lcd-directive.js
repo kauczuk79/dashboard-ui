@@ -21,7 +21,8 @@
             };
 
             function trimLine(data) {
-                return $filter('alphanumericLcdFilter')(data.substring(0, scope.parameters.columns));
+                var filteredString = $filter('alphanumericLcdFilter')(data);
+                return filteredString.substring(0, scope.parameters.columns);
             }
 
             function fillLine(data) {
