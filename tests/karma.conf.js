@@ -8,6 +8,7 @@ module.exports = function(config) {
 		'node_modules/angular-route/angular-route.js',
 		'node_modules/angular-mocks/angular-mocks.js',
 		'dist/dashboard-ui.js',
+        'tests/unit/**/*.js',
 		'tests/unit/*.js'
 	],
 	reporters: ['mocha'],

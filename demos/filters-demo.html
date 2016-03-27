@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../dist/dashboard-ui.css">
+    <style>
+        .display {
+            font-size: 48px;
+        }
+        
+        .displayPlaceholder {
+            width: 120px;
+            height: 50px;
+            background-color: yellowgreen;
+            border-radius: 10px;
+            margin: 5px;
+            padding: 10px;
+        }
+    </style>
+    <title></title>
+</head>
+<body ng-app="dashboard-ui">
+    Input: <input type="text" ng-model="value">
+    <h3>fourteenSegmentDisplayFilter</h3>
+    <p>Output: {{value | fourteenSegmentDisplayFilter}}</p>
+    <h3>sevenSegmentDisplayFilter</h3>
+    <p>Output: {{value | sevenSegmentDisplayFilter}}</p>
+    <h3>alphanumericLcdFilter</h3>
+    <p>Output: {{value | alphanumericLcdFilter}}</p>
+    <script src="../node_modules/angular/angular.js"></script>
+    <script src="../node_modules/angular-route/angular-route.js"></script>
+    <script src="../node_modules/d3/d3.js"></script>
+    <script src="../dist/dashboard-ui.js"></script>
+</body>
+</html>

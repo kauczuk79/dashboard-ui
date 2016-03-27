@@ -2,7 +2,7 @@
 (function (d3) {
     'use strict';
 
-    function AlphanumericLcdDirective() {
+    function AlphanumericLcdDirective(regularExpressions) {
         function link(scope, element, attrs) {
             var RECTANGLE_CHAR = '\u0B8F',
                 FOREGROUND_CLASS = 'foreground',
@@ -21,7 +21,12 @@
             };
 
             function trimLine(data) {
-                return data.substring(0, scope.parameters.columns);
+                var filtered = '',
+                    position;
+                for (position = 0; position < data.length; position += 1) {
+                    filtered += data[position].match(regularExpressions.getAlphanumericLcdRegexp());
+                }
+                return filtered.substring(0, scope.parameters.columns);
             }
 
             function fillLine(data) {
@@ -33,14 +38,10 @@
             function updateLines() {
                 var lineNumber,
                     lines = scope.lines;
-                for (lineNumber = 0; lineNumber < scope.parameters.rows; lineNumber += 1) {
-                    if (lines[lineNumber] !== undefined) {
-                        d3.select(element[0])
-                            .selectAll('.' + FOREGROUND_CLASS)
-                            .data(lines)
-                            .text(trimLine);
-                    }
-                }
+                d3.select(element[0])
+                    .selectAll('.' + FOREGROUND_CLASS)
+                    .data(lines)
+                    .text(trimLine);
             }
             scope.$watch('lines', updateLines);
             lcdGroup.prependTranslate(scope.parameters.x, scope.parameters.y);
@@ -75,6 +76,8 @@
             }
         };
     }
+    
+    AlphanumericLcdDirective.$inject = ['regularExpressions'];
 
     angular
         .module('dashboard-ui.directives')

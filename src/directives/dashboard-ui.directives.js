@@ -2,5 +2,5 @@
     'use strict';
     /*global angular*/
 
-    angular.module('dashboard-ui.directives', ['dashboard-ui.commons']);
+    angular.module('dashboard-ui.directives', ['dashboard-ui.commons', 'dashboard-ui.filters']);
 }());

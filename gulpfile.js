@@ -33,8 +33,10 @@
                 'src/globals/*.js',
                 'src/dashboard-ui.js',
                 'src/commons/*.js',
+                'src/filters/dashboard-ui.filters.js',
                 'src/directives/dashboard-ui.directives.js',
-                'src/directives/**/*.js',
+                'src/filters/**/*.js',
+                'src/directives/**/*.js'
             ])
             .pipe(concat('dashboard-ui.js', {
                 newLine: '\n'
