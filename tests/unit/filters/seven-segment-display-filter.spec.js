@@ -1,6 +1,5 @@
 describe('Seven segment display filter', function () {
     var sevenSegmentDisplayFilter,
-        regularExpressions,
         supportedCharacters = "-.0123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     beforeEach(module('dashboard-ui.filters'));

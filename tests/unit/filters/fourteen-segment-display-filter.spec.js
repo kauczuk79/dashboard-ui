@@ -1,6 +1,5 @@
 describe('Fourteen segment display filter', function () {
     var fourteenSegmentDisplayFilter,
-        regularExpressions,
         supportedCharacters = "\"$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\^_`abcdefghijklmnopqrstuvwxyz|~¥¦±";
 
     beforeEach(module('dashboard-ui.filters'));
